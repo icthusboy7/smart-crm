@@ -1,0 +1,33 @@
+<div id="avisos-{{ dataParent }}" class="panel-collapse collapse show">
+    {% if varNotice is defined and varNotice|length > 0 %}
+    {% set alert_header = '' %}
+    {% for notice in varNotice %}
+        <div class="box box_avisos">
+            <div class="icon">
+                <div class="prioridad">{{ notice.nivel }}</div>
+                <div class="info">
+                    <div class="muro_alertas_usuario">
+                        {% if dataParent == 'pipelines-destock' or  dataParent == 'pipelines-mobile' %}
+                            {% set alert_header = "Expediente: #{notice.expediente.titulo}" %}
+                        {% elseif dataParent == 'quotes-destock' or  dataParent == 'quotes-mobile'  %}
+                            {% set alert_header = "Cotizacion: #{notice.cotizacion}" %}
+                        {% elseif dataParent == 'offices-destock' or  dataParent == 'offices-mobile'  %}
+                            {% set alert_header = "Oficina: #{getOficinaName(notice.oficina)}" %}
+                        {% elseif dataParent == 'customers-destock' or  dataParent == 'customers-mobile'  %}
+                            {% set alert_header = "Cliente: #{getCustomerName(notice.personaNif)}" %}
+                        {% elseif dataParent == 'providers-destock' or  dataParent == 'providers-mobile'  %}
+                            {% set alert_header = "Proveedor: #{getProviderName(notice.personaNif)}" %}
+                        {% elseif dataParent == 'horizontal-destock' or  dataParent == 'horizontal-mobile'  %}
+                            {% set alert_header = "Horizontal: #{notice.horizontal}" %}
+                        {% elseif dataParent == 'vertical-destock' or  dataParent == 'vertical-mobile'  %}
+                            {% set alert_header = "Vertical: #{notice.vertical}" %}
+                        {% endif %}
+                        <a href="#">{{ alert_header }}</a>
+                    </div>
+                    <p class="preformated">{{ notice.missatge }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    {% endif %}
+</div>

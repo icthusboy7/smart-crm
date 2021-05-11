@@ -1,0 +1,616 @@
+<script>
+    let createAlert          = $('#create_alert');
+    const pipelineSelect2    = $('.expedient-select2');
+    const quoteSelect2       = $('.cotizacion-select2');
+    const contactSelect2     = $('.personanif-select2');
+    const officeSelect2      = $('.oficina-select2');
+    const verticalSelect2    = $('.vertical-select2');
+    const horitzontalSelect2 = $('.horizontal-select2');
+    const paginationAlert    = $('#pagination-alerts');
+    const formAlertModal     = $('#add_new_alert');
+    let formAlert = $("form[name='alertas_form']");
+    let devTable  = $('#dev-table');
+
+
+    $('#save_query_btn').click(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        let formData = 'query_name='+$('#query_name').val()+'&'+urlParams;
+        $.ajax({
+            type: 'POST',
+            url: '/createQueryAlerta',
+            data: formData,
+            success: function(){
+                swal( "Nice" ,  "Query created!" ,  "success" );
+            }
+        });
+    });
+
+    $('.delete_query_button').click(function () {
+        let formData = 'id='+$(this).val();
+        swal({
+            title: "{{ 'are_you_sure'|trans }}",
+            text: "{{ 'sure_description_alert'|trans }}",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true
+        }).then(function(willDelete) {
+            if (willDelete) {
+                $(this).parent('span').remove();
+                $.ajax({
+                    type: 'GET',
+                    url: '/deleteQueryAlerta',
+                    data: formData,
+                    success: function(){
+                        swal("{{ 'alert.custom_filter_deleted'|trans }}", {
+                            icon: "success"
+                        });
+                        paginationAlert .load(document.URL +  ' #pagination-alerts');
+                    }
+                });
+
+            } else {
+                swal("{{ 'alert.custom_filter_safe'|trans }}");
+            }
+        })
+    });
+
+    $(".delete_alerta_button").click(function () {
+        let formData = 'id='+$(this).val();
+        swal({
+            title: "{{ 'Delete alert.'|trans }}",
+            text: "{{ 'Are you sure?'|trans }}",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true
+        }).then(function(willDelete) {
+            if (willDelete) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/deleteAlerta',
+                    data: formData,
+                    success: function(){
+                        devTable.load(document.URL +  ' #dev-table');
+                        swal("{{ 'alert.alert_deleted'|trans }}", {
+                            icon: "success"
+                        });
+                        paginationAlert .load(document.URL +  ' #pagination-alerts');
+                    }
+                });
+            } else {
+                swal("{{ 'alert.alert_safe'|trans }}");
+            }
+        })
+    });
+
+    $(document).ready(function() {
+
+        formAlert.validate({
+            rules :{
+                "alertas_form[missatge]" : {
+                    required : true
+                },
+                "alertas_form[active]" : {
+                    required : false
+                },
+                "alertas_form[isAlert]" : {
+                    required : false
+                },
+                "alertas_form[personanif]" : {
+                    required : false
+                },
+                "alertas_form[horizontal]" : {
+                    required : false
+                },
+                "alertas_form[vertical]" : {
+                    required : false
+                },
+            },
+            messages :{
+                "alertas_form[missatge]" : {
+                    required : '{{ "alert.message_is_required"|trans }}'
+                }
+            }
+        });
+
+        formAlert.on('submit', function(e){
+            $('.loader').show();
+            createAlert.attr('disabled', 'true');
+            let formAlertSubmit = $("form[name='alertas_form']");
+            e.preventDefault();
+            if(formAlertSubmit.valid() === true) {
+                let formData = formAlertSubmit.serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/createAlerta',
+                    data: formData,
+                    success: function(){
+                        swal( "{{ "Nice"|trans }}" ,  "{{ "alert.alert_added!"|trans }}" ,  "success" );
+                        devTable.load(document.URL +  ' #dev-table');
+                        createAlert.removeAttr('disabled');
+                        paginationAlert .load(document.URL +  ' #pagination-alerts');
+                        formAlertModal.modal('toggle');
+                    },
+                    error: function (request) {
+                    }
+                });
+            }
+        });
+
+        $(".editform").on('submit', function(e){
+            $('.loader').show();
+            e.preventDefault();
+            if(formAlert.valid() === true) {
+                let formData = formAlert.serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/createAlerta',
+                    data: formData,
+                    success: function(){
+                        swal( "{{ "Nice"|trans }}" ,  "{{ "alert.alert_update!"|trans }}" ,  "success" );
+                        devTable.load(document.URL +  ' #dev-table');
+                        paginationAlert .load(document.URL +  ' #pagination-alerts');
+                        formAlertModal.modal('toggle');
+                    },
+                    error: function (request) {
+                    }
+                });
+            }
+        });
+
+        pipelineSelect2.select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/findDataAlert',
+                data: function (params) {
+                    let queryParameters = {
+                        q: params.term,
+                        type: 'expedients'
+                    };
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            allowClear: true,
+            minimumInputLength: 2,
+            placeholder: '{{ 'search_for_an_expedient'|trans }}'
+        });
+
+        quoteSelect2.select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/findDataAlert',
+                data: function (params) {
+                    let queryParameters = {
+                        q: params.term,
+                        idexp: $('.expedient-edit_alert-select2').val(),
+                        type: 'cotizacion'
+                    };
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            allowClear: true,
+            minimumInputLength: 2,
+            placeholder: '{{ 'search_for_an_cotizacion'|trans }}'
+        });
+
+        const pathArray = window.location.pathname.split('/');
+        const lang = pathArray[1];
+
+        contactSelect2.select2({
+
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/'+lang+'/findPersons',
+                data: function (params) {
+                    let queryParameters = {
+                        q: params.term
+                    };
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            allowClear: true,
+            minimumInputLength: 3,
+            placeholder: '{{ "Search for contact"|trans }}',
+        });
+
+        officeSelect2 .select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/selectOffices',
+                data: function (params) {
+                    let queryParameters = {
+                        q: params.term
+                    };
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            allowClear: true,
+            minimumInputLength: 3,
+            placeholder: '{{ "Search for office"|trans }}',
+        });
+
+        verticalSelect2.select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/findDataAlert',
+                data: function (params) {
+                    let queryParameters = {
+                        q: params.term,
+                        type: 'vertical'
+                    };
+                    return queryParameters;
+                },
+                processResults: function (data) {
+
+                    return {results: data};
+                },
+                cache: true
+            },
+            allowClear: true,
+            minimumInputLength: 3,
+            placeholder: '{{ "Search for vertical"|trans }}',
+        });
+
+        horitzontalSelect2.select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/findDataAlert',
+                data: function (params) {
+                    let queryParameters = {
+                        q: params.term,
+                        type: 'horizontal'
+                    };
+                    return queryParameters;
+                },
+                processResults: function (data) {
+
+                    return {results: data};
+                },
+                cache: true
+            },
+            allowClear: true,
+            minimumInputLength: 3,
+            placeholder: '{{ "Search for horizontal"|trans }}',
+        });
+
+        $('#new_alert').on('change', 'select#alertas_form_personanif', function(event){
+            let type = 'alert';
+            let data = 'nif='+$(this).val()+'&type='+type;
+            getPersonAlertsAlert(data,'add');
+        });
+
+        $('#edit_alert').on('change', 'select#alertas_form_personanif', function(event){
+            let type = 'alert';
+            let data = 'nif='+$(this).val()+'&type='+type;
+            getPersonAlertsAlert(data,'edit');
+        });
+
+        $('#new_alert').on('change', 'select#alertas_form_oficina', function(event){
+            let type = 'alert';
+            let data = 'office='+$(this).val()+'&type='+type;
+            getOfficeAlertsAlert(data, 'add');
+        });
+
+        $('#edit_alert').on('change', 'select#alertas_form_oficina', function(event){
+            let type = 'alert';
+            let data = 'office='+$(this).val()+'&type='+type;
+            getOfficeAlertsAlert(data, 'edit');
+        });
+
+        $('#add_alert').on('click', function() {
+            formAlert.find('input:hidden').empty();
+            formAlert.find('input').val('');
+            formAlert.find('input:checkbox').prop('checked', false);
+            formAlert.find("#alertas_form_nivel option:first").removeAttr("selected").attr("selected", "selected");
+        });
+
+        createAlert.click(function() {
+            let formAlertSubmit = $("form[name='alertas_form']");
+            if(formAlertSubmit.valid() === true) {
+                let formData = formAlertSubmit.serialize();
+                createAlert.attr('disabled', 'true');
+                $.ajax({
+                    type: 'POST',
+                    url: '/createAlerta',
+                    data: formData,
+                    success: function(data){
+                        if(data === 'add') {
+                            swal("{{ "Nice"|trans }}", "{{ "alert.alert_added!"|trans }}", "success");
+                        } else {
+                            swal("{{ "Nice"|trans }}", "{{ "alert.alert_updated!"|trans }}", "success");
+                        }
+                        devTable.load(document.URL +  ' #dev-table');
+                        paginationAlert .load(document.URL +  ' #pagination-alerts');
+                        formAlertModal.modal('toggle');
+                        createAlert.removeAttr('disabled');
+                    },
+                    error: function (request) {
+                    }
+                });
+            }
+        });
+
+        devTable.on('click', '.delete_alerta_button', function () {
+            let formData = 'id='+$(this).val();
+            swal({
+                title: "{{ 'are_you_sure'|trans }}",
+                text: "{{ 'sure_description_alert'|trans }}",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true
+            }).then(function(willDelete) {
+                if (willDelete) {
+                    $(this).parent('span').remove();
+                    $.ajax({
+                        type: 'GET',
+                        url: '/deleteAlerta',
+                        data: formData,
+                        success: function(){
+                            devTable.load(document.URL +  ' #dev-table');
+                            swal("{{'alert.alert_deleted'|trans }}", {
+                                icon: "success"
+                            });
+                        }
+                    });
+
+                } else {
+                    swal("{{ 'alert.alert_safe'|trans }}");
+                }
+            })
+        });
+
+        devTable.on('click', '.show_edit_alerta_button', function () {
+            let id = $(this).val();
+            let data = 'id='+$(this).val()+'&action=edit_alert';
+            let dataSend = new FormData();
+            $("#alertModalLabel").empty();
+            $("#alertModalLabel").append('{{ "alert.edit_alert"|trans }}');
+            $('.buttonForm').remove();
+            createAlert.append('<span class="buttonForm"><i class="fa fa-save"></i> {{ "Update"|trans }}</span>');
+            let formActive  = formAlert;
+            $('#alertas_form_id').val('');
+            $('#alertas_form_missatge').val('');
+            $('#alertas_form_expediente').empty();
+            $('#alertas_form_cotizacion').empty();
+            $('#alertas_form_personanif').empty();
+            $('#alertas_form_oficina').empty();
+            $('#alertas_form_horizontal').val('');
+            $('#alertas_form_vertical').val('');
+            $('#alertas_form_active').prop('checked', false);
+            $('#alertas_form_isAlert').prop('checked', false);
+            $("#person_alerts").remove();;
+            $("#office_alerts").remove();
+            $('#alert_area_person').html('');
+            $('#alert_area_office').html('');
+
+
+            formActive = $.ajax({
+                type: 'POST',
+                url: '/alertasForm',
+                data: data,
+                success: function(received){
+                    createAlert.removeAttr('disabled');
+                    dataSend.append('id', id);
+                    dataSend.append('query', 'hv');
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ path('find_data_alertas')}}',
+                        data: data,
+                        success: function (data) {
+                            $('#alertas_form_horizontal').val(data.h);
+                            $('#alertas_form_vertical').val(data.v);
+                        }
+                    });
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/alertasNif',
+                        data: data,
+                        success: function(data){
+                            if(data.length > 0) {
+                                let type = 'alert';
+                                let dataAlert = 'nif=' + data +'&type='+type;
+                                getPersonAlertsAlert(dataAlert, 'edit');
+                            }
+                        }
+                    });
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/alertasOffice',
+                        data: data,
+                        success: function(data){
+                            if(data.length > 0) {
+                                let type = 'alert';
+                                let dataAlert = 'office=' + data +'&type='+type;
+                                getOfficeAlertsAlert(dataAlert, 'edit');
+                            }
+                        }
+                    });
+
+                    let formAlert = $("form[name='alertas_form']");
+                    formAlert.remove();
+                    $("#form_alert").append(received);
+                    let formAlertEdit = $("form[name='alertas_form']");
+                    formAlertEdit.validate({
+                        rules :{
+                            "alertas_form[missatge]" : {
+                                required : true
+                            },
+                            "alertas_form[active]" : {
+                                required : false
+                            },
+                            "alertas_form[isAlert]" : {
+                                required : false
+                            },
+                            "alertas_form[personanif]" : {
+                                required : false
+                            },
+                            "alertas_form[horizontal]" : {
+                                required : false
+                            },
+                            "alertas_form[vertical]" : {
+                                required : false
+                            },
+                        },
+                        messages :{
+                            "alertas_form[missatge]" : {
+                                required : '{{ "alert.message_is_required"|trans }}'
+                            }
+                        }
+                    });
+
+                    const pipelineSelect2    = $('.expedient-select2');
+                    const quoteSelect2       = $('.cotizacion-select2');
+                    const contactSelect2     = $('.personanif-select2');
+                    const officeSelect2      = $('.oficina-select2');
+
+                    formAlertEdit.addClass('editform');
+
+                    pipelineSelect2.select2({
+                        ajax: {
+                            delay: 1,
+                            datatype: 'json',
+                            url: '/findDataAlert',
+                            data: function (params) {
+                                let queryParameters = {
+                                    q: params.term,
+                                    type: 'expedients'
+                                };
+                                return queryParameters;
+                            },
+                            processResults: function (data) {
+                                return {results: data};
+                            },
+                            cache: true
+                        },
+                        allowClear: true,
+                        minimumInputLength: 2,
+                        placeholder: '{{ 'search_for_an_expedient'|trans }}'
+                    });
+
+                    quoteSelect2.select2({
+                        ajax: {
+                            delay: 1,
+                            datatype: 'json',
+                            url: '/findDataAlert',
+                            data: function (params) {
+                                let queryParameters = {
+                                    q: params.term,
+                                    idexp: $('.expedient-edit_alert-select2').val(),
+                                    type: 'cotizacion'
+                                };
+                                return queryParameters;
+                            },
+                            processResults: function (data) {
+                                return {results: data};
+                            },
+                            cache: true
+                        },
+                        allowClear: true,
+                        minimumInputLength: 2,
+                        placeholder: '{{ 'search_for_an_cotizacion'|trans }}'
+                    });
+
+                    const pathArray = window.location.pathname.split('/');
+                    const lang = pathArray[1];
+
+                    contactSelect2.select2({
+
+                        ajax: {
+                            delay: 1,
+                            datatype: 'json',
+                            url: '/'+lang+'/findPersons',
+                            data: function (params) {
+                                let queryParameters = {
+                                    q: params.term
+                                };
+                                return queryParameters;
+                            },
+                            processResults: function (data) {
+
+                                return {results: data};
+                            },
+                            cache: true
+                        },
+                        allowClear: true,
+                        minimumInputLength: 3,
+                        placeholder: '{{ "Search for contact"|trans }}',
+                    });
+
+                    officeSelect2 .select2({
+                        ajax: {
+                            delay: 1,
+                            datatype: 'json',
+                            url: '/selectOffices',
+                            data: function (params) {
+                                let queryParameters = {
+                                    q: params.term
+                                };
+                                return queryParameters;
+                            },
+                            processResults: function (data) {
+                                return {results: data};
+                            },
+                            cache: true
+                        },
+                        allowClear: true,
+                        minimumInputLength: 3,
+                        placeholder: '{{ "Search for office"|trans }}',
+                    });
+                    formAlertModal.modal('show');
+                    devTable.load(document.URL +  ' #dev-table');
+                },
+            });
+
+
+        });
+
+        $('#add_alert').click(function() {
+            $("#alertModalLabel").empty();
+            $("#alertModalLabel").append('{{ "alert.add_alert"|trans }}');
+            $('.buttonForm').remove();
+            createAlert.append('<span class="buttonForm"><i class="fa fa-save"></i> {{ "Create"|trans }}</span>');
+            $('#alertas_form_id').val('');
+            $('#alertas_form_missatge').val('');
+            $('#alertas_form_expediente').empty();
+            $('#alertas_form_cotizacion').empty();
+            $('#alertas_form_personanif').empty();
+            $('#alertas_form_oficina').empty();
+            $('#alertas_form_active').prop('checked', false);
+            $('#alertas_form_isAlert').prop('checked', false);
+            $("#person_alerts").remove();
+            $("#office_alerts").remove();
+            $('#alert_area_person').html('');
+            $('#alert_area_office').html('');
+            $('#alertas_form_horizontal').val('');
+            $('#alertas_form_vertical').val('');
+            createAlert.removeAttr('disabled');
+        });
+
+    });
+
+</script>
+{% include 'area-comercial/scripts/alert_info_js.html.twig' %}

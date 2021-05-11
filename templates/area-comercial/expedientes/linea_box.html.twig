@@ -1,0 +1,123 @@
+<!-- EXPEDIENTE -->
+<div class="row mt-10">
+    <div class="col-lg-12">
+
+        <div class="accordion">
+            <div class="row">
+                <div class="col-lg-3 col-sm-6 pl-0">
+                    <span class="badge badge-primary">{{ cotizaciones|length }}</span> <a href="#"><i class="{% if expediente.id in favoritos %}fas{% else %}far{% endif %} fa-star fa-fw text-warning add_favorites" data-id="{{ expediente.id }}"></i></a> {{ expediente.titulo }}
+                </div>
+
+                <div class="col-lg-6 d-none d-lg-block d-xl-block">
+                    <ul class="accordion-datos">
+                        <li>{{ expediente.fechaPosibleActivacion }}</li>
+                        <li>{{ expediente.importe }}€</li>
+                        <li>{{ expediente.porcentajeProbabilidad }}%</li>
+                        <li>{% if expediente.responsable is defined and expediente.responsable is not null %}{{ expediente.responsable.regNumber }} - {{ expediente.responsable.name }} {{ expediente.responsable.surname }}{% else %} - {% endif %}</li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-sm-6 text-right pr-0">
+                    <ul>
+                        <li><span class="dot dot-{{ expediente.badgeColor }}"></span></li>
+                        <li>
+                            <select class="form-control form-control-sm select_options_exp" onchange="location = this.value;">
+                                <option data-action="default" value="#">- {{ "Acciones"|trans }} -</option>
+                                <option value="{{ path('comercial_ver_muro_expediente', {idExpediente: expediente.id}) }}" class="option_ver_muro">{{ "Ver muro"|trans }}</option>
+                                <option value="{{ path('expedientes_form') }}/?exp_id={{ expediente.id }}" class="option_edit_expediente">{{ "Editar expediente"|trans }}</option>
+                                <option data-action="import" data-id="{{ expediente.id }}" value="#" class="option_import_expediente">{{ "Importar expediente"|trans }}</option>
+                                <option data-action="add_coti" data-id="{{ expediente.id }}" value="#" class="option_add_cotizacion">{{ "Añadir cotizacion"|trans }}</option>
+                                {# <option value="#" class="option_add_peticion">{{ "Añadir petición de cotizacion"|trans }}</option> #}
+                                <option data-action="update" data-id="{{ expediente.id }}" value="#" class="option_actualizar_expediente">{{ "Actualizar expediente"|trans }}</option>
+                                <option data-action="add_fav" data-id="{{ expediente.id }}" value="#" class="option_añadir_favoritos">{% if expediente.id in favoritos %}{{ "Quitar de favoritos"|trans }}{% else %}{{ "Añadir a favoritos"|trans }}{% endif %}</option>
+                                <option data-action="delete" data-id="{{ expediente.id }}" value="#" class="option_eliminar_exp">{{ "Eliminar"|trans }}</option>
+                            </select>
+                        </li>
+                        <li class="pr-0"><a href="#" role="button" data-toggle="modal" data-target="#datos2-{{ expediente.id }}"><i class="fas fa-search-plus fa-fw text-black"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="panel card p-10" id="dispos">
+            {% include 'area-comercial/expedientes/cotizacion_box.html.twig' %}
+            {% for disposicion in disposiciones %}
+                <!-- DISPO -->
+                <div class="accordion accordion-dispo" data-toggle="collapse" href="#dispo{{ disposicion.id }}">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-6 pl-0">
+                            <span class="badge badge-primary">{{ disposicion.cotizacionesInfo|length }}</span> DISPOSICIÓN {{ loop.index }}
+                        </div>
+
+                        <div class="col-lg-6 d-none d-lg-block d-xl-block">
+                            <ul class="accordion-datos">
+                                <li>{% if disposicion.fechaPosibleActivacion is not null %}{{ disposicion.fechaPosibleActivacion }}{% else %} - {% endif %}</li>
+                                <li>{% if disposicion.importe is not null %}{{ disposicion.importe }}€{% else %} - {% endif %}</li>
+                                <li>{% if disposicion.tin is not null %}{{ disposicion.tin }}%{% else %} - {% endif %}</li>
+                            </ul>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-6 text-right pr-0">
+                            <ul>
+                                <li>
+                                    <select class="form-control form-control-sm float-right  select_options_exp" onchange="location = this.value;">
+                                        <option data-action="default" value="#">- {{ "Acciones"|trans }} -</option>
+                                        <option value="{{ path('comercial_ver_muro_expediente', {idExpediente: disposicion.id}) }}" class="option_ver_muro">{{ "Ver muro"|trans }}</option>
+                                        <option value="{{ path('expedientes_form') }}/?exp_id={{ expediente.id }}" class="option_edit_expediente">{{ "Editar expediente"|trans }}</option>
+                                        <option data-action="add_coti" data-id="{{ disposicion.id }}" value="#" class="option_add_cotizacion">{{ "Añadir cotizacion"|trans }}</option>
+                                        {# <option value="#" class="option_add_peticion">{{ "Añadir petición de cotizacion"|trans }}</option> #}
+                                        <option data-action="update" data-id="{{ disposicion.id }}" value="#" class="option_actualizar_expediente">{{ "Actualizar expediente"|trans }}</option>
+                                        <option data-action="add_fav" data-id="{{ disposicion.id }}" value="#" class="option_añadir_favoritos">{% if disposicion.id in favoritos %}{{ "Quitar de favoritos"|trans }}{% else %}{{ "Añadir a favoritos"|trans }}{% endif %}</option>
+                                        <option data-action="delete" data-id="{{ disposicion.id }}" value="#" class="option_eliminar_exp">{{ "Eliminar"|trans }}</option>
+                                    </select>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel p-10 collapse" id="dispo{{ disposicion.id }}">
+                    <table class="table table-sm table-hover fs-12">
+                        <thead class="thead-dispo">
+                        <tr>
+                            <th></th>
+                            <th>{{ "Coti_number"|trans }}</th>
+                            <th>{{ "State"|trans }}</th>
+                            <th>{{ "Amount"|trans }}</th>
+                            <th>{{ "Term"|trans }}</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {%  if disposicion.cotizacionesInfo|length == 0 %}
+                            <tr>
+                                <td colspan="6" align="center">{{ 'No hay cotizaciones para esta disposición'| trans }}</td>
+                            </tr>
+                        {%  endif %}
+                        {% for cotizacion in disposicion.cotizacionesInfo %}
+                            <tr {% if cotizacion.estado == "Caducada" %}class="text-blue text-strong"{% endif %}>
+                                <td {% if cotizacion.estado == "Caducada" %}class="text-center"><span class="dot dot-blue">{% else %}>{% endif %}</span></td>
+                                <td>{{ cotizacion.numCoti }}</td>
+                                <td>{{ cotizacion.estado }}</td>
+                                <td>{{ cotizacion.inversion }}</td>
+                                <td>{{ cotizacion.plazo }}%</td>
+                                <td>
+                                    <select class="form-control form-control-sm float-right select_options_coti" onchange="location = this.value;">
+                                        <option data-action="default" value="#">- {{ "quotes.actions"|trans }} -</option>
+                                        <option value="{{ path('comercial_ver_muro_expediente', {idExpediente: disposicion.id}) }}">{{ "quote.show_wall"|trans }}</option>
+                                        <option data-action="favorites" data-id-exp="{{ disposicion.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.favorites"|trans }}</option>
+                                        <option data-action="unjoin" data-id-exp="{{ disposicion.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.unjoin"|trans }}</option>
+                                        <option data-action="update" data-id-exp="{{ disposicion.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.update"|trans }}</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div><!-- . DISPO -->
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div><!-- . EXPEDIENTE -->
+{% include 'area-comercial/modals/expedientes_disposiciones_info_modal.html.twig' %}

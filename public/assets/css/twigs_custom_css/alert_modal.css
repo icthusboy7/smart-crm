@@ -1,0 +1,39 @@
+.alert_badge {
+    background: #e55b35!important;
+    color: white;
+    font-family: 'open_sans', Helvetica, Arial, sans-serif;
+    font-weight: 100;
+    position: absolute;
+    cursor: pointer;
+}
+
+.alert_badge_visit {
+    top: 13%;
+    right: 20%;
+}
+
+.alert_badge_pipeline {
+    top: 58%;
+    right: 15%;
+}
+
+.alert_badge_alert {
+    top: 20%;
+    right: 15%;
+}
+
+.alert_badge_contact {
+    top: 58%;
+    right: 15%;
+}
+
+.alert_list_modal
+{
+    font-size: 12px;
+}
+
+.alert_list_modal p {
+    display: block;
+    border-bottom: 1px solid #0f0f0f2e;
+    padding: 5px;
+}

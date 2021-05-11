@@ -1,0 +1,29 @@
+<div class="rowMessage alert {{ ((mensaje.tipo == 4) ? "alert-warning" : "alert-status" ) }} text-center" data-tipo="{{ mensaje.tipo }}">
+    <div class="{{ mensaje.tipo }}">
+        <div class="row">
+            <div class="col-sm-12">
+                <span class="hora_fecha pull-right" >{{ created_hour }}</span>
+                <span class="usuario">
+                    {%- if mensaje.autor is defined and mensaje.tipo != 4 -%}
+                        <i class="fas fa-exclamation-triangle"></i> {{ mensaje.autor }}
+                    {%- else -%}
+                        Sistema
+                    {%- endif -%}
+                </span>
+                <div class="msgBox">
+                    {% if mensaje.message|length %}
+                        <span class="msgContent{{ classAttachment }}">{{ mensaje.message|raw|nl2br }}</span>
+                    {% endif %}
+                    <div class="row mt-10">
+                        {% for adjunto in mensaje.adjuntos %}
+                            <div class="fileAttached" data-id="{{ adjunto.id }}" data-ext="{{ adjunto.ext }}" data-value="{{ adjunto.filename }}">
+                                <i class="fas fa-fw fa-file-image"></i><span>{{ adjunto.filename }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

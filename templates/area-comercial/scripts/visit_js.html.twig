@@ -1,0 +1,887 @@
+<script>
+
+    var icons = {
+        time: 'fas fa-clock',
+        date: 'fas fa-calendar',
+        up: 'fas fa-arrow-up',
+        down: 'fas fa-arrow-down',
+        previous: 'fas fa-chevron-left',
+        next: 'fas fa-chevron-right',
+        today: 'fas fa-calendar-check-o',
+        clear: 'fas fa-trash',
+        close: 'fas fa-times'
+    };
+
+    $.validator.addMethod("dniCheck", function(value, element) {
+        if($('#fancy-checkbox-success').is(":checked")) {
+            var nif;
+            var cif;
+            if (/^([0-9]{8})*[a-zA-Z]+$/.test(value)) {
+                var numero = value.substr(0, value.length - 1);
+                var let = value.substr(value.length - 1, 1).toUpperCase();
+                numero = numero % 23;
+                var letra = 'TRWAGMYFPDXBNJZSQVHLCKET';
+                letra = letra.substring(numero, numero + 1);
+                if (letra == let) {
+                    nif = true;
+                }
+                else {
+                    nif = false;
+                }
+            }
+            if (isValidCif(value.trim())) {
+                cif = true;
+            } else {
+                cif = false;
+            }
+            if(nif == true || cif == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return true;
+        }
+
+        return this.optional(element);
+    }, "{{ "Not valid DNI or CIF"|trans }}");
+
+    function isValidCif(cif) {
+        if (!cif || cif.length !== 9) {
+            return false;
+        }
+
+        var letters = ['J', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        var digits = cif.substr(1, cif.length - 2);
+        var letter = cif.substr(0, 1);
+        var control = cif.substr(cif.length - 1);
+        var sum = 0;
+        var i;
+        var digit;
+
+        if (!letter.match(/[A-Z]/)) {
+            return false;
+        }
+
+        for (i = 0; i < digits.length; ++i) {
+            digit = parseInt(digits[i]);
+            if (isNaN(digit)) {
+                return false;
+            }
+            if (i % 2 === 0) {
+                digit *= 2;
+                if (digit > 9) {
+                    digit = parseInt(digit / 10) + (digit % 10);
+                }
+                sum += digit;
+            } else {
+                sum += digit;
+            }
+        }
+
+        sum %= 10;
+        if (sum !== 0) {
+            digit = 10 - sum;
+        } else {
+            digit = sum;
+        }
+
+        if (letter.match(/[ABEH]/)) {
+            return String(digit) === control;
+        }
+        if (letter.match(/[NPQRSW]/)) {
+            return letters[digit] === control;
+        }
+
+        return String(digit) === control || letters[digit] === control;
+    }
+
+    function officeList() {
+        if($('#cboxOffice').is(":checked")) {
+            $('#officeArea').show();
+            $("#Office").prop('required',true);
+            $('#Office').select2({
+                ajax: {
+                    delay: 1,
+                    datatype: 'json',
+                    url: '/selectOffices',
+                    data: function (params) {
+                        var queryParameters = {
+                            q: params.term
+                        }
+                        return queryParameters;
+                    },
+                    processResults: function (data) {
+
+                        return {results: data};
+                    },
+                    cache: true
+                },
+                minimumInputLength: 3,
+                placeholder: '{{ "Search for an Office"|trans }}'
+            });
+        }
+        else
+        {
+            $('#officeArea').hide();
+            $("#Office").val('');
+            $("#Office").prop('required',false);
+            $('#responsableArea').hide();
+            $("#responsableArea").val('');
+            $("#office_alerts").remove();
+        }
+    }
+
+    function officeListEdit() {
+        if($('#cboxOffice').is(":checked")) {
+            $('#officeArea').show();
+            $("#Office").prop('required',true);
+            $('#Office').select2({
+                ajax: {
+                    delay: 1,
+                    datatype: 'json',
+                    url: '/selectOffices',
+                    data: function (params) {
+                        var queryParameters = {
+                            q: params.term
+                        }
+                        return queryParameters;
+                    },
+                    processResults: function (data) {
+
+                        return {results: data};
+                    },
+                    cache: true
+                },
+                minimumInputLength: 3,
+                placeholder: '{{ "Search for an Office"|trans }}'
+            });
+
+            var officeid = $('#officeid').val();
+            var officetext = $('#officetext').val();
+            var data = {
+                id: officeid,
+                text: officetext
+            };
+
+            var newOption = new Option(data.text, data.id, true, true);
+            $('#Office').append(newOption).trigger('change');
+
+            $('#responsableArea').show();
+
+            var office = $('#Office').val();
+            getResponsableOffice(office);
+
+            if($('#Office').val() !== null){
+
+                var type = 'visit';
+                var data = 'office='+$('#Office').val()+'&type='+type;
+                getOfficeAlerts(data);
+            }
+        }
+        else
+        {
+            $('#officeArea').hide();
+            $("#Office").val('');
+            $("#Office").prop('required',false);
+            $('#responsableArea').hide();
+            $("#responsableArea").val('');
+            $("#office_alerts").remove();
+        }
+    }
+
+    function customerList() {
+        if($('#cboxCustomer').is(":checked")) {
+            $("#new_contact input").val('');
+            $('#customerArea').show();
+            $("#Customer").prop('required',true);
+            $("#chargeCustomer").prop('required',true);
+
+            $('#Customer').select2({
+                ajax: {
+                    delay: 1,
+                    datatype: 'json',
+                    url: '/findCustomer',
+                    data: function (params) {
+                        var queryParameters = {
+                            q: params.term
+                        }
+                        $("#customerSearchNIF").val(params.term);
+                        // $("#contact_nif").val(params.term);
+                        return queryParameters;
+                    },
+                    processResults: function (data) {
+                        return {results: data};
+                    },
+                    cache: true
+                },
+                minimumInputLength: 3,
+                placeholder: '{{ "Search for customer"|trans }}',
+            });
+            //$('#Customer').rules('add',  { required: true });
+        }
+        else
+        {
+            $('#customerArea').hide();
+            $('#customerOtherArea').hide();
+            $("#Customer").val('');
+            $("#anotherC").val('');
+            $("#Customer").prop('required',false);
+            $('#Customer').rules('remove',  'required');
+            $("#chargeCustomer").prop('required',false);
+            $("#chargeCustomer").val('');
+            $("#customers_alerts").remove();
+        }
+    }
+
+    function customerListEdit() {
+        if($('#cboxCustomer').is(":checked")) {
+            $("#new_contact input").val('');
+            $('#customerArea').show();
+            $("#Customer").prop('required',true);
+            $("#chargeCustomer").prop('required',true);
+
+            $('#Customer').select2({
+                ajax: {
+                    delay: 1,
+                    datatype: 'json',
+                    url: '/findCustomer',
+                    data: function (params) {
+                        var queryParameters = {
+                            q: params.term
+                        }
+                        $("#contact_nif").val(params.term);
+                        return queryParameters;
+                    },
+                    processResults: function (data) {
+                        return {results: data};
+                    },
+                    cache: true
+                },
+                minimumInputLength: 3,
+                placeholder: '{{ "Search for customer"|trans }}',
+            });
+
+            if ($("#typeForm").val() == 'E') {
+                var idoption = $('#customerid').val();
+                var textoption = $('#customertext').val();
+                var data = {
+                    id: idoption,
+                    text: textoption
+                };
+
+                var newOption = new Option(data.text, data.id, true, true);
+                $('#Customer').append(newOption).trigger('change');
+
+                var str = "";
+                $( "#chargeCustomer option:selected" ).each(function() {
+                    str += $( this ).text();
+                });
+
+                if(str == 'Otro')
+                {
+                    $('#customerOtherArea').show();
+                    $("#anotherC").prop('required',true);
+                }
+                else
+                {
+                    $('#customerOtherArea').hide();
+                    $("#anotherC").val('');
+                    $("#anotherC").prop('required',false);
+                }
+            }
+
+            if($('#Customer').val() !== null){
+                var type = 'visit';
+                var data = 'nif='+$('#Customer').val()+'&type='+type;
+                getCustomerAlerts(data);
+            }
+
+            //$('#Customer').rules('add',  { required: true });
+        }
+        else
+        {
+            $('#customerArea').hide();
+            $('#customerOtherArea').hide();
+            $("#Customer").val('');
+            $("#anotherC").val('');
+            $("#Customer").prop('required',false);
+            //$('#Customer').rules('remove',  'required');
+            $("#chargeCustomer").prop('required',false);
+            $("#chargeCustomer").val('');
+            $("#customers_alerts").remove();
+        }
+    }
+
+    function providerList() {
+        if($('#cboxProvider').is(":checked")) {
+            $("#new_contact input").val('');
+            $('#providerArea').show();
+            $("#Provider").prop('required',true);
+            //$('#Provider').rules('add',  { required: true });
+            $("#chargeProvider").prop('required',true);
+            $('#Provider').select2({
+                ajax: {
+                    delay: 1,
+                    datatype: 'json',
+                    url: '/findProvider',
+                    data: function (params) {
+                        var queryParameters = {
+                            q: params.term
+                        }
+                        // $("#contact_nif").val(params.term);
+                        $("#providerSearchNIF").val(params.term);
+                        return queryParameters;
+                    },
+                    processResults: function (data) {
+
+                        return {results: data};
+                    },
+                    cache: true
+                },
+                minimumInputLength: 3,
+                placeholder: '{{ "Search for Provider"|trans }}',
+            });
+        }
+        else
+        {
+            $('#providerArea').hide();
+            $('#providerOtherArea').hide();
+            $("#Provider").val('');
+            $("#anotherP").val('');
+            $("#Provider").prop('required',false);
+            $('#Provider').rules('remove',  'required');
+            $("#chargeProvider").prop('required',false);
+            $("#chargeProvider").val('');
+            $("#provider_alerts").remove();
+        }
+    }
+
+    function providerListEdit() {
+        if($('#cboxProvider').is(":checked")) {
+            $("#new_contact input").val('');
+            $('#providerArea').show();
+            $("#Provider").prop('required',true);
+            //$('#Provider').rules('add',  { required: true });
+            $("#chargeProvider").prop('required',true);
+            $('#Provider').select2({
+                ajax: {
+                    delay: 1,
+                    datatype: 'json',
+                    url: '/findProvider',
+                    data: function (params) {
+                        var queryParameters = {
+                            q: params.term
+                        }
+                        $("#contact_nif").val(params.term);
+                        return queryParameters;
+                    },
+                    processResults: function (data) {
+
+                        return {results: data};
+                    },
+                    cache: true
+                },
+                minimumInputLength: 3,
+                placeholder: '{{ "Search for Provider"|trans }}',
+            });
+            if ($("#typeForm").val() == 'E') {
+                var idoption = $('#providerid').val();
+                var textoption = $('#providertext').val();
+                var data = {
+                    id: idoption,
+                    text: textoption
+                };
+
+                var newOption = new Option(data.text, data.id, true, true);
+                $('#Provider').append(newOption).trigger('change');
+
+                var str = "";
+                $( "#chargeProvider option:selected" ).each(function() {
+                    str += $( this ).text();
+                });
+
+                if(str == 'Otro')
+                {
+                    $('#providerOtherArea').show();
+                    $("#anotherP").prop('required',true);
+                }
+                else
+                {
+                    $('#providerOtherArea').hide();
+                    $("#anotherP").val('');
+                    $("#anotherP").prop('required',false);
+                }
+
+                if($('#Provider').val() !== null){
+                    var type = 'visit';
+                    var data = 'nif='+$('#Provider').val()+'&type='+type;
+                    getProviderAlerts(data);
+                }
+
+            }
+        }
+        else
+        {
+            $('#providerArea').hide();
+            $('#providerOtherArea').hide();
+            $("#Provider").val('');
+            $("#anotherP").val('');
+            $("#Provider").prop('required',false);
+            //$('#Provider').rules('remove',  'required');
+            $("#chargeProvider").prop('required',false);
+            $("#chargeProvider").val('');
+            $("#provider_alerts").remove();
+        }
+    }
+
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    /**
+     * page ready
+     */
+    $(document).ready(function() {
+
+        $('#customerArea').hide();
+        $('#providerArea').hide();
+        $('#officeArea').hide();
+        $('#customerOtherArea').hide();
+        $('#providerOtherArea').hide();
+        $('#responsableArea').hide();
+
+        var GET = {};
+        if(document.location.toString().indexOf('?') !== -1) {
+            var query = document.location
+                .toString()
+                // get the query string
+                .replace(/^.*?\?/, '')
+                // and remove any existing hash string (thanks, @vrijdenker)
+                .replace(/#.*$/, '')
+                .split('&');
+
+            for(var i=0, l=query.length; i<l; i++) {
+                var aux = decodeURIComponent(query[i]).split('=');
+                GET[aux[0]] = aux[1];
+            }
+        }
+
+        if($('#typeForm').val() == 'A') {
+
+            var datesys = new Date();
+
+            $('#dateIni').datetimepicker('date', datesys);
+            $('#dateIni').datetimepicker('format', 'DD/MM/YYYY HH:mm');
+            $('#dateIni').datetimepicker('icons', icons );
+
+            var duration = new Date();
+            duration.setHours(1,0);
+
+            $('#duration').datetimepicker('date', duration);
+            $('#duration').datetimepicker('format', 'HH:mm');
+        }
+
+        if(GET['idVisita'] != null){
+
+            //VERIFICAR SI LA VISITA ESTÁ ANULADA
+            if($('#statusCancel').val()) {
+                $("#form :input").attr("disabled", true);
+                $("#modalCustomer").prop("disabled", true);
+                $("#modalProvider").prop("disabled", true);
+                $("#cancel").attr("disabled", false);
+                swal( "S.M.A.R.T" ,  "{{ "Visit Cancel"|trans }}" ,  "warning" );
+            }
+
+            customerListEdit();
+            providerListEdit();
+            officeListEdit();
+
+            var dateIniValue = $('#dateIniValue').val();
+            var dateini = new Date(dateIniValue);
+            $('#dateIni').datetimepicker('date', dateini);
+            $('#dateIni').datetimepicker('format', 'DD/MM/YYYY HH:mm');
+            $('#dateIni').datetimepicker('icons', icons );
+
+            var durationValue = $('#durationValue').val();
+            var durationArray = durationValue.split(':');
+            var duration = new Date();
+            duration.setHours(durationArray[0],durationArray[1]);
+
+            $('#duration').datetimepicker('date', duration);
+            $('#duration').datetimepicker('format', 'HH:mm');
+        }
+
+        var validator = $("#form").bind("invalid-form.validate", function() {
+            //$("#summary").html("Your form contains " + validator.numberOfInvalids() + " errors, see details below.");
+        }).validate({
+            rules: {
+                "typeVisit[]": {
+                    required: true,
+                    minlength: 1
+                },
+                "vertical": {
+                    required: true
+                },
+                "reason": {
+                    required: true
+                }
+            },
+            messages:{
+                "typeVisit[]": {
+                    required: "{{ "Please select at least one type"|trans }}",
+                    minlength: "{{ "Please select at least one type"|trans }}"
+                },
+                "vertical": {
+                    required: ""
+                },
+                "reason": {
+                    required: ""
+                },
+                "chargeCustomer": {
+                    required: ""
+                },
+                "chargeProvider": {
+                    required: ""
+                },
+                "dateIni": {
+                    required: ""
+                },
+                "duration": {
+                    required: ""
+                }
+            },
+            errorPlacement: function(error, element) {
+                if (element.attr("name") == "typeVisit[]" )
+                    error.appendTo(".typeError");
+                else
+                    error.insertAfter(element);
+            },
+            submitHandler: function(form) {
+                // do other things for a valid form
+                var formData = $('#form').serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/saveVisit',
+                    data: formData,
+                    statusCode: HttpStatusHandler.DEFAULT_HANDLERS,
+                    success: function(){
+                        swal( "S.M.A.R.T" ,  "{{ "Visit save!"|trans }}" ,  "success" );
+                        var url = '{{ path('comercial_visitas') }}';
+                        window.open(url, '_self');
+                    }
+                });
+                return false;
+            }
+        });
+
+        //SI EL USUARIO HACE CLICK EN LA URL
+        if($('#methodValue').val() == 'post') {
+            //SI VIENE POR CONTACTO
+            if (GET['id_contact'] != null) {
+                id = GET['id_contact'];
+                var data1 = "id=" + id;
+                $.ajax({
+                    type: 'POST',
+                    url: '/findPerson',
+                    data: data1,
+                    success: function (data) {
+                        $.each(data, function () {
+                            if (this.type == 'C') {
+                                $("#cboxCustomer").prop('checked', true);
+                                customerList();
+                                $('#Customer').append('<option value="' + this.id + '" selected="selected">' + this.text + '</option>');
+
+                                if($('#Customer').val() !== null){
+                                    var type = 'visit';
+                                    var data = 'nif='+$('#Customer').val()+'&type='+type;
+                                    getCustomerAlerts(data);
+                                }
+                            }
+                            if (this.type == 'P') {
+                                $("#cboxProvider").prop('checked', true);
+                                providerList();
+                                $('#Provider').append('<option value="' + this.id + '" selected="selected">' + this.text + '</option>');
+
+                                if($('#Provider').val() !== null){
+                                    var type = 'visit';
+                                    var data = 'nif='+$('#Provider').val()+'&type='+type;
+                                    getProviderAlerts(data);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            //VISITA POR OFICINA
+            if (GET['id_office'] != null) {
+                $('#officeArea').show();
+                $('#responsableArea').show();
+                $("#cboxOffice").prop('checked', true);
+
+                officeList();
+                var id_office = GET['id_office'];
+                var data1 = "id_office=" + id_office;
+                $.ajax({
+                    type: 'POST',
+                    url: '/findOffice',
+                    data: data1,
+                    success: function (data) {
+                        $('#Office').append('<option value="' + id_office + '" selected="selected">' + data + '</option>');
+                        if($('#Office').val() !== null){
+                            var type = 'visit';
+                            var data = 'office='+$('#Office').val()+'&type='+type;
+                            getOfficeAlerts(data);
+                        }
+                    }
+                });
+
+                getResponsableOffice(id_office);
+                //FIN if(GET['id_office'] != null)
+            }
+
+            if (GET['dateini'] != null) {
+
+                var dateiniValue = decodeURIComponent(GET['dateini']);
+
+                var dateini = new Date(dateiniValue);
+                var datesys = new Date();
+                var h = datesys.getHours();
+                var m = datesys.getMinutes();
+                dateini.setHours(h,m);
+
+                $('#dateIni').datetimepicker('date', dateini);
+                $('#dateIni').datetimepicker('format', 'DD/MM/YYYY HH:mm');
+                $('#dateIni').datetimepicker('icons', icons );
+            }
+        } //if($('#methodValue').val() == 'post')
+
+        $('#cboxCustomer').change(function() {
+            customerList();
+        });
+
+        $('#cboxProvider').change(function() {
+            providerList();
+        });
+
+        $('#cboxOffice').change(function() {
+            officeList();
+        });
+
+        $('#Customer').change( function(){
+            var type = 'visit';
+            var data = 'nif='+$(this).val()+'&type='+type;
+            getCustomerAlerts(data);
+        });
+
+        $('#Provider').change( function(){
+            var type = 'visit';
+            var data = 'nif='+$(this).val()+'&type='+type;
+            getProviderAlerts(data);
+        });
+
+        $( "#chargeCustomer" ).change(function() {
+            var str = "";
+            $( "#chargeCustomer option:selected" ).each(function() {
+                str += $( this ).text();
+            });
+
+            if(str == 'Otro')
+            {
+                $('#customerOtherArea').show();
+                $("#anotherC").prop('required',true);
+            }
+            else
+            {
+                $('#customerOtherArea').hide();
+                $("#anotherC").val('');
+                $("#anotherC").prop('required',false);
+            }
+        });
+
+        $( "#chargeProvider" ).change(function() {
+            var str = "";
+            $( "#chargeProvider option:selected" ).each(function() {
+                str += $( this ).text();
+            });
+
+            if(str == 'Otro')
+            {
+                $('#providerOtherArea').show();
+                $("#anotherP").prop('required',true);
+            }
+            else
+            {
+                $('#providerOtherArea').hide();
+                $("#anotherP").val('');
+                $("#anotherP").prop('required',false);
+            }
+        });
+
+        $( "#Office" ).on('change', function() {
+            $('#responsableArea').show();
+
+            let office = $(this).val();
+            getResponsableOffice(office);
+
+            var type = 'visit';
+            var data = 'office='+$(this).val()+'&type='+type;
+            getOfficeAlerts(data);
+        });
+
+        $('#fancy-checkbox-success').click(function(){
+            if( $(this).is(':checked') ) {
+                $('#contact_nif').rules('add',  'dniCheck');
+
+            } else {
+                $('#contact_nif').rules('remove',  'dniCheck');
+            }
+        });
+
+        //aqui el modal
+        $("#fancy-checkbox-success").prop('checked',true);
+
+        $('#create_contact').click(function(){
+            $("#new_contact").validate({
+                rules: {
+                    contact_nif: {
+                        required: true,
+                        dniCheck: true,
+                        remote: {
+                            url: "/existContact",
+                            type: "post"
+                        }
+                    },
+                    contact_email: {
+                        email: true
+                    },
+                    contact_telefono: {
+                        number: true
+                    }
+                },
+                messages:{
+                    contact_nif: {
+                        required: "{{ "Please enter a data"|trans }}",
+                        dniCheck: "{{ "Please add a Spanish format CIF/DNI"|trans }}",
+                        remote: "{{ "Number document already in use"|trans }}"
+                    },
+                    contact_email: {
+                        email: "{{ "Please enter a valid email address"|trans }}"
+                    },
+                    contact_telefono: {
+                        number: "{{ "Please enter a valid phone"|trans }}"
+                    }
+                },
+                submitHandler: function (form) { // for demo
+                    var formData = $('#new_contact').serialize();
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ path('submitContact') }}',
+                        data: formData,
+                        success: function(){
+                            var idoption = $('#contact_nif').val();
+                            var textoption = '['+$('#contact_nif').val()+'] '+$('#contact_nombre').val() + ' - Co';
+                            var data = {
+                                id: idoption,
+                                text: textoption
+                            };
+
+                            var newOption = new Option(data.text, data.id, true, true);
+
+                            if($("#contact_modal").val() == "C")
+                            {
+                                $('#Customer').append(newOption).trigger('change');
+                            }
+                            else
+                            {
+                                $('#Provider').append(newOption).trigger('change');
+                            }
+                            swal( "Nice" ,  "{{ "Contact created!"|trans }}" ,  "success" );
+                        }
+                    });
+                    $('#add_new_contact').modal('toggle');
+                }
+            });
+        });
+
+        $('#fancy-checkbox-success').click(function(){
+            if( $(this).is(':checked') ) {
+                $('#contact_nif').rules('add',  'dniCheck');
+            } else {
+                $('#contact_nif').rules('remove',  'dniCheck');
+            }
+        });
+
+        $('#modalCustomer').click(function(){
+            $('#new_contact').find('input').val('');
+            $('#new_contact').find('textarea').val('');
+            $("#contact_nif").val($("#customerSearchNIF").val());
+            $("#customerSearchNIF").val('');
+            $("#contact_modal").val('C');
+            $(".tipo_contacto_select").val('4');
+            $(".select_options_customer_nif").hide();
+            $(".select_options_provider_nif").hide();
+            $(".select_options_contact_nif").hide();
+            $(".select_options_temp_nif").show();
+            $("#fancy-checkbox-success").prop('checked',true);
+
+            $('#new_contact').find('select option:selected').remove();
+        });
+
+        $('#modalProvider').click(function(){
+            $('#new_contact').find('input').val('');
+            $('#new_contact').find('textarea').val('');
+            $("#contact_nif").val($("#providerSearchNIF").val());
+            $("#providerSearchNIF").val('');
+            $("#contact_modal").val('P');
+            $(".tipo_contacto_select").val('4');
+            $(".select_options_customer_nif").hide();
+            $(".select_options_provider_nif").hide();
+            $(".select_options_contact_nif").hide();
+            $(".select_options_temp_nif").show();
+            $("#fancy-checkbox-success").prop('checked',true);
+
+            $('#new_contact').find('select option:selected').remove();
+        });
+        //FIN ready
+    });
+
+    function getResponsableOffice(office) {
+        $('#responsable').attr('readonly', true);
+        let formData = 'office='+office;
+        $.ajax({
+            type: 'POST',
+            url: '{{ path("findOfficeResponsable") }}',
+            data: formData,
+            success: function (data) {
+                if (data.id != 0) {
+                    $("#responsable").val('(' + data.regNumber + ') ' + data.name);
+                }
+                else
+                {
+                    $("#responsable").val('');
+                }
+            }
+        });
+    }
+</script>

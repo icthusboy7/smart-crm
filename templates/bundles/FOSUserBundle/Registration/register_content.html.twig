@@ -1,0 +1,14 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+{{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+    {#{{ form_widget(form) }}#}
+    {{ form_row(form.regNumber) }}
+    {{ form_row(form.regNumberCaixabank) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.surname) }}
+    {#{{ form_row(form.username) }}#}
+    {{ form_row(form.email) }}
+    {#{{ form_row(form.plainPassword) }}#}
+
+    <input class="btn btn-blue bt-submit" value="{{ "registration.submit"|trans }}" type="submit">
+{{ form_end(form) }}

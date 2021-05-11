@@ -1,0 +1,260 @@
+<script>
+    function getCustomerAlerts(data) {
+        $.ajax({
+            type: 'POST',
+            url: '{{ path('find_alert_nif') }}',
+            data: data,
+            success: function(data){
+                $('#alert_area_customer').html('');
+                if(data.length > 0) {
+                    $('#alert_area_customer').html(data);
+                    $('#customers_input_group').on('click', '.alert_badge', function() {
+                        var nif = $('#Customer').val()
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ path('get_alert_info_nif') }}',
+                            data: 'nif='+nif,
+                            success: function(data){
+                                if(data.length > 0) {
+                                    var text = "";
+                                    $(data).each(function (index, alert){
+                                        text += '<p>'+alert+'</p>'
+                                    });
+                                    $("#alert_full_info").empty().append(text);
+                                    $('#alert_message_modal_id').modal('show');
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    }
+
+    function getProviderAlerts(data) {
+        $.ajax({
+            type: 'POST',
+            url: '{{ path('find_alert_nif') }}',
+            data: data,
+            success: function(data){
+                $('#alert_area_provider').html('');
+                if(data.length > 0) {
+                    $('#alert_area_provider').html(data);
+                    $('#providers_input_group').on('click', '.alert_badge', function() {
+                        var nif = $('#Provider').val()
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ path('get_alert_info_nif') }}',
+                            data: 'nif='+nif,
+                            success: function(data){
+                                if(data.length > 0) {
+                                    var text = "";
+                                    $(data).each(function (index, alert){
+                                        text += '<p>'+alert+'</p>'
+                                    });
+                                    $("#alert_full_info").empty().append(text);
+                                    $('#alert_message_modal_id').modal('show');
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    }
+
+    function getOfficeAlerts(data) {
+        $.ajax({
+            type: 'POST',
+            url: '{{ path('find_alert_office') }}',
+            data: data,
+            success: function(data){
+                $('#alert_area_office').html('');
+                if(data.length > 0) {
+                    $('#alert_area_office').html(data);
+                    $('#offices_input_group').on('click', '.alert_badge', function() {
+                        var office = $('#alertas_form_oficina').val();
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ path('get_alert_info_office') }}',
+                            data: 'office='+office,
+                            success: function(data){
+                                if(data.length > 0) {
+                                    var text = "";
+                                    $(data).each(function (index, alert){
+                                        text += '<p>'+alert+'</p>'
+                                    });
+                                    $("#alert_full_info").empty().append(text);
+                                    $('#alert_message_modal_id').modal('show');
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    }
+
+    function getPersonAlertsAlert(data, typeForm) {
+        $.ajax({
+            type: 'POST',
+            url: '{{ path('find_alert_nif') }}',
+            data: data,
+            success: function(data){
+                $('div#alert_area_person').html('');
+                if(data.length > 0) {
+                    $('div#alert_area_person').html(data);
+                    $('div#persons_input_group').on('click', '.alert_badge', function() {
+                        var form = null;
+                        if (typeForm === 'add')
+                        {
+                            form = $('#new_alert');
+                        }
+                        else
+                        {
+                            form = $('#edit_alert');
+                        }
+                        var nif = $('select#alertas_form_personanif').val();
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ path('get_alert_info_nif') }}',
+                            data: 'nif='+nif,
+                            success: function(data){
+                                if(data.length > 0) {
+                                    var text = "";
+                                    $(data).each(function (index, alert){
+                                        text += '<p>'+alert+'</p>'
+                                    });
+                                    $("#alert_full_info").empty().append(text);
+                                    $('#alert_message_modal_id').modal('show');
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    }
+
+    function getOfficeAlertsAlert(data, typeForm) {
+        $.ajax({
+            type: 'POST',
+            url: '{{ path('find_alert_office') }}',
+            data: data,
+            success: function(data){
+
+                $('div#alert_area_office').html('');
+                if(data.length > 0) {
+                    $('div#alert_area_office').html(data);
+                    $('div#offices_input_group').on('click', '.alert_badge', function() {
+                        var form = null;
+                        if (typeForm === 'add')
+                        {
+                            form = $('#new_alert');
+                        }
+                        else
+                        {
+                            form = $('#edit_alert');
+                        }
+                        let office = $('#alertas_form_oficina').val();
+                        $.ajax({
+                            type: 'POST',
+                            url: '{{ path('get_alert_info_office') }}',
+                            data: 'office='+office,
+                            success: function(data){
+                                if(data.length > 0) {
+                                    var text = "";
+                                    $(data).each(function (index, alert){
+                                        text += '<p>'+alert+'</p>'
+                                    });
+                                    $("#alert_full_info").empty().append(text);
+                                    $('#alert_message_modal_id').modal('show');
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    }
+
+    function getPersonAlertsContact(data, type) {
+        $.ajax({
+            type: 'POST',
+            url: '{{ path('find_alert_nif') }}',
+            data: data,
+            success: function(data){
+                $('#alert_area_customer').html('');
+                $('#alert_area_provider').html('');
+                $('#alert_area_contact').html('');
+                if(data.length > 0){
+                    switch (type) {
+                        case 'Cu':
+                            $('#alert_area_customer').html(data);
+                            $('#customer_input_group').on('click', '.alert_badge', function() {
+                                var nif = $('#customerNIF').val()
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '{{ path('get_alert_info_nif') }}',
+                                    data: 'nif='+nif,
+                                    success: function(data){
+                                        if(data.length > 0) {
+                                            var text = "";
+                                            $(data).each(function (index, alert){
+                                                text += '<p>'+alert+'</p>'
+                                            });
+                                            $("#alert_full_info").empty().append(text);
+                                            $('#alert_message_modal_id').modal('show');
+                                        }
+                                    }
+                                });
+                            });
+                            break;
+                        case 'Pr':
+                            $('#alert_area_provider').html(data);
+                            $('#provider_input_group').on('click', '.alert_badge', function() {
+                                var nif = $('#providerNIF').val()
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '{{ path('get_alert_info_nif') }}',
+                                    data: 'nif='+nif,
+                                    success: function(data){
+                                        if(data.length > 0) {
+                                            var text = "";
+                                            $(data).each(function (index, alert){
+                                                text += '<p>'+alert+'</p>'
+                                            });
+                                            $("#alert_full_info").empty().append(text);
+                                            $('#alert_message_modal_id').modal('show');
+                                        }
+                                    }
+                                });
+                            });
+                            break;
+                        case 'Co':
+                            $('#alert_area_contact').html(data);
+                            $('#contact_input_group').on('click', '.alert_badge', function() {
+                                var nif = $('#contactNIF').val()
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '{{ path('get_alert_info_nif') }}',
+                                    data: 'nif='+nif,
+                                    success: function(data){
+                                        if(data.length > 0) {
+                                            var text = "";
+                                            $(data).each(function (index, alert){
+                                                text += '<p>'+alert+'</p>'
+                                            });
+                                            $("#alert_full_info").empty().append(text);
+                                            $('#alert_message_modal_id').modal('show');
+                                        }
+                                    }
+                                });
+                            });
+                            break;
+                    }
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,354 @@
+<!-- Datos 2 -->
+<div class="modal" id="datos2-{{ expediente.id }}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header modal-header-expedientes">
+                <h4 class="modal-title modal-title-expedientes">
+                    <div class="float-left">
+                        <span class="badge badge-primary">1</span> <a href="#"><i class="fas fa-star fa-fw text-warning pl-10"></i></a>
+                    </div>
+
+                    <span class="text-center pl-20">{{ expediente.titulo }}</span>
+
+                    <div class="float-right">
+                        <span class="dot dot-danger pt-5"></span>
+                        <select class="form-control form-control-sm select_options_exp" onchange="location = this.value;">
+                            <option data-action="default" value="#">- {{ "Actions"|trans }} -</option>
+                            <option value="{{ path('comercial_ver_muro_expediente', {idExpediente: expediente.id}) }}" class="option_ver_muro">{{ "Show_wall"|trans }}</option>
+                            <option value="{{ path('expedientes_form') }}/?exp_id={{ expediente.id }}" class="option_edit_expediente">{{ "Edit_pipeline"|trans }}</option>
+                            <option data-action="import" data-id="{{ expediente.id }}" value="#" class="option_import_expediente">{{ "Import_pipeline"|trans }}</option>
+                            <option data-action="add_coti" data-id="{{ expediente.id }}" value="#" class="option_add_cotizacion">{{ "Añadir cotizacion"|trans }}</option>
+                            <option data-action="update" data-id="{{ expediente.id }}" value="#" class="option_actualizar_expediente">{{ "Update_pipelines"|trans }}</option>
+                            <option data-action="add_fav" data-id="{{ expediente.id }}" value="#" class="option_añadir_favoritos">{% if expediente.id in favoritos %}{{ "Delete_from_fav"|trans }}{% else %}{{ "Add_to_fav"|trans }}{% endif %}</option>
+                            <option data-action="delete" data-id="{{ expediente.id }}" value="#" class="option_eliminar_exp">{{ "Delete"|trans }}</option>
+                        </select>
+                    </div>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                <ul class="nav nav-tabs">
+                    <li class="list-dispo"><a data-toggle="tab" href="#tab_datos{{ expediente.id }}" class="tab-dispo active">{{ "General_data"|trans }}</a></li>
+                    {% for disposicion in disposiciones %}
+                            <li class="d-none d-md-block list-dispo"><a data-toggle="tab" class="tab-dispo" href="#tab_dispo{{ disposicion.id }}"><span class="badge badge-primary mr-10">1</span>{{ "Disposition"|trans }} {{ loop.index }}</a></li>
+                    {% endfor %}
+                </ul>
+
+                <div class="tab-content pt-10">
+                    <div id="tab_datos{{ expediente.id }}" class="tab-pane fade in active show">
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="mt-0 mb-0 text-center">{{ "Data"|trans }}</h2>
+                                <table class="table table-sm table-hover fs-12">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ "Title"|trans }}</th>
+                                        <th>{{ "Date"|trans }}</th>
+                                        <th>{{ "Office"|trans }}</th>
+                                        <th>{{ "Type_result"|trans }}</th>
+                                        <th>{{ "Zone"|trans }}</th>
+                                        <th>{{ "Vertical"|trans }}</th>
+                                        <th>{{ "Type_product"|trans }}</th>
+                                        <th>{{ "Canal"|trans }}</th>
+                                        <th>% {{ "of chance"|trans }}</th>
+                                        <th>{{ "Line"|trans }}?</th>
+                                        <th>{{ "State"|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{% if expediente.titulo is defined and expediente.titulo is not null %}{{ expediente.titulo }}{% else %} - {% endif %}</td>
+                                        <td>{% if expediente.fechaPosibleActivacion is defined and expediente.fechaPosibleActivacion is not null %}{{ expediente.fechaPosibleActivacion }}{% else %} - {% endif %}</td>
+                                        <td>{% if expediente.oficina is defined and expediente.oficina is not null %}{{ expediente.oficina }}{% else %} - {% endif %}</td>
+                                        <td>{% if expediente.tipo is defined and expediente.tipo is not null %}{{ expediente.tipo }}{% else %} - {% endif %}</td>
+                                        <td>{% if expediente.oficinaZona is defined and expediente.oficinaZona is not null %}{{ expediente.oficinaZona }}{% else %} - {% endif %}</td>
+                                        <td>{% if expediente.vertical is defined and expediente.vertical is not null %}{{ expediente.vertical.name }}{% else %} - {% endif %}</td>
+                                        <td>{% if expediente.producto is defined and expediente.producto is not null %}{{ expediente.producto.nombre }}{% else %} - {% endif %}</td>
+                                        <td>{% if expediente.canal is defined and expediente.canal is not null %}{{ expediente.canal.canalDesc }}{% else %} - {% endif %}</td>
+                                        <td>{% if expediente.porcentajeProbabilidad is defined and expediente.porcentajeProbabilidad is not null %}{{ expediente.porcentajeProbabilidad }}{% else %} - {% endif %}</td>
+                                        <td>{% if expediente.esLinea == true %}<i class="fas fa-check text-success"></i>{% else %}<i class="fas fa-times text-danger"></i>{% endif %}</td>
+                                        <td>{% if expediente.status is defined and expediente.status is not null %}{{ expediente.status.status }}{% else %} - {% endif %}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div><!-- .Datos (fila1) -->
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-12">
+                                <h2 class="text-center">{{ "Commercial_information"|trans }}</h2>
+                                <table class="table table-sm table-hover fs-12">
+                                    <tbody>
+                                    <tr>
+                                        <td class="bt-0">{{ "Commercial_responsable"|trans }}:
+                                            <strong>
+                                                {% if expediente.responsable is defined and expediente.responsable is not null %}
+                                                    ({{ expediente.responsable.regNumber }}) {{ expediente.responsable }}
+                                                {% else %} - {% endif %}
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ "External_manager"|trans }}:
+                                            <strong>
+                                                {% if expediente.responsableGestorExterno is defined and expediente.responsableGestorExterno is not null %}
+                                                    ({{ expediente.responsableGestorExterno.regNumber }}) {{ expediente.responsableGestorExterno }}
+                                                {% else %} - {% endif %}
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ "Internal_manager"|trans }}:
+                                            <strong>
+                                                {% if expediente.responsableGestorInterno is defined and expediente.responsableGestorInterno is not null %}
+                                                    ({{ expediente.responsableGestorInterno.regNumber }}) {{ expediente.responsableGestorInterno }}
+                                                {% else %} - {% endif %}
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ "Risk_resposnable"|trans }}
+                                            <strong>
+                                                {% if expediente.responsableRiesgos is defined and expediente.responsableRiesgos is not null %}
+                                                   ({{ expediente.responsableRiesgos.regNumber }}) {{ expediente.responsableRiesgos }}
+                                                {% else %} - {% endif %}
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <h2 class="text-center">{{ "Client data"|trans }}</h2>
+                                <table class="table table-sm table-hover fs-12">
+                                    <tbody>
+                                    <tr>
+                                        <td class="bt-0">{{ "Client"|trans }}:
+                                            <strong>
+                                                {% if expediente.clienteNif is defined and expediente.clienteNif is not null %}
+                                                    {{ expediente.clienteNif }}
+                                                {% else %} - {% endif %}
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ "Provider"|trans }}:
+                                            <strong>
+                                                {% if expediente.prescriptorCif is defined and expediente.prescriptorCif is not null %}
+                                                    {{ expediente.prescriptorCif }}
+                                                {% else %} - {% endif %}
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ "Office"|trans }}:
+                                            <strong>
+                                                {% if expediente.oficina is defined and expediente.oficina is not null %}
+                                                    {{ expediente.oficina }}
+                                                {% else %} - {% endif %}
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div><!-- .Datos (fila2) -->
+                        {% if expediente.observaciones is not null %}
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <h2 class="text-center">{{ "Observations"|trans }}</h2>
+                                    <p class="fs-12 p-10 text-center">{{ expediente.observaciones }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="text-center">{{ "Quotes"|trans }}</h2>
+                                {% include 'area-comercial/expedientes/cotizacion_box.html.twig' %}
+                                {% for disposicion in disposiciones %}
+                                <div class="accordion accordion-dispo" data-toggle="collapse" href="#dispo_box_{{ disposicion.id }}">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-sm-6 pl-0">
+                                            <span class="badge badge-primary">{{ disposicion.cotizacionesInfo|length }}</span> DISPOSICIÓN {{ loop.index }}
+                                        </div>
+
+                                        <div class="col-lg-6 d-none d-lg-block d-xl-block">
+                                            <ul class="accordion-datos">
+                                                <li>{% if disposicion.fechaPosibleActivacion is not null %}{{ disposicion.fechaPosibleActivacion }}{% else %} - {% endif %}</li>
+                                                <li>{% if disposicion.importe is not null %}{{ disposicion.importe }}€{% else %} - {% endif %}</li>
+                                                <li>{% if disposicion.tin is not null %}{{ disposicion.tin }}%{% else %} - {% endif %}</li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="col-lg-3 col-sm-6 text-right pr-0">
+                                            <ul>
+                                                <li>
+                                                    <select disabled class="form-control form-control-sm float-right">
+                                                        <option>- {{ "Actions"|trans }} -</option>
+                                                        <option>{{ "Accion 1"|trans }}</option>
+                                                        <option>{{ "Accion 2"|trans }}</option>
+                                                        <option>{{ "Accion 3"|trans }}</option>
+                                                    </select>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="panel p-10 collapse" id="dispo_box_{{ disposicion.id }}">
+                                    <table class="table table-sm table-hover fs-12">
+                                        <thead class="thead-dispo">
+                                        <tr>
+                                            <th></th>
+                                            <th>{{ "Coti_number"|trans }}</th>
+                                            <th>{{ "State"|trans }}</th>
+                                            <th>{{ "Amount"|trans }}</th>
+                                            <th>{{ "Type"|trans }}</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {%  if disposicion.cotizacionesInfo|length == 0 %}
+                                            <tr>
+                                                <td colspan="6" align="center">{{ 'No hay cotizaciones para esta disposición'| trans }}</td>
+                                            </tr>
+                                        {%  endif %}
+                                        {% for cotizacion in disposicion.cotizacionesInfo %}
+                                            <tr {% if cotizacion.estado == "Caducada" %}class="text-blue text-strong"{% endif %}>
+                                                <td {% if cotizacion.estado == "Caducada" %}class="text-center"><span class="dot dot-blue">{% else %}>{% endif %}</span></td>
+                                                <td>{{ cotizacion.numCoti }}</td>
+                                                <td>{{ cotizacion.estado }}</td>
+                                                <td>{{ cotizacion.inversion }}</td>
+                                                <td>{{ cotizacion.plazo }}%</td>
+                                                <td>
+                                                    <select class="form-control form-control-sm float-right select_options_coti" onchange="location = this.value;">
+                                                        <option data-action="default" value="#">- {{ "quotes.actions"|trans }} -</option>
+                                                        <option value="{{ path('comercial_ver_muro_expediente', {idExpediente: disposicion.id}) }}">{{ "quote.show_wall"|trans }}</option>
+                                                        <option data-action="favorites" data-id-exp="{{ disposicion.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.favorites"|trans }}</option>
+                                                        <option data-action="unjoin" data-id-exp="{{ disposicion.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.unjoin"|trans }}</option>
+                                                        <option data-action="update" data-id-exp="{{ disposicion.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.update"|trans }}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div><!-- . DISPO -->
+                                {% endfor %}
+                            </div>
+                        </div><!-- .Cotizaciones y Dispos -->
+                    </div><!-- .tab_datos -->
+                    {% for disposicion in disposiciones %}
+                    <div id="tab_dispo{{ disposicion.id }}" class="tab-pane fade">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="mt-0 mb-0 text-center">{{ "Data"|trans }}</h2>
+                                <table class="table table-sm table-hover fs-12">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ "ID"|trans }}</th>
+                                        <th>{{ "Amount"|trans }}</th>
+                                        <th>{{ "Activation_date"|trans }}</th>
+                                        <th>% {{ "of chance"|trans }}</th>
+                                        <th>{{ "Type"|trans }}</th>
+                                        <th>{{ "State" }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            {% if disposicion.id is defined and disposicion.id is not null %}
+                                                {{ disposicion.id }}
+                                            {% else %} - {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if disposicion.importe is defined and disposicion.importe is not null %}
+                                                {{ disposicion.importe }}
+                                            {% else %} - {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if disposicion.fechaPosibleActivacion is defined and disposicion.fechaPosibleActivacion is not null %}
+                                                {{ disposicion.fechaPosibleActivacion }}
+                                            {% else %} - {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if disposicion.porcentajeProbabilidad is defined and disposicion.porcentajeProbabilidad is not null %}
+                                                {{ disposicion.porcentajeProbabilidad }}%
+                                            {% else %} - {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if disposicion.tin is defined and disposicion.tin is not null %}
+                                                {{ disposicion.tin }}%
+                                            {% else %} - {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if disposicion.status is defined and disposicion.status is not null %}
+                                                {{ disposicion.status.status }}
+                                            {% else %} - {% endif %}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-12" id="dispo01" data-parent="#dispos">
+                                <h2 class="text-center">{{ "Quotes"|trans }}</h2>
+                                <table class="table table-sm table-hover fs-12">
+                                    <thead class="thead-dispo">
+                                    <tr>
+                                        <th></th>
+                                        <th>{{ "Coti_number"|trans }}</th>
+                                        <th>{{ "State"|trans }}</th>
+                                        <th>{{ "Amount"|trans }}</th>
+                                        <th>{{ "Type"|trans }}</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if disposicion.cotizacionesInfo|length == 0 %}
+                                        <tr>
+                                            <td colspan="6" align="center">{{ 'No hay cotizaciones para esta disposición'| trans }}</td>
+                                        </tr>
+                                    {%  endif %}
+                                    {% for cotizacion in disposicion.cotizacionesInfo %}
+                                        <tr {% if cotizacion.estado == "Caducada" %}class="text-blue text-strong"{% endif %}>
+                                            <td {% if cotizacion.estado == "Caducada" %}class="text-center"><span class="dot dot-blue">{% else %}>{% endif %}</span></td>
+                                            <td>{{ cotizacion.numCoti }}</td>
+                                            <td>{{ cotizacion.estado }}</td>
+                                            <td>{{ cotizacion.inversion }}</td>
+                                            <td>{{ cotizacion.plazo }}%</td>
+                                            <td>
+                                                <select class="form-control form-control-sm float-right select_options_coti" onchange="location = this.value;">
+                                                    <option data-action="default" value="#">- {{ "quotes.actions"|trans }} -</option>
+                                                    <option value="{{ path('comercial_ver_muro_expediente', {idExpediente: expediente.id}) }}">{{ "quote.show_wall"|trans }}</option>
+                                                    <option data-action="favorites" data-id-exp="{{ disposicion.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.favorites"|trans }}</option>
+                                                    <option data-action="unjoin" data-id-exp="{{ disposicion.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.unjoin"|trans }}</option>
+                                                    <option data-action="update" data-id-exp="{{ disposicion.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.update"|trans }}</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div><!-- .Datos (fila1) -->
+                    </div><!-- .tab_dispo1 -->
+                    {% endfor %}
+
+                </div><!-- .tab-content -->
+
+            </div><!-- .modal-body -->
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> {{ "Close"|trans }} </button>
+            </div>
+
+        </div>
+    </div>
+</div>

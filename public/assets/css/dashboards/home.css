@@ -1,0 +1,30 @@
+/* LaCaixa old css */
+/* Definimos css para widgets de dasboard principal */
+#page-wrapper { padding-top: 20px; margin-left: 0; background-size: cover; background-attachment: fixed; }
+div[data-box] { margin: 10px; padding: 0; }
+div[data-box='Informes'] .divWidget:hover { background-color: rgba(51, 122, 183, 1); }
+div[data-box='Comites'] .divWidget:hover { background-color: rgba(92, 184, 92, 1); }
+div[data-box='Operaciones'] .divWidget:hover { background-color: rgba(240, 173, 78, 1); }
+div[data-box='AlertasInforma'] .divWidget:hover, div[data-box='AlertasAsnef'] .divWidget:hover { background-color: rgba(197, 31, 61, 1); }
+div[data-box='Buscar'] .divWidget:hover { background-color: rgba(0, 169, 177, 1); }
+div[data-box='Incidencias'] .divWidget:hover { background-color: rgba(249, 200, 13, 1); }
+div[data-box='ControlDoc'] .divWidget:hover { background-color: rgba(134, 81, 150, 1); }
+div[data-box='AreaComercial'] .divWidget:hover { background-color: rgba(150, 115, 0, 1); }
+div[data-box='AreaRiesgos'] .divWidget:hover { background-color: rgba(31, 88, 140, 1); }
+
+.rowHome { float: left; width: 100%; max-width: 1200px; margin: 0 calc(50% - (1200px / 2)); }
+.containerWidget { float: left; width: calc((100% / 4) - 20px); }
+.halfWidth { float: left; width: calc(50% - 20px); margin: 10px; padding: 0; }
+.containerWidget .divWidget { min-height: 125px; padding: 10px; color: #fff; border-radius: 8px; box-shadow: 0 0 1px rgba(0,0,0,0.5); cursor: pointer; }
+.containerWidget .divWidget:hover { box-shadow: 0 0 2px rgba(0,0,0,0.7); }
+.containerWidget a { color: inherit; text-align: center; }
+.containerWidget a .divWidget header { float: left; width: 100%; }
+.containerWidget a .divWidget header i { float: left; max-width: 35px; font-size: 32px; text-align: left; }
+.containerWidget a .divWidget header span { float: left; font-size: 16px; font-weight: 600; margin: 5px 0 0 10px; }
+.containerWidget a .divWidget .descripcion { float: left; width: 100%; padding: 5px 0; font-size: 12px; text-align: left; }
+
+.hoverPanelBody .panel-body, .hoverPanelFooter .panel-footer { display: none; }
+.hoverPanelBody.withAbsolute, .hoverPanelFooter.withAbsolute { position: relative; }
+.hoverPanelBody.withAbsolute .panel-body, .hoverPanelFooter.withAbsolute .panel-footer { position: absolute; background-color: #fff; }
+
+/* .LaCaixa old css */

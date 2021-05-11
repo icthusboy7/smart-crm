@@ -1,0 +1,76 @@
+{% block widgetContent %}
+	<div class="table-responsive">
+		<table class="table table-sm table-hover fs-12">
+			<thead class="thead-light">
+			<tr>
+				<th>{{ 'Fecha'|trans }}</th>
+				<th>{{ 'Responsable'|trans }}</th>
+				<th>{{ 'Tipo'|trans }}</th>
+				<th>{{ 'Descripción'|trans }}</th>
+				<th>{{ 'Intervinientes'|trans }}</th>
+				<th>{{ 'Expediente'|trans }}</th>
+				<th>{{ 'Núm. Cotización'|trans }}</th>
+				<th>{{ 'Canal'|trans }}</th>
+				<th>{{ 'Zona'|trans }}</th>
+				<th>{{ 'Vertical'|trans }}</th>
+			</tr>
+			</thead>
+			<tbody>
+            {% if tasks is defined and tasks|length > 0 %}
+                {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.createdAt|date('d/m/Y h:m') }}</td>
+                        {% if task.responsible != null %}
+                            <td>{{ task.responsible.name }} {{ task.responsible.surname }}</td>
+                        {% else %}
+                            <td> - </td>
+                        {% endif %}
+                        <td>{{ task.type.description }}</td>
+                        <td style=" white-space: pre; ">{{ task.description }}</td>
+                        {% if task.comercialMuro is not null %}
+                            {% if task.comercialMuro.expediente is not null %}
+                                <td>
+                                    {% if task.comercialMuro.expediente.responsable %}
+                                        <b>{{ "Responsable" }}:</b> {{ task.comercialMuro.expediente.responsable.name }} {{ task.comercialMuro.expediente.responsable.surname -}}<br />
+                                    {% endif %}
+                                    {% if task.comercialMuro.expediente.responsableGestorInterno %}
+                                        <b>{{ "Gestor Interno" }}:</b> {{ task.comercialMuro.expediente.responsableGestorInterno.name }} {{ task.comercialMuro.expediente.responsableGestorInterno.surname -}}<br />
+                                    {% endif %}
+                                    {% if task.comercialMuro.expediente.responsableGestorExterno %}
+                                        <b>{{ "Gestor Externo" }}:</b> {{ task.comercialMuro.expediente.responsableGestorExterno.name }} {{ task.comercialMuro.expediente.responsableGestorExterno.surname -}}<br />
+                                    {% endif %}
+                                    {% if task.comercialMuro.expediente.responsableRiesgos %}
+                                        <b>{{ "R. Riesgos" }}:</b> {{ task.comercialMuro.expediente.responsableRiesgos.name }} {{ task.comercialMuro.expediente.responsableRiesgos.surname -}}
+                                    {% endif %}
+                                </td>
+                                <td>{{ task.comercialMuro.expediente.titulo ?? " - " }}</td>
+                                <td>{{ task.comercialMuro.expediente.cotizaciones | length }}</td>
+                                <td>{{ task.comercialMuro.expediente.canal.canalDesc ?? " - " }}</td>
+                                <td>{{ task.comercialMuro.expediente.zona ?? " - " }}</td>
+                                <td>{{ task.comercialMuro.expediente.vertical.name ?? " - " }}</td>
+                            {% else %}
+                                <td>{{ " - " }}</td>
+                                <td>{{ " - " }}</td>
+                                <td>{{ " - " }}</td>
+                                <td>{{ " - " }}</td>
+                                <td>{{ " - " }}</td>
+                                <td>{{ " - " }}</td>
+                            {% endif %}
+                        {% else %}
+                            <td>{{ " - " }}</td>
+                            <td>{{ " - " }}</td>
+                            <td>{{ " - " }}</td>
+                            <td>{{ " - " }}</td>
+                            <td>{{ " - " }}</td>
+                            <td>{{ " - " }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="10" align="center">{{ 'No tasks'| trans }}</td>
+                </tr>
+            {% endif %}
+		</table>
+	</div>
+{% endblock %}

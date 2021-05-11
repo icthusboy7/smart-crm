@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.ico') }}">
+        <title>{% block title %}CaixaBank Equipment Finance - CaixaBank Consumer Finance{% endblock %}</title>
+        {% block stylesheets %}
+        {% endblock %}
+        {% block head_css %}
+            <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/select2.min.css') }}" />
+            <link rel="stylesheet" href="{{ asset('assets/css/calendarjs/main.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/calendarjs/bootstrap.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/calendarjs/daygrid_main.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/calendarjs/timegrid_main.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/calendarjs/list.min.css') }}">
+            {#<link rel="stylesheet" href="{{ asset('assets/css/chosen/chosen.min.css') }}">#}
+            <link rel="stylesheet" href="{{ asset('assets/css/caixabank.css') }}">
+            <!-- font awesome -->
+            <link rel="stylesheet" href="{{ asset('assets/css/all.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/tempusdominus-bootstrap-4.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/dropzone.css') }}">
+            <link rel="stylesheet" href="{{ asset('assets/css/loading.css') }}">
+        {% endblock %}
+        {% block head_js %}
+            <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+            <script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
+            <script src="{{ asset('assets/js/moment-with-locales.min.js') }}"></script>
+            <script src="{{ asset('assets/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+            <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('assets/js/popper.min.js') }}"></script>
+            <script src="{{ asset('assets/js/sweetalert.min.js') }}"></script>
+            <script src="{{ asset('assets/js/sortable_DaD/dragdrop.js') }}"></script>
+            <script src="{{ asset('assets/js/jquery.validate.js') }}"></script>
+            <script src="{{ asset('assets/js/dropzone.js') }}"></script>
+        {% endblock %}
+        <script>{% include 'helpers.js.twig' %}</script>
+    </head>
+    <body>
+        <!-- .Sidebar Menu -->
+        {% block body %}{% endblock %}
+    </body>
+    {% block javascripts %}
+        <script src="{{ asset('assets/js/calendarjs/main.min.js') }}"></script>
+        <script src="{{ asset('assets/js/calendarjs/bootstrap_main.min.js') }}"></script>
+        <script src="{{ asset('assets/js/calendarjs/interaction_main.min.js') }}"></script>
+        <script src="{{ asset('assets/js/calendarjs/daygrid_main.min.js') }}"></script>
+        <script src="{{ asset('assets/js/calendarjs/timegrid_main.min.js') }}"></script>
+        <script src="{{ asset('assets/js/calendarjs/list.min.js') }}"></script>
+        <script src="{{ asset('assets/js/app.js') }}"></script>
+        <script src="{{ asset('assets/js/form/set_order_form.js') }}"></script>
+        <script src="{{ asset('assets/js/select2.full.min.js') }}"></script>
+        <script src="{{ asset('assets/js/jquery.mask.min.js') }}"></script>
+    {% endblock %}
+</html>

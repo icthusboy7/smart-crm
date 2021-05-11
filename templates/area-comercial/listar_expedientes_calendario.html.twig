@@ -1,0 +1,212 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/select2_style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/expedientes_list.css') }}" />
+{% endblock %}
+{% block body %}
+    <div id="wrapper">
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+        )) }}
+        <div class="container-fluid">
+            {{ render(controller('App\\Controller\\HomeController::getBreadcrumb', { 'route': app.request.get('_route') })) }}
+            <section class="bg-container">
+
+                <div class="container">
+
+                    <h1>{{ "Lista de expedientes"|trans }}</h1>
+
+                    <button class="accordion accordion-blue">Filtros</button>
+                    <div class="panel card p-10">
+                        <h2 class="mt-0">Filtros globales</h2>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <a href="{{ path('comercial_expedientes_calendario') }}?filtroGlobal=todos" class="btn btn-{% if filtroGlobal == 'todos' %}blue{% else %}secondary{% endif %} bt-submit btn-sm">
+                                    {{ "Todos"|trans }} ({{ counts["total"] }})
+                                </a>
+                                <a href="{{ path('comercial_expedientes_calendario') }}?filtroGlobal=curso" class="btn btn-{% if filtroGlobal == 'curso' %}blue{% else %}secondary{% endif %} bt-submit btn-sm">
+                                    {{ "En curso"|trans }} ({{ counts["enCurso"] }})
+                                </a>
+                                <a href="{{ path('comercial_expedientes_calendario') }}?filtroGlobal=perdidos" class="btn btn-{% if filtroGlobal == 'perdidos' %}blue{% else %}secondary{% endif %} bt-submit btn-sm">
+                                    {{ "Perdida"|trans }} ({{ counts["perdidos"] }})
+                                </a>
+                                <a href="{{ path('comercial_expedientes_calendario') }}?filtroGlobal=activados" class="btn btn-{% if filtroGlobal == 'activados' %}blue{% else %}secondary{% endif %} bt-submit btn-sm">
+                                    {{ "Activada"|trans }} ({{ counts["activados"] }})
+                                </a>
+                            </div>
+                            <div class="col-lg-4 text-right">
+                                <a href="{{ path('comercial_expedientes_calendario') }}?filtroGlobal=proveedores" class="btn btn-{% if filtroGlobal == 'proveedores' %}blue{% else %}secondary{% endif %} bt-submit btn-sm">
+                                    <i class="fas fa-briefcase fa-fw"></i> {{ "Proveedores"|trans }}
+                                </a>
+                                <a href="{{ path('comercial_expedientes_calendario') }}?filtroGlobal=oficinas" class="btn btn-{% if filtroGlobal == 'oficinas' %}blue{% else %}secondary{% endif %} bt-submit btn-sm">
+                                    <i class="fas fa-building fa-fw"></i> {{ "Oficinas"|trans }}
+                                </a>
+                            </div>
+                        </div>
+
+                        <h2 class="mb-0 mt-20">Filtros específicos</h2>
+                        <form id="find_expedientes_form" action="{{ path('comercial_expedientes_calendario') }}" method="get">
+                            <input type="hidden" name="filtroGlobal" value="{{ filtroGlobal }}">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label for="sel1">{{ "Responsable comercial"|trans }}</label>
+                                        <select class="form-control form-control-sm" id="select_responsableC">
+                                            <option>- Selecciona un responsable -</option>
+                                            {% for responsable in responsables %}
+                                                <option value="{{ responsable.regNumber }}">({{ responsable.regNumber }}) {{ responsable.name }} {{ responsable.surname }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>{{ "Zone"|trans }}</label>
+                                        <select id="zone_select" name="f_zona[]" multiple class="zonas js-example-basic-single js-example-responsive">
+                                            <option {% if "Norte" in zonas %}selected {% endif %}value="Norte">{{ "zone.north"|trans }}</option>
+                                            <option {% if "Sur" in zonas %}selected {% endif %}value="Sur">{{ "zone.south"|trans }}</option>
+                                            <option {% if "Este" in zonas %}selected {% endif %}value="Este">{{ "zone.east"|trans }}</option>
+                                            <option {% if "CIB" in zonas %}selected {% endif %}value="CIB">{{ "zone.CIB"|trans }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>{{ "Responsable del expediente"|trans }}</label>
+                                        <div class="select_options_responsables">
+                                            <select id="responsables_select" name="f_responsables[]" multiple class="responsables js-example-basic-single js-example-responsive">
+                                                {% for responsable in responsablesFilter %}
+                                                    <option selected value="{{ responsable.id }}">({{ responsable.regNumber }}) {{ responsable.name }} {{ responsable.surname }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label>{{ "Status"|trans }}</label>
+                                        <div class="select_options_estado">
+                                            <select id="estados_select" name="f_estados[]" multiple class="estados js-example-basic-single js-example-responsive">
+                                                {% for estado in estados %}
+                                                    <option {% if estado.id in status_id %}selected{% endif %} value="{{ estado.id }}">{{ estado.status }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    <a role="button" id="find_expedientes" href="#" class="btn btn-blue btn-sm">
+                                        <i class="fas fa-search fa-fw"></i> {{ "Find"|trans }}
+                                    </a>
+                                    <a href="{{ path('comercial_expedientes_calendario') }}" class="btn btn-border btn-sm">
+                                        <i class="fas fa-ban fa-fw"></i> {{ "Clean_find"|trans }}
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- .FILTROS -->
+                    <div class="row mt-10">
+
+                        <div class="col-lg-6">
+                            <form id="find_expedientes_name" action="{{ path('comercial_expedientes_calendario') }}" method="get">
+                                <div class="input-group add-on">
+                                    <input id="f_name" class="form-control form-control-sm" placeholder="Buscar" name="f_name" type="text">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-default" type="submit"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-lg-6 text-right">
+
+                            <!-- Rounded switch -->
+                            <label class="inline">Sin reporte</label>
+                            <label class="switch temporal_disable">
+                                <input type="checkbox">
+                                <span class="slider round temporal_disable"></span>
+                            </label>
+
+                            <a href="#" class="btn btn-secondary bt-submit btn-sm ml-10 temporal_disable">
+                                <i class="fas fa-copy fa-fw"></i> Copy
+                            </a>
+                            <a href="#" class="btn btn-secondary bt-submit btn-sm temporal_disable">
+                                <i class="fas fa-file-excel fa-fw"></i> Excel
+                            </a>
+                        </div>
+                    </div><!-- .Buscador -->
+                    {% set countLength = 12 %}
+                    {% for grupoExpedientes in expedientes %}
+                        {% if grupoExpedientes['expedientes']|length > 0 %}
+                            <div class="row mt-10">
+                                <div class="col-lg-12">
+                                    <div class="accordion">
+                                        <div class="row">
+                                            <div class="col-lg-12 pl-0 pr-0">
+                                                {{ grupoExpedientes['title']|trans }}
+                                                <div class="float-right">
+                                                    {% if grupoExpedientes['dangerCount'] > 0 %}<span class="badge badge-danger">{{ grupoExpedientes['dangerCount'] }}</span>{% endif %}
+                                                    {% if grupoExpedientes['warningCount'] > 0 %}<span class="badge badge-warning">{{ grupoExpedientes['warningCount'] }}</span>{% endif %}
+                                                    {% if grupoExpedientes['successCount'] > 0 %}<span class="badge badge-success">{{ grupoExpedientes['successCount'] }}</span>{% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel card p-10">
+                                        {% for expediente in grupoExpedientes['expedientes'] %}
+                                            <a href="{{ path('expedientes_form') }}?exp_id={{ expediente['id'] }}"><span class="badge badge-{{ expediente['badge'] }}">{{ expediente['titulo'] }} ({{ expediente['porcentajeProbabilidad'] }}%)</span></a>
+                                        {% endfor %}
+                                    </div><!-- . Mayo 2019 -->
+
+                                </div>
+                            </div>
+                        {% else %}
+                            {% set countLength = countLength -1 %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if countLength == 0 %}
+                    <div class="col-lg-12 text-center not_found_calendar_div mt-10 fa-xs">
+                        {{ "pipelines.calendar.not_found"|trans }}
+                    </div>
+                    {% endif %}
+                    <div class="col-lg-12">
+                        <nav class="mt-10">
+                            <div class="navigation pagination pagination-sm">
+                                <div class="pagination">
+                                    <span class="previous">
+                                        <a href="{{ path('comercial_expedientes_calendario') }}?f_year={{ pagination-1 }}">&lt;</a>
+                                    </span>
+                                    <span>{{ pagination }}</span>
+                                    <span class="next">
+                                        <a href="{{ path('comercial_expedientes_calendario') }}?f_year={{ pagination+1 }}">&gt;</a>
+                                    </span>
+                                    {% if (pagination != "now"|date('Y')) %}
+                                        <span class="ml-5"><a href="{{ path('comercial_expedientes_calendario') }}">{{ 'this_year'|trans }}</a></span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 text-center mt-30">
+                            <a href="{{ path('comercial_expedientes') }}" class="btn btn-blue btn-sm"><i class="fas fa-calendar fa-fw"></i> {{ "Modo lista"|trans }}</a>
+                            <a href="{{ path('peticion_cotizacion_form') }}" class="btn btn-blue btn-sm"><i class="fas fa-chart-bar fa-fw"></i> {{ "Crear cotización"|trans }}</a>
+                            <a href="{{ path('expedientes_form') }}" class="btn btn-blue btn-sm"><i class="fas fa-file-alt fa-fw"></i> {{ "Crear expediente"|trans }}</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    {% include 'area-comercial/modals/expedientes_list_modal.html.twig' %}
+    {% include 'area-comercial/scripts/expedientes/list_expedientes_js.html.twig' %}
+    {% include 'area-comercial/scripts/expedientes/expedientes_list_modal_js.html.twig' %}
+{% endblock %}

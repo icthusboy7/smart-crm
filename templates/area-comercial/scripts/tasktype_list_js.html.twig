@@ -1,0 +1,38 @@
+<script>
+    $('#dev-table').on('click', '.delete_task_type', function(){
+        const id = $(this).val();
+        swal({
+            title: "{{ "Are you sure?"|trans }}",
+            text: "{{ "Once deleted, you will not be able to recover this type of task!"|trans }}",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then(function(willDelete){
+            if (willDelete) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/tasktype/delete',
+                    data: {'id': id},
+                    success: function (response) {
+                        console.log(response);
+                        response = JSON.parse(response);
+                        if (response.error) {
+                            swal("Oops...", response.message, "error");
+                        } else {
+                            swal("{{ "Nice"|trans }}", "{{ "task deleted!"|trans }}", "success");
+                            $('#dev-table').load(document.URL + ' #dev-table');
+                            $('#pagination').load(document.URL + ' #pagination');
+                        }
+                    },
+                    error: function () {
+                        swal.fire({
+                            type: error,
+                            title: 'Oops...',
+                            text: 'Something went wrong.'
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>

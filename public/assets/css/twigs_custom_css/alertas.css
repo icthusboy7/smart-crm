@@ -1,0 +1,57 @@
+/*Cargo de nuevo con bootstrap porque se ha machado en caixabank.css*/
+.list-item-alerta:last-child
+{
+    margin-bottom: 0 !important;
+    border-bottom-right-radius: .25rem !important;
+    border-bottom-left-radius: .25rem !important;
+}
+.list-item-alerta:first-child
+{
+    border-top-left-radius: .25rem !important;
+    border-top-right-radius: .25rem !important;
+}
+.list-item-alerta
+{
+    position: relative !important;
+    display: block !important;
+    padding: .75rem 1.25rem !important;
+    /*margin-bottom: 1px !important;*/
+    background-color: #fff !important;
+    border: 1px solid rgba(0,0,0,.125) !important;
+}
+
+.row {
+    margin-bottom: 10px;
+}
+
+td .badge
+{
+    font-size: 100%;
+}
+
+td.preformated
+{
+    max-width: 370px;
+    white-space: pre-line;
+}
+
+.select2-container{
+    width:100%!important;
+}
+.select2-selection--single{
+    height:34px!important;
+    padding-top:1%;
+    border:1px solid #ced4da !important;
+}
+.select2-selection__arrow{
+    margin-top:5px!important;
+}
+#alertas_form .row {
+    padding-bottom: 10px;
+}
+
+#alertas_form_active,
+#alertas_form_isAlert {
+    width: 50%;
+    display: inline-block;
+}

@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="wrapper">
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+        )) }}
+        <div id="page-wrapper">
+            <div class="container">
+                <section class="services mt-20 bg-container">
+                    <div class="container">
+                        <div class="panel panel-primary">
+                            <h1>{{'notification.notifications_group' | trans}}</h1>
+                            <div class="row">
+                                <div class="input-group add-on">
+                                    <input id="search" class="form-control form-control-sm" placeholder="{{ 'search' | trans}}" name="f_name" type="text">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-default" type="submit" onclick="filterTable()"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-10">
+                                <div class="card" style="width: 100%">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table id="dev-table" class="table table-sm table-hover fs-12">
+                                                <thead class="thead-light">
+                                                <tr>
+                                                    <th scope="col">Description</th>
+                                                    <th scope="col">Date</th>
+                                                    <th scope="col">Actions</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for notify in allnotifygroup %}
+                                                    <tr>
+                                                        <td>{{ notify.notification.description|raw }}</td>
+                                                        <td>{{ notify.createdAt|date('H:i:s d-m-Y') }}</td>
+                                                        <td>
+                                                            <a href="{{ notify.notification.url }}" role="button"><i class="fas fa-link"></i></a>
+                                                            <a><span class="input_flagseen"><i class="{% if notify.flagSeen == false %}far fa-eye{% else %}far fa-eye-slash{% endif %}"></i><input name="notification_id" type="hidden" value="{{ notify.id }}"></span></a>
+                                                            <a href="#" role="button"><i class="fas fa-trash-alt"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+    <script>
+
+        function filterTable() {
+            // Declare variables
+            let input, filter, table, tr, td, i, txtValue;
+            input = $("input#search");
+            filter = input.val();
+            table = $("#dev-table");
+            tr = table.children('tbody').children('tr');
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i];
+
+                let tdVal = td.children[0].textContent;
+                if(tdVal.indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+    <!-- /#wrapper -->
+{% endblock %}

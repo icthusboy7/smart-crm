@@ -1,0 +1,23 @@
+<div class="modal fade" id="event_info_visita" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ "Visit_info"|trans }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <div id="event_info"></div>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="idvisit" name="idvisit" >
+                <a id="gotoeditvisit" name="gotoeditvisit"><button id="edit_visit" name="edit_visit" type="button" class="btn btn-blue btn-sm"><i class="fas fa-edit"></i> {{ "Edit"|trans }}</button>
+                </a>
+                <a id="gotocancelvisit" name="gotocancelvisit"><button id="cancel_visit" name="cancel_visit" type="button" class="btn btn-red btn-sm"><i class="fas fa-folder-minus"></i></i> {{ "Cancel visit"|trans }}</button>
+                </a>
+                <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="fas fa-minus-circle"></i> {{ "Close"|trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>

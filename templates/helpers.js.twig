@@ -1,0 +1,42 @@
+/**
+ * Simple module to handle HTTP status codes on the frontend.
+ */
+var HttpStatusHandler = (function() {
+    'use strict';
+
+    /** Alert error type */
+    let ERROR_TYPE = "error";
+
+    /** Path to the log in form */
+    let LOGIN_URL = "{{ path('fos_user_security_login') | escape('js') }}";
+
+    /** Localized messages */
+    let messages = {
+        confirm: "{{ 'Ok' | trans }}",
+        unauthorized: "{{ 'Authorization is required.' | trans }}"
+    };
+
+    /**
+     * Redirects the user to the given URL.
+     *
+     * @param url       An URL string
+     */
+    function redirectTo(url) {
+        window.location.replace(url);
+    }
+
+    return {
+        DEFAULT_HANDLERS: {
+            401: function() {
+                swal({
+                    icon: ERROR_TYPE,
+                    text: messages.unauthorized,
+                    button: messages.confirm
+                }).then(function() {
+                    redirectTo(LOGIN_URL);
+                });
+            }
+        }
+    };
+
+})();

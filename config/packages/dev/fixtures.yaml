@@ -1,0 +1,18 @@
+doctrine_fixtures:
+    users:
+        # configure user fixtures
+        rand_users: 2
+        domain: 'example.org'
+        password: '12345'
+    records:
+        # configure Expedient fixtures
+        rand_records: 40
+    masters:
+        # configure master max values
+        offices: 6580
+        clients: 80
+        providers: 100
+    vertical:
+        vertical: 4
+    company:
+        company: 3

@@ -1,0 +1,26 @@
+<!-- Modal seleccionar tipo mesaje a enviar (Muro) -->
+<div class="modal fade" id="muro_type_message" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog muro_modal_respuesta_tarea" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ 'muro.select-type-msg-send'|trans }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row mt-20 mb-20">
+                    <div class="col-lg-12">
+                        <ul class="select-type-message">
+                            <li accessKey="notificacion" role="option"><i class="fas fa-comment-alt fa-fw"></i>{{ 'muro.lbl-wall-message'|trans }}</a></li>
+                            {% for tT in taskTypes %}
+                                {% set isform = (tT.form == '[]' or tT.form is null)?0:1 %}
+                                <li accessKey="{{ tT.id }}" datatype="{{ tT.description|trans  }}" data-action="{{ isform  }}" role="option"><i class="fas {{ tT.icon }} fa-fw"></i>{{ tT.description|trans  }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

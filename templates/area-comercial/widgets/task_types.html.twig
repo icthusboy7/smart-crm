@@ -1,0 +1,20 @@
+{% block widgetContent %}
+	<div class="table-responsive">
+        <ul class="list-group fs-12">
+            {% if task_types is defined and task_types|length > 0 %}
+            {% for type in task_types %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ type.description }}
+                    {% if type.isSpecial == true %}
+                        <i class="fas fa-table fa-fw"></i>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            {% else %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ 'No task types'| trans }}
+                </li>
+            {% endif %}
+        </ul>
+	</div>
+{% endblock %}

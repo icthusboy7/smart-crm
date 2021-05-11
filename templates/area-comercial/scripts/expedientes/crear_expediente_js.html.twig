@@ -1,0 +1,461 @@
+<script>
+    $(document).ready(function() {
+        $('#switch_checkbox').on('change', function(){
+            toggleNoReportCheckBox();
+        });
+        if ($('#sin_report_chk').val() === 'true') {
+            $('.switch').click();
+        }
+        $('#Customer').select2({
+            allowClear: true,
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/findCustomer',
+                data: function (params) {
+                    var queryParameters = {
+                        q: params.term
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            minimumInputLength: 3,
+            placeholder: '{{ "Search for Customer"|trans }}',
+
+        });
+
+        $('#Provider').select2({
+            allowClear: true,
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/findProvider',
+                data: function (params) {
+                    var queryParameters = {
+                        q: params.term
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+
+                    return {results: data};
+                },
+                cache: true
+            },
+            minimumInputLength: 3,
+            placeholder: '{{ "Search for Provider"|trans }}',
+        });
+
+        $('#Office').select2({
+            allowClear: true,
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/selectOffices',
+                data: function (params) {
+                    var queryParameters = {
+                        q: params.term
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+
+                    return {results: data};
+                },
+                cache: true
+            },
+            minimumInputLength: 3,
+            placeholder: '{{ "Search for an Office"|trans }}'
+        });
+
+        $('#Pipeline_responsable').select2({
+            allowClear: true,
+            placeholder: '{{ "Search for a CBK responsible"|trans }}'
+        });
+
+        $('#Internal_manager').select2({
+            allowClear: true,
+            placeholder: '{{ "Search for a CBK internal manager"|trans }}'
+        });
+
+        $('#External_manager').select2({
+            allowClear: true,
+            placeholder: '{{ "Search for a CBK external manager"|trans }}'
+        });
+
+        if ($("#esLinia").val() == 0) {
+            hideLinia();
+        }else{
+            showLinia();
+        }
+
+        if($('#Customer').val() !== null){
+            var type = 'pipeline';
+            var data = 'nif='+$('#Customer').val()+'&type='+type;
+            getCustomerAlerts(data);
+        }
+
+
+        if($('#Provider').val() !== null){
+            var type = 'pipeline';
+            var data = 'nif='+$('#Provider').val()+'&type='+type;
+            getProviderAlerts(data);
+        }
+
+        if($('#Office').val() !== null){
+            var type = 'pipeline';
+            var data = 'office='+$('#Office').val()+'&type='+type;
+            getOfficeAlerts(data);
+        }
+
+        $('.money').mask('000,000,000,000,000', {reverse: true});
+        $('.percent').mask('##0.00', {reverse: true});
+    });
+
+    var icons = {
+        time: 'fas fa-clock',
+        date: 'fas fa-calendar',
+        up: 'fas fa-arrow-up',
+        down: 'fas fa-arrow-down',
+        previous: 'fas fa-chevron-left',
+        next: 'fas fa-chevron-right',
+        today: 'fas fa-calendar-check-o',
+        clear: 'fas fa-trash',
+        close: 'fas fa-times'
+    };
+
+    $('#Activation_month').datetimepicker({
+        format: 'MM/YYYY',
+        locale: 'es',
+        icons: icons
+    });
+
+    $('#dtpdispo_1').datetimepicker({
+        format: 'MM/YYYY',
+        locale: 'es',
+        icons: icons
+    });
+
+    $('#crear_expediente_btn').click(function() {
+        validateQuotes(true);
+    });
+
+    $('#add_quote').click(function() {
+        var clone = $(this).parent().next('div').children().first().clone();
+        $(clone).children().children('input').val(null);
+        $(clone).children().children('input').removeAttr('style');
+        $(clone).children().children('span').text('');
+        $('#quotes_list').append(clone);
+    });
+
+    $("#delete_quote").click(function() {
+        if ($('#quotes_list').children().length > 1) {
+            $('#quotes_list .cotizaciones_group').last().remove();
+        }
+    });
+    $('#quotes_list').on('click', '.delete_single_quote', function(){
+        if ($(this).parent().parent().parent().children().length > 1) {
+            $(this).parent().parent().remove();
+        }
+    });
+    $('#provisions_list').on('click', '.delete_single_quote', function(){
+        if ($(this).parent().parent().parent().children().length > 1) {
+            $(this).parent().parent().remove();
+        }
+    });
+
+    $("#validate_quote").click(function() {
+        validateQuotes(false);
+    });
+
+    $('#provisions_list').on('click','.add_quote_dispo', function() {
+        var clone = $(this).parent().next('div').children().first().clone();
+        $(clone).children().children('input').val(null);
+        $(clone).children().children('input').removeAttr('style');
+        $(clone).children().children('span').text('');
+        $(this).parent().next('div').append(clone);
+    });
+
+    $('#provisions_list').on('click','.delete_quote_dispo', function() {
+        if($(this).parent().next('div').children().length > 1) {
+            $(this).parent().next('div').children().last().remove();
+        }
+    });
+
+    $("#esLinia").change(function () {
+        if(this.value == 0){
+            hideLinia();
+        }else{
+            showLinia();
+        }
+    });
+
+    $('#add_provisions').click(function() {
+        var data_id = $('#provisions_list .disposicionGroup').last().data("id") + 1;
+        $('#provisions_list .disposicionGroup').last().after('{% include 'area-comercial/forms/disposicion_form.html.twig' %}');
+
+        var form    =  $('#provisions_list .disposicionGroup').last();
+        form.attr("data-id", data_id);
+        var inputs  = form.find('input');
+        var selects = form.find('select');
+
+        inputs.each(function () {
+            if ($(this).attr("name").indexOf("importe") >= 0){
+                $(this).attr("name", "importe_"+data_id);
+            }else if($(this).attr("name").indexOf("fechaPosibleActivacion") >= 0){
+                $(this).attr("name", "fechaPosibleActivacion_"+data_id);
+                $(this).attr("data-target", "#dtpdispo_"+data_id);
+                $(this).next().attr("data-target", "#dtpdispo_"+data_id);
+                $(this).parent().attr("id", "#dtpdispo_"+data_id);
+            }else if($(this).attr("name").indexOf("tin") >= 0){
+                $(this).attr("name", "tin_"+data_id);
+            }else if($(this).attr("name").indexOf("numCoti") >= 0){
+                $(this).attr("name", "numCoti_"+data_id+"[]");
+            }
+        });
+        selects.each(function () {
+            if ($(this).attr("name").indexOf("porcentajeProbabilidad") >= 0){
+                $(this).attr("name", "porcentajeProbabilidad_"+data_id);
+            }else if($(this).attr("name").indexOf("estado") >= 0){
+                $(this).attr("name", "estado_"+data_id);
+            }
+        });
+
+        $('#dtpdispo_'+data_id).datetimepicker({
+            format: 'MM/YYYY',
+            locale: 'es',
+            icons: icons
+        });
+
+    });
+
+    $('#delete_provisions').click(function() {
+        if($('#provisions_list .disposicionGroup').last().data("id") != 1) {
+            $('#provisions_list .disposicionGroup').last().remove();
+        }
+    });
+
+    $('#Customer').change( function(){
+        var type = 'pipeline';
+        var data = 'nif='+$(this).val()+'&type='+type;
+        getCustomerAlerts(data);
+    });
+
+    $('#Provider').change( function(){
+        var type = 'pipeline';
+        var data = 'nif='+$(this).val()+'&type='+type;
+        getProviderAlerts(data);
+    });
+
+    $('#Office').change( function(){
+        var type = 'pipeline';
+        var data = 'office='+$(this).val()+'&type='+type;
+        getOfficeAlerts(data);
+    });
+
+    $('.expedientes_list_copy_btn').click(function (){
+        var body = $('#expediente_list tbody');
+        var rows = $(body).children().length;
+        $('#isCopy').val(1);
+        if(rows === 0){
+            getAllExpedientes();
+        }
+    });
+
+    $('.expedientes_list_join_btn').click(function (){
+        var body = $('#expediente_list tbody');
+        var rows = $(body).children().length;
+        $('#isCopy').val(0);
+        if(rows === 0){
+            getAllExpedientes();
+        }
+    });
+
+    $('#button_copiar_datos_exp').on('click', function() {
+        var expediente_id = $('#expediente_list').find('[selected]').children('input').val();
+        var isCopy = $('#isCopy').val();
+        if (isCopy === "0") {
+            fillExpedienteForm(expediente_id, true);
+        } else {
+            fillExpedienteForm(expediente_id, false);
+        }
+        $('#expediente_list_modal').modal('hide');
+    });
+
+    $( "#Office" ).on('change', function() {
+        let office = $(this).val();
+        getResponsableOffice(office);
+    });
+
+    $('#updateLineInfo_btn').on('click', function() {
+        getLineInfo();
+    });
+    /*************************************/
+    /************  FUNCTIONS  ************/
+    /*************************************/
+
+    function hideLinia(){
+        $('#provisions_div').hide();
+        $('#line_information_div').hide();
+        $('#line_number_inp_group').hide();
+    }
+    function showLinia(){
+        $('#provisions_div').show();
+        $('#line_information_div').show();
+        $('#line_number_inp_group').show();
+    }
+    function validateQuotes(create){
+        var result = true;
+        var totalCotis = 0;
+        var doneCotis = 0;
+        $('input[name^="numCoti"]').each(function() {
+            if($(this).val() !== '') {
+                totalCotis++;
+            }
+        });
+        if(totalCotis === 0 && create === true){
+            var formData = $('#create_pipeline').serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/createExpediente',
+                data: formData,
+                success: function () {
+                    swal("{{ "Nice"|trans }}", "{{ "Pipeline created!"|trans }}", "success");
+                }
+            }).done(function(){
+                var url = '{{ path('comercial_expedientes') }}';
+                window.open(url, '_self');
+            });
+        }
+        $('input[name^="numCoti"]').each(function() {
+            if($(this).val() !== '') {
+                var quote = 'quote_id=' + $(this).val();
+                var quoteID = $(this).val();
+                var input = $(this);
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path('SAPValidarCotizacion') }}',
+                    data: quote,
+                    error: function(){
+                        success = false;
+                    }
+                }).done(function (data) {
+                    if (data === 'OK') {
+                        $(input).next().next("span").text("");
+                        $(input).css('background-color', 'rgba(0, 126, 174, 0.16)');
+                    } else {
+                        $(input).next().next("span").text("{{ "coti_input_fail"|trans }}");
+                        $(input).css('background-color', 'rgba(229, 91, 53, 0.16)');
+                        result = false;
+                    }
+                    doneCotis++;
+                    if(doneCotis === totalCotis){
+                        if(create === true) {
+                            if (result === true) {
+                                var formData = $('#create_pipeline').serialize();
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/createExpediente',
+                                    data: formData,
+                                    success: function () {
+                                        swal("{{ "Nice"|trans }}", "{{ "Pipeline created!"|trans }}", "success");
+                                    }
+                                }).done(function(){
+                                    var url = '{{ path('comercial_expedientes') }}';
+                                    window.open(url, '_self');
+                                });
+                            } else {
+                                swal("{{ "Error"|trans }}", "{{ "Check quotes nº!"|trans }}", "error");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function fillExpedienteForm(expediente_id, disable){
+        var data = 'id_exp='+expediente_id;
+        if(disable === true){
+            disableExpedienteForm();
+        } else {
+            enableExpedienteForm();
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/query/getExpedienteForm',
+            data: data,
+            success: function(data){
+                let expediente = data.expediente[0];
+                $('#Title').val(expediente.titulo);
+                $('#Amount').val(expediente.importe);
+                $('#Type_result').val(expediente.tipo);
+                $('#Vertical option[value='+expediente.vertical+']').attr('selected', 'true');
+                $('#Vertical option[value='+expediente[0].porcentajeActivacion+']').attr('selected', 'true');
+            }
+        });
+    }
+
+    function disableExpedienteForm() {
+        let form = $('#create_pipeline');
+        $(form).find('input').attr('disabled', 'true');
+        $(form).find('select').attr('disabled', 'true');
+        $('#Observations').attr('disabled', 'true');
+    }
+
+    function enableExpedienteForm() {
+        let form = $('#create_pipeline');
+        $(form).find('input').removeAttr('disabled');
+        $(form).find('select').removeAttr('disabled');
+        $('#Observations').removeAttr('disabled');
+    }
+
+    function toggleNoReportCheckBox() {
+        let check_box = $('#sin_report_chk');
+        if (check_box.attr('checked') === 'checked') {
+            check_box.removeAttr('checked').val(false);
+        } else {
+            check_box.attr('checked', true).val(true);
+        }
+    }
+
+    function getLineInfo() {
+        let formData = 'lineNumber='+$('#line_number').val();
+        $.ajax({
+            type: 'POST',
+            url: '{{ path("SAPValidarLinia") }}',
+            data: formData,
+            success: function (data) {
+                if (data.length === 0) {
+                    $('#error_line').text('{{ "error_line"|trans }}');
+                } else {
+                    $('#line_state').val(data['estado']);
+                    $('#line_limit_amount').val(data['limite']);
+                    $('#line_available_amount').val(data['disp']);
+                    $('#line_end_date').val(data['fvenc']);
+                    $('#error_line').text('');
+                }
+            }
+        });
+    }
+
+    function getResponsableOffice(office) {
+        let formData = 'office='+office;
+        $.ajax({
+            type: 'POST',
+            url: '{{ path("findOfficeResponsable") }}',
+            data: formData,
+            success: function (data) {
+                if (data.id != 0) {
+                    $('#Pipeline_responsable').select2('val', '');
+                    $('#Pipeline_responsable').append('<option selected value="'+data.id+'">'+'('+data.regNumber+') '+data.name+'</option>');
+                }
+            }
+        });
+    }
+
+</script>

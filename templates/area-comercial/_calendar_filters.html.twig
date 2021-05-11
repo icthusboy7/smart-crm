@@ -1,0 +1,37 @@
+<div id="filters-container">
+
+  <!-- Filters heading -->
+
+  <div id="filters-header">
+    <button aria-expanded="true"
+            aria-controls="filters-body"
+            data-target="#filters-body"
+            data-toggle="collapse"
+            class="accordion accordion-blue">
+      {{ "Calendar filters" | trans }}
+    </button>
+  </div>
+
+  <!-- Filters form -->
+
+  <div id="filters-body"
+       aria-labelledby="filters-header"
+       data-parent="#filters-container"
+       class="collapse">
+    <form id="filters-form" name="filters-form" autocomplete="off">
+      <div class="card">
+        <div class="container p-10">
+          <div class="row">
+            <div class="col-md  pb-10">
+              {% include('widgets/_status_picker.html.twig') %}
+            </div>
+            <div class="col-md pb-10">
+              {% include('widgets/_authors_picker.html.twig') %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>

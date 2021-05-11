@@ -1,0 +1,191 @@
+<script>
+    $("#type_command").prop('required',true);
+    $('#areaDelimitador').hide();
+    $('div.progress').hide();
+
+    $( "#type_command" ).change(function() {
+        var str = "";
+        $( "#type_command option:selected" ).each(function() {
+            str += $( this ).val();
+        });
+
+        if(str == 'comerciales' || str == 'gestores')
+        {
+
+            $('#areaDelimitador').hide();
+            $("#delimiter").prop('required',false);
+        }
+        else
+        {
+            $('#areaDelimitador').show();
+            $("#delimiter").prop('required',true);
+        }
+    });
+
+    $("#upload_translations").ajaxForm(function() {
+        swal('Translations upload', '', 'success');
+        $("#button_translations").prop('disabled', false);
+    });
+    $("#upload_maestros").ajaxForm(function() {
+        swal('Maestros upload', '', 'success');
+        $("#button_maestros").prop('disabled', false);
+        location.reload();
+    });
+    const commandForm = $("#command_form");
+
+    commandForm.ajaxForm({
+        success: function (data) {
+            $("#button_command").prop('disabled', false);
+            $("#button_delete_file").prop('disabled', false);
+            $('#output_modal').modal('show');
+            $(".output").empty();
+            $(".output").append(data);
+            $('div.progress').hide();
+        },
+        error: function(xhr) {
+            if (xhr.status === 500) {
+                swal({
+                    title: '{{ 'uploads.file_to_many_strong' | trans}}',
+                    text: '{{ 'uploads.you_can_upload_background' | trans}}',
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            var type_command = $("#type_command").serialize();
+                            var files_command = $("#files_command").serialize();
+                            var delimiter = $("#delimiter").serialize();
+                            var type = "W";
+                            var data = type_command+"&"+files_command+"&"+delimiter+"&type="+type;
+
+                            $.ajax({
+                                type: 'POST',
+                                url: '/pushCommand',
+                                data: data,
+                                success: function(){
+                                    swal('{{ 'uploads.start_into_background' | trans }}', '', 'success').then(function() {
+                                        $('div.progress').hide();
+                                        $("#button_delete_file").prop('disabled', false);
+                                        $("#button_comand").prop('disabled', false);
+                                    });
+                                }
+                            });
+                        } else {
+                            swal("Your imaginary file is safe!");
+                        }
+                    });
+            }
+            alert(xhr.status);
+        }
+    });
+    /*
+    commandForm.submit(function( event ) {
+        var type_command = $("#type_command").serialize();
+        var files_command = $("#files_command").serialize();
+        var delimiter = $("#delimiter").serialize();
+        var type = "W";
+        var data = type_command+"&"+files_command+"&"+delimiter+"&type="+type;
+
+        $.ajax({
+            type: 'POST',
+            url: '/pushCommand',
+            data: data,
+            success: function(){
+                swal('Subida realizada!', '', 'success').then(function() {
+                    $('div.progress').hide();
+                    $("#button_delete_file").prop('disabled', false);
+                    $("#button_comand").prop('disabled', false);
+                });
+            }
+        });
+        event.preventDefault();
+    });
+    */
+    $('#save_import').click(function() {
+
+        var type_command = $("#type_command").serialize();
+        var files_command = $("#files_command").serialize();
+        var delimiter = $("#delimiter").serialize();
+        var type = "W";
+        var data = type_command+"&"+files_command+"&"+delimiter+"&type="+type;
+        $('div.progress').show();
+        $('#progressbar').addClass('active');
+        $('#progressbar').addClass('progress-bar-striped');
+        document.getElementById("progressbar").textContent = '{{ 'loading...'|trans }}';
+        $("#button_delete_file").prop('disabled', true);
+        $("#button_comand").prop('disabled', true);
+
+        $.ajax({
+            type: 'POST',
+            url: '/pushCommand',
+            data: data,
+            success: function(){
+                swal('{{ 'uploads.start_into_background' | trans }}', '', 'success').then(function() {
+                    $('div.progress').hide();
+                    $("#button_delete_file").prop('disabled', false);
+                    $("#button_comand").prop('disabled', false);
+                });
+            }
+        });
+        /*
+        $.ajax({
+            type: 'POST',
+            url: '/readCommand',
+            data: data,
+            success: function(){
+                $('#progressbar').removeClass('active');
+                $('#progressbar').removeClass('progress-bar-striped');
+                document.getElementById("progressbar").textContent = '{{ 'Completed!'|trans }}';
+                $("#button_delete_file").prop('disabled', false);
+                $("#button_comand").prop('disabled', false);
+                swal('Subida realizada!', '', 'success').then(function() {
+                    $('div.progress').hide();
+                });
+            }
+        }).fail( function() {
+            swal('Upload error!', 'Import will be executed from background ', 'error').then(function() {
+                $('div.progress').hide();
+                $("#button_delete_file").prop('disabled', false);
+                $("#button_comand").prop('disabled', false);
+            });
+
+        });
+        */
+        $('#output_modal').modal('toggle');
+    });
+
+    $('#button_delete_file').click(function() {
+        if (!$("#files_command").val()) {
+            alert('{{ 'Please, select a file.'|trans }}');
+        }
+        else {
+            $('div.progress').hide();
+            var data = $("#files_command").serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/deleteFile',
+                data: data,
+                success: function(){
+                    swal('{{ 'Deleted file!'|trans }}', '', 'success');
+                    location.reload();
+                }
+            });
+        }
+    });
+
+    function move() {
+        var elem = document.getElementById("myBar");
+        var width = 0;
+        var id = setInterval(frame, 1);
+        function frame() {
+            if (width >= 100) {
+                clearInterval(id);
+            } else {
+                width++;
+                elem.style.width = width + '%';
+                elem.innerHTML = width * 1  + '%';
+            }
+        }
+    }
+</script>

@@ -1,0 +1,81 @@
+<link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/alert_modal.css') }}">
+{{ form_start(form) }}
+        <div id="alerts_form">
+                {{ form_widget(form.id) }}
+                <div class="row">
+                        <div class="col-lg-3 col-md-12">
+                                {{ 'expediente' |trans }}
+                        </div>
+                        <div class="col-lg-9 col-md-12">
+                                {{ form_widget(form.expediente) }}
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="col-lg-3 col-md-12">
+                                {{ 'cotizacion' |trans }}
+                        </div>
+                        <div class="col-lg-9 col-md-12">
+                                {{ form_widget(form.cotizacion) }}
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="col-lg-3 col-md-12">
+                                {{ 'persona' |trans }}
+                        </div>
+                        <div id="persons_input_group" class="col-lg-9 col-md-12">
+                                {{ form_widget(form.personanif) }}
+                                <div id="alert_area_person"></div>
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="col-lg-3 col-md-12">
+                                {{ 'oficina' |trans }}
+                        </div>
+                        <div id="offices_input_group" class="col-lg-9 col-md-12">
+                                {{ form_widget(form.oficina) }}
+                                <div id="alert_area_office"></div>
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="col-lg-3 col-md-12">
+                                {{ 'horizontal' |trans }}
+                        </div>
+                        <div class="col-lg-9 col-md-12">
+                                {{ form_widget(form.horizontal) }}
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="col-lg-3 col-md-12">
+                                {{ 'vertical' |trans }}
+                        </div>
+                        <div class="col-lg-9 col-md-12">
+                                {{ form_widget(form.vertical) }}
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="col-lg-12 col-md-12">
+                                {{ 'missatge' |trans }}
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                                {{ form_widget(form.missatge) }}
+                        </div>
+                </div>
+                <div class="row">
+                        <div class="col-lg-12 col-md-12">
+                                {{ 'nivell' |trans }}
+                                {{ form_widget(form.nivel) }}
+                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12">
+                        {{ 'isAlert' |trans }}
+                        {{ form_widget(form.isAlert) }}
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        {{ 'active' |trans }}
+                        {{ form_widget(form.active) }}
+                    </div>
+                </div>
+        </div>
+{{ form_end(form) }}
+

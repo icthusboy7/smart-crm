@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/muro.css') }}" />
+{% endblock %}
+{% block body %}
+    <div id="wrapper">
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+        )) }}
+        <div class="container muro">
+            <div id="page-wrapper">
+                <section class="bg-container" id="services">
+                    <div class="d-md-block d-lg-block d-sm-block">
+                        <div class="row h-100 seletor-box">
+                            <section class="bg-container col-lg-{{ (objAlert and tareaNoti == null) ? '8' : '12' }}" id="main-muro">
+                                <div class="text-center">
+                                    <div id="muro-tab" class="col-lg-12 col-sm-12 col-md-{{ (objAlert and tareaNoti == 1) ? '8' : '12' }}">
+                                        {{ render(controller('App\\Controller\\HomeController::getBreadcrumb', { 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params') })) }}
+                                    </div>
+                                    <div class="d-md-block d-lg-none">
+                                        <p class="text-center">
+                                            <a class="btn btn-sm btn-alertas-mobile collapsed" data-toggle="collapse" href="#alertas_mobile" role="button" aria-expanded="false" aria-controls="collapseExample"><i class="fas fa-exclamation-triangle"></i>
+                                                {{ 'muro.show-alerts' | trans }}
+                                            </a>
+                                        </p>
+
+                                        <div class="collapse" id="alertas_mobile" style="">
+                                            {% include('area-comercial/muro/view_alerts_and_notices_mobile.html.twig')  %}
+                                        </div>
+                                    </div>
+                                    {% if expedientesLinked["Vinculados"]|length > 0 %}
+                                        <div class="text-center col-lg-3" style="display: inline-block;">
+                                            <select name="expSelector">
+                                                {% for expedienteVinculado in expedientesLinked["Vinculados"] %}
+                                                    <option value="{{ expedienteVinculado }}"{{ (expedientesLinked["VinculadosText"][expedienteVinculado|trim] == expediente ? ' selected="selected"' : '') }}>{{ expedientesLinked["VinculadosText"][expedienteVinculado|trim] }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    {% else %}
+                                        <strong>{{ (expediente ? "expediente"|trans ~ " " ~ expediente : (tareaNoti ? "muro-tarea"|trans ~ " " ~ tareaNoti : "muro-general"|trans)) }}</strong>
+                                    {% endif %}
+                                    {% set numcotizacion = '' %}
+                                    {% if cotizacionesLinked|length > 0 %}
+                                        <div class="text-center col-lg-1" style="display: inline-block;">
+                                            <strong> » </strong>
+                                        </div>
+                                        <div class="text-center col-lg-3" style="display: inline-block;">
+                                            <select name="cotiSelector">
+                                                <option value="">« {{ "cotizacion"|trans }} »</option>
+                                                {% for coti in cotizacionesLinked %}
+                                                    <option value="{{ coti.cotizacion }}"{{ (coti.cotizacion == numCoti ? ' selected="selected"' : '') }}>{{ coti.cotizacion }}</option>
+                                                    {% if coti.cotizacion == numCoti > 0 %}
+                                                        {% set numcotizacion = coti.cotizacion %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div id="muro-tab" class="col-lg-12 col-sm-12 col-md-{{ (objAlert and tareaNoti == 1) ? '8' : '12' }}">
+                                    <ul class="nav nav-tabs left faq-cat-tabs">
+                                        <li class="nav-item">
+                                            <a class="principal nav-link active" href="#todos" data-toggle="tab" role="tab"><i class="fas fa-comments"></i> <span class="d-none d-sm-inline">{{ "muro.all-messages"|trans }} </span>({{ messagesWall|length }})</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="principal nav-link" href="#tareas-abiertas" data-toggle="tab" role="tab"><i class="fas fa-tasks"></i> <span class="d-none d-sm-inline">{{ "muro.task-simple-open"|trans }} </span>({{ mensajesTareas|length }})</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="principal nav-link" href="#peticiones-cotizacion" data-toggle="tab" role="tab"><i class="fas fa-edit"></i> <span class="d-none d-sm-inline">{{ "muro.task-especial-open"|trans }} </span>({{ mensajesPeticiones|length }})</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="principal nav-link" href="#adjuntos-todos" data-toggle="tab" role="tab"><i class="fas fa-paperclip"></i><span class="d-none d-sm-inline"></span></a>
+                                        </li>
+                                    </ul>
+                                    <div class="separador"></div>
+                                    <div class="tab-content">
+                                        {% include('area-comercial/muro/view_muro_messages.html.twig')  %}
+                                        {% include('area-comercial/muro/view_muro_tareas_list.html.twig')  %}
+                                        {% include('area-comercial/muro/view_muro_peticiones_cotizacion_list.html.twig')  %}
+                                        {% include('area-comercial/muro/view_muro_adjuntos_list.html.twig')  %}
+                                    </div>
+                                </div>
+                            </section>
+                            <div id="alertas_sidenav" class="alertas_sidenav {{ (objAlert and tareaNoti == null ) ? 'col-lg-4' : 'hidden' }} p-10 d-none d-lg-block">
+                                {% include('area-comercial/muro/view_alerts_and_notices.html.twig')  %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-20 fixed_muro_boton_plus">
+                        <div class="col-lg-12">
+                            <p>
+                                <a href="#" class="muro_boton_plus fs-30" data-toggle="modal" id="selectModal"><i class="fas fa-plus-circle"></i></a>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div id="drag-and-drop" class="hidden handleDragAndDrop"></div>
+    </div>
+    {% include('area-comercial/modals/muro_type_message.html.twig') %}
+    {% include('area-comercial/modals/muro_send_message.html.twig') %}
+    {% include('area-comercial/modals/muro_send_response_message_tarea.html.twig') %}
+    {% include('area-comercial/modals/muro_send_cancel_message_tarea.html.twig') %}
+    {% include('area-comercial/modals/muro_send_reponse_special.html.twig') %}
+    {% include('area-comercial/modals/muro_view_form_task.html.twig') %}
+    {% include('area-comercial/modals/muro_validate_sap_cotizacion.html.twig') %}
+    <script src="{{ asset("assets/js/fileDrop.js") }}"></script>
+    <script src="{{ asset("assets/js/form-builder.min.js") }}"></script>
+    <script src="{{ asset('assets/js/form-render.min.js') }}"></script>
+    {% include('area-comercial/scripts/muro_js.html.twig') %}
+{% endblock %}

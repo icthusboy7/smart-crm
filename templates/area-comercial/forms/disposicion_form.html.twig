@@ -1,0 +1,67 @@
+{% filter spaceless %}
+    <div class="disposicionGroup" data-id="{% if index is defined %}{{ index }}{% else %}1{% endif %}">
+        {% if disposicion is defined %}
+            <input value="{{ disposicion.id }}" type="hidden" name="dispo_id_{{ index }}">
+        {% endif %}
+        <div class="disposicionForm">
+            <div class="input-group">
+                <input type="text" name="importe_{% if index is defined %}{{ index }}{% else %}1{% endif %}" class="float-left form-control money" {% if disposicion.importe is defined %} value="{{ disposicion.importe }}"{% endif %} placeholder="Importe" autocomplete="off" maxlength="19">
+                <div class="input-group-append">
+                    <span class="input-group-text">€</span>
+                </div>
+            </div>
+            <div class="input-group date dateTimePickerContainer" id="dtpdispo_1" data-target-input="nearest">
+                <input type="text" {% if disposicion.fechaPosibleActivacion is defined %} value="{{ disposicion.fechaPosibleActivacion }}"{% endif %} name="fechaPosibleActivacion_{% if index is defined %}{{ index }}{% else %}1{% endif %}" class="float-left form-control datetimepicker-input" placeholder="Mes de activación" data-target="#dtpdispo_1">
+                <div class="input-group-append" data-target="#dtpdispo_1" data-toggle="datetimepicker">
+                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                </div>
+            </div>
+            <div class="input-group">
+                <select name="porcentajeProbabilidad_{% if index is defined %}{{ index }}{% else %}1{% endif %}" class="float-left form-control">
+                    <option disabled="disabled" {% if disposicion is not defined %}selected="selected"{% endif %}>% de probabilidad</option>
+                    <option {% if disposicion is defined and disposicion.porcentajeProbabilidad == 25 %}selected{% endif %} value="25">25%</option>
+                    <option {% if disposicion is defined and disposicion.porcentajeProbabilidad == 50 %}selected{% endif %} value="50">50%</option>
+                    <option {% if disposicion is defined and disposicion.porcentajeProbabilidad == 75 %}selected{% endif %} value="75">75%</option>
+                    <option {% if disposicion is defined and disposicion.porcentajeProbabilidad == 100 %}selected{% endif %} value="100">100%</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <input type="text" {% if disposicion.tin is defined %} value="{{ disposicion.tin }}"{% endif %} name="tin_{% if index is defined %}{{ index }}{% else %}1{% endif %}" class="float-left form-control percent" placeholder="Tipo resultante" autocomplete="off">
+                <div class="input-group-append">
+                    <span class="input-group-text">%</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <select name="estado_{% if index is defined %}{{ index }}{% else %}1{% endif %}" class="float-left form-control">
+                    {% for estado in estados %}
+                        <option {% if disposicion.status.id is defined and estado.id == disposicion.status.id %}selected{% elseif loop.index == 0 %} selected {% endif %} value="{{ estado.id }}">{{ estado.status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="card blockCotizacionesDispo mt-10">
+            <div class="card-header">
+                <span style="color:black;">{{ "Provisions_quotes"|trans }}</span>
+            </div>
+            <div class="card-body">
+                <div class="inputs_BlockCotizaciones">
+                    <button type="button" class="btn btn-blue btn-sm add_quote_dispo">{{ "Add_quote"|trans }}</button>
+                    <button type="button" class="btn btn-red btn-sm delete_quote_dispo">{{ "Delete_quote"|trans }}</button>
+                </div>
+                <div class="row pl-10">
+                    {% if disposicion.cotizaciones is defined and disposicion.cotizaciones|length > 0 %}
+                        {% for cotizacion in disposicion.cotizaciones %}
+                            {% include 'area-comercial/forms/cotizacion_form.html.twig' with {'cotizacion': cotizacion, 'index': index} %}
+                        {% endfor %}
+                    {% else %}
+                        {% if index is defined %}
+                            {% include 'area-comercial/forms/cotizacion_form.html.twig'  with {'index': index}  %}
+                        {% else %}
+                            {% include 'area-comercial/forms/cotizacion_form.html.twig' %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfilter %}

@@ -1,0 +1,31 @@
+{% block widgetContent %}
+	<div class="table-responsive">
+		<table class="table table-sm table-hover fs-12">
+			<thead class="thead-light">
+			<tr>
+				<th>{{ "Title"|trans }}</th>
+				{% if loop_widget == 3 %}
+					<th> {{ "Amount"|trans }} </th>
+					<th> {{ "Chance"|trans }} </th>
+					<th> {{ "Vertical" }}</th>
+					<th> {{ "Product_type"|trans }} </th>
+				{% endif %}
+				<th>{{ "UpdatedAt"|trans }}</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for expediente in expedientes %}
+				<tr>
+					<td>{{ expediente.titulo }}</td>
+                    {% if loop_widget == 3 %}
+						<th> {{ expediente.importe }}</th>
+						<th> {{ expediente.porcentajeProbabilidad }}%</th>
+						<td>{% if expediente.vertical is null %} - {% else %}{{ expediente.vertical.name }}{% endif %}</td>
+						<td>{% if expediente.productoId is null %} - {% else %}{{ expediente.productoId.nombre }}{% endif %}</td>
+                    {% endif %}
+					<td>{{ expediente.updatedAt|date("d/m/Y") }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+{% endblock %}

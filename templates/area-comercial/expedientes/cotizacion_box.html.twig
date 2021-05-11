@@ -1,0 +1,37 @@
+<table class="table table-sm table-hover fs-12">
+    <thead class="thead-light">
+    <tr>
+        <th></th>
+        <th>{{ "Coti_number"|trans }}</th>
+        <th>{{ "State"|trans }}</th>
+        <th>{{ "Amount"|trans }}</th>
+        <th>{{ "Term"|trans }}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {%  if cotizaciones|length == 0 %}
+        <tr>
+            <td colspan="6" align="center">{{ 'No hay cotizaciones para este expediente'| trans }}</td>
+        </tr>
+    {%  endif %}
+    {% for cotizacion in cotizaciones %}
+        <tr {% if cotizacion.estado == "Caducada" %}class="text-blue text-strong"{% endif %}>
+            <td {% if cotizacion.estado == "Caducada" %}class="text-center"><span class="dot dot-blue">{% else %}>{% endif %}</span></td>
+            <td>{{ cotizacion.numCoti }}</td>
+            <td>{{ cotizacion.estado }}</td>
+            <td>{{ cotizacion.inversion }}</td>
+            <td>{{ cotizacion.plazo }}%</td>
+            <td>
+                <select class="form-control form-control-sm float-right select_options_coti" onchange="location = this.value;">
+                    <option data-action="default" value="#">- {{ "quotes.actions"|trans }} -</option>
+                    <option value="{{ path('comercial_ver_muro_expediente', {idExpediente: expediente.id}) }}">{{ "quote.show_wall"|trans }}</option>
+                    <option data-action="favorites" data-id-exp="{{ expediente.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.favorites"|trans }}</option>
+                    <option data-action="unjoin" data-id-exp="{{ expediente.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.unjoin"|trans }}</option>
+                    <option data-action="update" data-id-exp="{{ expediente.id }}" data-id-coti="{{ cotizacion.numCoti }}" value="#" >{{ "quote.update"|trans }}</option>
+                </select>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

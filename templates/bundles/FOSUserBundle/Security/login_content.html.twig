@@ -1,0 +1,50 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block body %}
+    <div class="jumbotron text-center text-white">
+        <div class="logo-jumbotron pb-20"><img src="{{  asset('assets/img/logocbk.png') }}" class="pr-10"><span>S.M.A.R.T.</span></div>
+        <p>{{ "layout.login"|trans }}</p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 offset-md-3">
+                <div class="single-service">
+                    {% for flash_message in app.session.flashbag.get('notice') %}
+                        <div class="flash-notice">
+                            {{ flash_message }}
+                        </div>
+                    {% endfor %}
+                    {% if error %}
+                        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+                    <form action="{{ path("fos_user_security_check") }}" method="post">
+                        {% if csrf_token %}
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                        {% endif %}
+                            <input name="_username" id="username" placeholder="{{ "form.username"|trans }}" type="text" value="{{ last_username }}" autofocus>
+                            <input name="_password" id="password" placeholder="{{ "form.password"|trans }}" type="password" value="">
+                            <input type="submit" class="btn btn-blue bt-submit" name="Entrar" value="{{ "security.login.submit"|trans }}">
+                    </form>
+                    <p class="text-center pt-20 pb-10">{{ "login_no_access"|trans({}, 'messages') }}</p>
+                    <input class="btn btn-yellow bt-submit btn-xs" value="{{ "registration.submit"|trans }}" onclick="window.location.href='{{ path('fos_user_registration_register') }}'" type="button">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {% if error %}
+        <div id="alert_credencials" class="alert alert-danger fade in" style="position: absolute; top:0; width:100%; text-align:center">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong>{{ error.messageKey|trans(error.messageData, 'security') }}</strong>
+        </div>
+        <script>
+            $( "#alert_credencials" ).delay(10000).fadeOut( 500, function() {
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+
+
+
+

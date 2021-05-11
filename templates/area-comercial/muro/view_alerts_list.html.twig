@@ -1,0 +1,33 @@
+<div id="alertas-{{ dataParent }}" class="panel-collapse collapse show">
+    {% if varAlert is defined and varAlert|length > 0 %}
+    {% set alert_header = '' %}
+    {% for alert in varAlert %}
+        <div class="box box_alertas">
+            <div class="icon">
+                <div class="prioridad">{{ alert.nivel }}</div>
+                <div class="info">
+                    <div class="muro_alertas_usuario">
+                        {% if dataParent == 'pipelines-destock' or  dataParent == 'pipelines-mobile' %}
+                            {% set alert_header = "Expediente: #{alert.expediente.titulo}" %}
+                        {% elseif dataParent == 'quotes-destock' or  dataParent == 'quotes-mobile'  %}
+                            {% set alert_header = "Cotizacion: #{alert.cotizacion}" %}
+                        {% elseif dataParent == 'offices-destock' or  dataParent == 'offices-mobile'  %}
+                            {% set alert_header = "Oficina: #{getOficinaName(alert.oficina)}" %}
+                        {% elseif dataParent == 'customers-destock' or  dataParent == 'customers-mobile'  %}
+                            {% set alert_header = "Cliente: #{getCustomerName(alert.personaNif)}" %}
+                        {% elseif dataParent == 'providers-destock' or  dataParent == 'providers-mobile'  %}
+                            {% set alert_header = "Proveedor: #{getProviderName(alert.personaNif)}" %}
+                        {% elseif dataParent == 'horizontal-destock' or  dataParent == 'horizontal-mobile'  %}
+                            {% set alert_header = "Horizontal: #{alert.horizontal}" %}
+                        {% elseif dataParent == 'vertical-destock' or  dataParent == 'vertical-mobile'  %}
+                            {% set alert_header = "Vertical: #{alert.vertical}" %}
+                        {% endif %}
+                        <a href="#">{{ alert_header }}</a>
+                    </div>
+                    <p class="preformated">{{ alert.missatge }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    {% endif %}
+</div>

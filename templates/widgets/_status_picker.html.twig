@@ -1,0 +1,18 @@
+{#
+ # Status selector.
+ #}
+
+<h2 class="mt-0">{{ "Status" | trans }}</h2>
+{% for s in states %}
+<div class="custom-control custom-checkbox font-weight-normal">
+  <input id="status-{{ s.id }}"
+         value="{{ s.id }}"
+         name="status_id"
+         type="checkbox"
+         class="custom-control-input">
+  <label for="status-{{ s.id }}"
+         class="custom-control-label pt-1">
+    {{ s.name | trans }}
+  </label>
+</div>
+{% endfor %}

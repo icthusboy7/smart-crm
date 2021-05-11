@@ -1,0 +1,11 @@
+{% block widgetContent %}
+	<ul class="list-group fs-12">
+        {% if contactos is defined %}
+		{% for contacto in contactos %}
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+			{{ contacto.name }} <span class="float-right">{{ contacto.phone }}</span>
+		</li>
+		{% endfor %}
+        {% endif %}
+	</ul>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% block widgetContent %}
+	<div class="table-responsive">
+		<table class="table table-sm table-hover fs-12">
+			<thead class="thead-light">
+			<tr>
+				<th>{{ "office"|trans }}</th>
+				<th>{{ "phone_number"|trans }}</th>
+			</tr>
+			</thead>
+			<tbody>
+            {% if oficinas is defined %}
+			{% for oficina in oficinas %}
+			<tr>
+				<td>{{ oficina.nombre }}</td>
+				<td>{{ oficina.telefonoPrincipal }}</td>
+			</tr>
+			{% endfor %}
+            {% endif %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}

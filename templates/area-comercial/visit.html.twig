@@ -1,0 +1,348 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {#<link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/listar_contactos.css') }}">#}
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/alert_modal.css') }}">
+    <style>
+        .form-group-hiddencheck input[type="checkbox"] {
+            display: none;
+        }
+        .form-group-hiddencheck input[type="checkbox"] + .btn-group > label span {
+            width: 20px;
+        }
+
+        .form-group-hiddencheck input[type="checkbox"] + .btn-group > label span:first-child {
+            display: none;
+        }
+        .form-group-hiddencheck input[type="checkbox"] + .btn-group > label span:last-child {
+            display: inline-block;
+        }
+
+        .form-group-hiddencheck input[type="checkbox"]:checked + .btn-group > label span:first-child {
+            display: inline-block;
+        }
+        .form-group-hiddencheck input[type="checkbox"]:checked + .btn-group > label span:last-child {
+            display: none;
+        }
+    </style>
+    <div id="wrapper">
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+        )) }}
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                {{ render(controller('App\\Controller\\HomeController::getBreadcrumb', { 'route': app.request.get('_route') })) }}
+                <section class="services bg-container">
+                    <div class="container">
+                        {% if visits %}
+                            <H2>{{ "Edit visit"|trans }}</H2>
+                        {% else %}
+                            <H2>{{ "Add visit"|trans }}</H2>
+                        {% endif %}
+                        <div class="containerWidget">
+                            <form id="form" class="needs-validation" novalidate>
+                                <input type="hidden" id="visitid" name="visitid" value="{% if visits %}{{visits.id}}{% endif %}">
+                                <input type="hidden" id="statusCancel" name="statusCancel" value="{{ statusCancel }}">
+                                <input type="hidden" id="methodValue" name="methodValue" value="{{ method }}">
+                                <input type="hidden" id="typeForm" name="typeForm" value="{{ typeForm }}">
+                                <div class="col-md-12 col-xs-12">
+                                    <div class = "row">
+                                        <label for="">{{ "visit type"|trans }}</label>
+                                        <div class="form-group">
+                                            <input type="checkbox" class="form-control" id="cboxCustomer" name="typeVisit[]"
+                                                {% if visits %}
+                                                    {% if visits.CustomerID %}
+                                                        checked
+                                                    {% endif %}
+                                                {% endif %}
+                                            > <label for="cboxCustomer">{{ "customer"|trans }}</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" class="form-control" id="cboxProvider" name="typeVisit[]"
+                                                {% if visits %}
+                                                    {% if visits.providerID %}
+                                                        checked
+                                                    {% endif %}
+                                                {% endif %}
+                                            > <label for="cboxProvider">{{ "provider"|trans }}</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="checkbox" class="form-control" id="cboxOffice" name="typeVisit[]"
+                                                {% if visits %}
+                                                    {% if visits.office %}
+                                                        checked
+                                                    {% endif %}
+                                                {% endif %}
+                                            > <label for="cboxOffice">{{ "office"|trans }}</label>
+                                        </div>
+                                        <div class="form-group typeError">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="customerArea" name="customerArea" class="row">
+                                    <input type="hidden" id="customerid" name="customerid" value="{{ customerid }}">
+                                    <input type="hidden" id="customertext" name="customertext" value="{{ customertext }}">
+                                    <input type="hidden" id="customerSearchNIF" name="customerSearchNIF">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div id="customers_input_group" class="form-group">
+                                            <div class="input-group">
+                                                <select id="Customer" name="Customer"
+                                                    class="js-example-basic-single js-example-responsive" style="width: 91%">
+                                                </select>
+                                                <a title="{{ "add_contact"|trans }}" class="btn btn-success btn-sm btn-ver-filtros float-right" role="button"
+                                                   href="#" data-toggle="modal" data-target="#add_new_contact" id="modalCustomer">
+                                                    <i class="fas fa-plus"></i>
+                                                </a>
+                                            </div>
+                                            <div id="alert_area_customer"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-xs-12">
+                                        <select class="custom-select" id="chargeCustomer" name="chargeCustomer"
+                                                placeholder="{{ "select charge"|trans }}"
+                                                title="{{ "charge"|trans }}">
+                                            <div class="dropdown-menu" aria-labelledby="chargeCustomer">
+                                                <option value="">{{ "select charge"|trans }}</option>
+                                                {% for Charges in allCharges %}
+                                                    <option value="{{ Charges.id }}"
+                                                        {% if visits %}
+                                                            {% if visits.CustomerCharge %}
+                                                                {% if visits.CustomerCharge.id == Charges.id %}
+                                                                    selected
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    >{{ Charges.name }}</option>
+                                                {% endfor %}
+                                            </div>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 col-xs-12" id="customerOtherArea" name="customerOtherArea">
+                                        <input type="text" class="form-control" id="anotherC" name="anotherC"
+                                               placeholder="{{ "other charge"|trans }}"
+                                               title="{{ "other charge"|trans }}"
+                                               value={% if visits %}
+                                               "{{ visits.CustomerChargeAnother }}"
+                                            {% endif %}>
+                                    </div>
+                                </div>
+
+                                <div id="providerArea" name="providerArea" class="row">
+                                    <input type="hidden" id="providerid" name="providerid" value="{{ providerid }}">
+                                    <input type="hidden" id="providertext" name="providertext" value="{{ providertext }}">
+                                    <input type="hidden" id="providerSearchNIF" name="providerSearchNIF">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div id="providers_input_group" class="form-group">
+                                            <div class="input-group">
+                                                <select id="Provider" name="Provider"
+                                                        class="js-example-basic-single js-example-responsive" style="width: 91%">
+                                                </select>
+                                                <a title="{{ "add_contact"|trans }}" class="btn btn-success btn-sm btn-ver-filtros float-right" role="button"
+                                                   href="#" data-toggle="modal" data-target="#add_new_contact" id="modalProvider">
+                                                    <i class="fas fa-plus"></i>
+                                                </a>
+                                            </div>
+                                            <div id="alert_area_provider"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 col-xs-12">
+                                        <select class="custom-select" id="chargeProvider" name="chargeProvider"
+                                                placeholder="{{ "select charge"|trans }}"
+                                                title="{{ "charge"|trans }}">
+                                            <div class="dropdown-menu" aria-labelledby="chargeProvider">
+                                                <option value="">{{ "select charge"|trans }}</option>
+                                                {% for Charges in allCharges %}
+                                                    <option value="{{ Charges.id }}"
+                                                        {% if visits %}
+                                                            {% if visits.ProviderCharge %}
+                                                                {% if visits.ProviderCharge.id == Charges.id %}
+                                                                    selected
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    >{{ Charges.name }}</option>
+                                                {% endfor %}
+                                            </div>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 col-xs-12" id="providerOtherArea" name="providerOtherArea">
+                                        <input type="text" class="form-control" id="anotherP" name="anotherP"
+                                               placeholder="{{ "other charge"|trans }}"
+                                               title="{{ "other charge"|trans }}"
+                                               value={% if visits %}
+                                               "{{ visits.ProviderChargeAnother }}"
+                                            {% endif %}
+                                        >
+                                    </div>
+                                </div>
+
+                                <div id="officeArea" name="officeArea" class="row">
+                                    <input type="hidden" id="officeid" name="officeid"
+                                           value="{% if visits %}{{ visits.office }}{% endif %}">
+                                    <input type="hidden" id="officetext" name="officetext" value="{{ officeLoad }}">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div id="offices_input_group" class="form-group">
+                                        <select id="Office" name="Office"
+                                                class="js-example-basic-single js-example-responsive"
+                                                style="width: 100%" placeholder="{{ "select office"|trans }}">
+                                        </select>
+                                            <div id="alert_area_office"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-xs-12" id="responsableArea" name="responsableArea">
+                                        <input type="text" class="form-control" id="responsable"
+                                               name="responsable" placeholder="{{ "commercial assigned to the office"|trans }}"
+                                               title="{{ "commercial assigned to the office"|trans }}"
+                                               value="{{ nameResponsable }}">
+                                    </div>
+                                </div>
+
+                                <div id="visitArea" name="visitArea" class="row">
+
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="input-group date" data-target-input="nearest">
+                                                <input type="hidden" id="dateIniValue" name="dateIniValue" value="{% if visits %}{{ visits.DateIni|date() }}{% endif %}">
+                                                <div class="input-group-append" data-target="#dateIni"
+                                                     data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                </div>
+                                                <input type="text" class="form-control datetimepicker-input"
+                                                       data-target="#dateIni" id="dateIni" name="dateIni"
+                                                       placeholder="{{ "initial date"|trans }}"
+                                                       title="{{ "initial date"|trans }}" required />
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="form-group">
+                                            <div class="input-group date" data-target-input="nearest">
+                                                <input type="hidden" id="durationValue" name="durationValue" value="{% if visits %}{{ visits.duration }}{% endif %}">
+                                                <input type="hidden" id="dateFinValue" name="dateFinValue" value="{% if visits %}{{ visits.DateFin|date() }}{% endif %}">
+                                                <div class="input-group-append" data-target="#duration"
+                                                     data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="fas fa-clock"></i></div>
+                                                </div>
+                                                <input type="text" class="form-control datetimepicker-input"
+                                                       data-target="#duration" id="duration" name="duration"
+                                                       placeholder="{{ "duration"|trans }}"
+                                                       title="{{ "duration"|trans }}"
+                                                       required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 col-xs-12">
+                                        <select class="custom-select" id="vertical" name="vertical"
+                                                placeholder="{{ "select vertical"|trans }}"
+                                                title="{{ "Vertical"|trans }}" required>
+                                            <div class="dropdown-menu" aria-labelledby="vertical">
+                                                <option value="">{{ "select vertical"|trans }}</option>
+                                                {% for vertical in allVerticals %}
+                                                    <option value="{{ vertical.id }}"
+                                                        {% if visits %}
+                                                            {% if visits.vertical.id == vertical.id %}
+                                                                selected
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    >{{ vertical.name }}</option>
+                                                {% endfor %}
+                                            </div>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4 col-xs-12">
+                                        <select class="custom-select" id="reason" name="reason"
+                                                placeholder="{{ "select reason"|trans }}"
+                                                title="{{ "Reason"|trans }}" required>
+                                            <div class="dropdown-menu" aria-labelledby="reason">
+                                                <option value="">{{ "select reason"|trans }}</option>
+                                                {% for reason in allReasons %}
+                                                    <option value="{{ reason.id }}"
+                                                        {% if visits %}
+                                                            {% if visits.reason.id == reason.id %}
+                                                                selected
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    >{{ reason.name }}</option>
+                                                {% endfor %}
+                                            </div>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class = "row">
+                                            <div class="form-group">
+                                                <input type="radio" class="form-control" id="type" name="type" value="1"
+                                                    {% if visits %}
+                                                        {% if visits.type == 1 %}
+                                                            checked="checked"
+                                                        {% endif %}
+                                                    {% else %}
+                                                        checked="checked"
+                                                    {% endif %}
+                                                >
+                                                <label for="type">{{ "presencial"|trans }}</label>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="radio" class="form-control" id="type" name="type" value="0"
+                                                    {% if visits %}
+                                                        {% if visits.type == 0 %}
+                                                            checked="checked"
+                                                        {% endif %}
+                                                    {% endif %}
+                                                >
+                                                <label for="type">{{ "virtual"|trans }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                    <textarea id="obsVisit" name="obsVisit" class="form-control" rows="5"
+                                              placeholder="{{ "Observations"|trans }}"
+                                              title="{{ "Observations"|trans }}" >{% if visits %}{{visits.observations}}{% endif %}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row form-group">
+                                    <div class="col-md-12 col-xs-12">
+                                        <textarea id="feedback" name="feedback" class="form-control" rows="5"
+                                                  placeholder="{{ "feedback"|trans }}"
+                                                  title="{{ "feedback"|trans }}" >{% if visits %}{{visits.feedback}}{% endif %}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <button id="saveVisit" name="saveVisit" type="submit" class="btn btn-success">
+                                            {{ "save"|trans }}</button>
+
+                                        <a href="{{ path('comercial_visitas') }}">
+                                            <button id="cancel" name="cancel" type="button" class="btn">
+                                                {{ "cancel"|trans }}</button></a>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+    {% include 'area-comercial/modals/add_visitcontact_modal.html.twig' %}
+    {% include 'area-comercial/modals/alert_info_modal.html.twig' %}
+    {% include 'area-comercial/scripts/visit_js.html.twig' %}
+    {% include 'area-comercial/scripts/alert_info_js.html.twig' %}
+    {% include 'area-comercial/scripts/contact_form_visit_js.html.twig' %}
+{% endblock %}

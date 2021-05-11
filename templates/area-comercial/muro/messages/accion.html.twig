@@ -1,0 +1,98 @@
+{% set mensaje_propio = (mensaje.autor == app.getUser()) %}
+{% set cerrado = (mensaje.cerrado_por is not null) %}
+{% set respuesta = (mensaje.respuesta is not null) %}
+{% set alert_type = mensaje_propio ? 'success' : 'secondary' %}
+
+{% if mensaje.tipo == 2 %}
+    {% if(mensaje.tipoID is null) %}
+        {% set icon = 'fa-pencil-alt' %}
+        {% set tipo_id = 2 %}
+    {% else %}
+        {% set icon = mensaje.tipoID.type.icon %}
+        {% set tipo_id = mensaje.tipoID.id %}
+    {% endif %}
+{% elseif mensaje.tipo == 1 %}
+    {% set icon = 'fa-check-circle' %}
+{% endif %}
+{% if(mensaje.tipoID is null) %}
+    {% set color = '' %}
+{% else %}
+    {% set color = '#'~mensaje.tipoID.type.color %}
+{% endif %}
+<div class="alert alert-{{ alert_type }} {{ mensaje_propio ? 'propia' }} accion rowMessage" role="alert" data-id="{{ mensaje.id }}" data-tipo="{{ tipo_id }}" style="background-color: {{ color }}">
+    <div class="content-{{ mensaje.tipo }}">
+        <div class="row">
+            {% if respuesta and not cerrado %}
+                <div class="alert alert-dark" role="alert" onclick="irAlMensaje({{ mensaje.respuesta.id }});">
+                    <div class="row">
+                        <div class="icon-noti">
+                            {% set iconresponse = 'fa-comment' %}
+                            <i class="fas {{ iconresponse }} fa-fw"></i>
+                        </div>
+                        <div class="text">
+                            <span class="usuario">{{ mensaje.respuesta.autor.name }} {{ mensaje.respuesta.autor.surname }} ({{ mensaje.respuesta.autor }})</span>
+                            <span class="hora_fecha pull-right date">{{ mensaje.respuesta.updatedAt|date('d/m/Y H:i') }}</span>
+                            <p class="preformated">
+                                {% spaceless %}
+                                    {% if mensaje.respuesta.motivo_canc is not null %}
+                                        {{ mensaje.respuesta.motivo_canc | spaceless}}
+                                    {% else  %}
+                                        {{ mensaje.respuesta.message | spaceless }}
+                                    {% endif %}
+                                {% endspaceless %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if cerrado %}
+                <div class="alert alert-dark" role="alert" onclick="irAlMensaje({{ mensaje.cerrado_por.id }});">
+                    <div class="row">
+                        <div class="icon-noti">
+                            {% set iconresponse = 'fa-times-circle' %}
+                            <i class="fas {{ iconresponse }} fa-fw"></i>
+                        </div>
+                        <div class="text">
+                            <span class="usuario">{{ mensaje.cerrado_por.autor.name }} {{ mensaje.cerrado_por.autor.surname }} ({{ mensaje.cerrado_por.autor }})</span>
+                            <span class="hora_fecha pull-right date">{{ mensaje.cerrado_por.updatedAt|date('d/m/Y H:i') }}</span>
+                            <p class="preformated">
+                                {% spaceless %}
+                                    {% if mensaje.tipoID.comercialMuro.motivoCanc is not null %}
+                                        {{ mensaje.tipoID.comercialMuro.motivoCanc | spaceless}}
+                                    {% else  %}
+                                        {{ mensaje.cerrado_por.message | spaceless }}
+                                    {% endif %}
+                                {% endspaceless %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="icon-noti {{ (icon is null) ? 'hidden' }}">
+                <i class="fas {{ icon }} fa-fw"></i>
+            </div>
+            <div class="text">
+                <span class="usuario">{{ mensaje.autor.name }} {{ mensaje.autor.surname }} ({{ mensaje.autor }})</span>
+                <span class="hora_fecha pull-right">{{ created_hour }}</span>
+                <div class="msgBox">
+                    <p class="preformated">{{ mensaje.message }}</p>
+                    <div class="row mt-10">
+                        {% for adjunto in mensaje.adjuntos %}
+                            <div class="{{ mensaje_propio ? 'propia' }} fileAttached action " data-id="{{ adjunto.id }}" data-ext="{{ adjunto.ext }}" data-value="{{ adjunto.filename }}">
+                                <i class="fas fa-fw fa-file-image"></i><span>{{ adjunto.filename }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% if mensaje.tipoID is not null and mensaje.tipoID.type is not null %}
+                        {% if mensaje.tipoID.type.form != '[]' and mensaje.tipoID.type.form is not null %}
+                            <div class="{{ mensaje_propio ? 'propia' }} actionFormView" data-id="{{ mensaje.id }}">
+                                <i class="fas fa-clipboard-list"></i><span>{{ 'muro.viewResponseForm'|trans }}</span>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>

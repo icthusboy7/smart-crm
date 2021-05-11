@@ -1,0 +1,12 @@
+{% block widgetContent %}
+	<ul class="list-group fs-12">
+        {% if visitas is defined %}
+		{% for visita in visitas %}
+		<li class="list-group-item d-flex justify-content-between align-items-center">
+			{{ visita.asunto|trans }} - ({{ visita.oficina }})
+			<span class="badge badge-success badge-pill">{{ visita.status }}</span>
+		</li>
+		{% endfor %}
+        {% endif %}
+	</ul>
+{% endblock %}

@@ -1,0 +1,41 @@
+{#
+ # Accountable selector.
+ # See the AccountablePicker JavaScript class for usage.
+ #}
+
+<h2 class="mt-0">{{ "Accountable" | trans }}</h2>
+<div class="form-group">
+  <label for="managers-filter">
+    {{ "Sales manager" | trans }}
+  </label>
+
+  <!-- Manager selector -->
+
+  <select id="managers-filter"
+          class="managers-select form-control form-control-sm">
+    <option selected class="d-none">
+      — {{ "Choose a manager" | trans }} —
+    </option>
+    {% for manager in managers %}
+      <option value="{{ manager.code }}">
+        {{ "(#{manager.code}) #{manager.name} " }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <!-- Person in charge selector -->
+
+  <label for="authors-filter">
+    {{ "Person in charge" | trans }}
+  </label>
+  <select id="authors-filter"
+          name="author_id[]"
+          multiple="multiple"
+          class="authors-select form-control form-control-sm">
+    {% if usersFilter is defined %}
+      {% for user in usersFilter %}
+        <option selected value="{{ user.id }}">({{ user.regNumber }}) {{ user.name }} {{ user.surname }}</option>
+      {% endfor %}
+    {% endif %}
+  </select>
+</div>

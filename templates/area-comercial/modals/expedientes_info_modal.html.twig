@@ -1,0 +1,179 @@
+<!-- Datos -->
+<div class="modal" id="datos-{{ expediente.id }}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header modal-header-expedientes">
+                <h4 class="modal-title modal-title-expedientes">
+                    <div class="float-left">
+                        <span class="badge badge-primary">2</span> <a href="#"><i class="fas fa-star fa-fw text-warning pl-10"></i></a>
+                    </div>
+
+                    <span class="text-center pl-20">{{ expediente.titulo }}</span>
+
+                    <div class="float-right">
+                        <span class="dot dot-danger pt-5"></span>
+                        <select class="form-control form-control-sm select_options_exp" onchange="location = this.value;">
+                            <option data-action="default" value="#">- {{ "Acciones"|trans }} -</option>
+                            <option value="{{ path('comercial_ver_muro_expediente', {idExpediente: expediente.id}) }}" class="option_ver_muro">{{ "Ver muro"|trans }}</option>
+                            <option value="{{ path('expedientes_form') }}/?exp_id={{ expediente.id }}" class="option_edit_expediente">{{ "Editar expediente"|trans }}</option>
+                            <option data-action="import" data-id="{{ expediente.id }}" value="#" class="option_import_expediente">{{ "Importar expediente"|trans }}</option>
+                            {# <option value="#" class="option_add_cotizacion">{{ "Añadir cotizacion"|trans }}</option> #}
+                            {# <option value="#" class="option_add_peticion">{{ "Añadir petición de cotizacion"|trans }}</option> #}
+                            <option data-action="update" data-id="{{ expediente.id }}" value="#" class="option_actualizar_expediente">{{ "Actualizar expediente"|trans }}</option>
+                            <option data-action="add_fav" data-id="{{ expediente.id }}" value="#" class="option_añadir_favoritos">{% if expediente.id in favoritos %}{{ "Quitar de favoritos"|trans }}{% else %}{{ "Añadir a favoritos"|trans }}{% endif %}</option>
+                            <option data-action="delete" data-id="{{ expediente.id }}" value="#" class="option_eliminar_exp">{{ "Eliminar"|trans }}</option>
+                        </select>
+                    </div>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                <div class="row">
+
+                    <div class="col-lg-12">
+                        <h2 class="mt-0 mb-0 text-center">Datos</h2>
+                        <table class="table table-sm table-hover fs-12">
+                            <thead>
+                            <tr>
+                                <th>{{ "Title"|trans }}</th>
+                                <th>{{ "Date"|trans }}</th>
+                                <th>{{ "Office"|trans }}</th>
+                                <th>{{ "Type_result"|trans }}</th>
+                                <th>{{ "Zone"|trans }}</th>
+                                <th>{{ "Vertical"|trans }}</th>
+                                <th>{{ "Type_product"|trans }}</th>
+                                <th>{{ "Canal"|trans }}</th>
+                                <th>% {{ "of chance"|trans }}</th>
+                                <th>{{ "Line"|trans }}?</th>
+                                <th>{{ "State"|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>{% if expediente.titulo is defined and expediente.titulo is not null %}{{ expediente.titulo }}{% else %} - {% endif %}</td>
+                                <td>{% if expediente.fechaPosibleActivacion is defined and expediente.fechaPosibleActivacion is not null %}{{ expediente.fechaPosibleActivacion }}{% else %} - {% endif %}</td>
+                                <td>{% if expediente.oficina is defined and expediente.oficina is not null %}{{ expediente.oficina }}{% else %} - {% endif %}</td>
+                                <td>{% if expediente.tipo is defined and expediente.tipo is not null %}{{ expediente.tipo }}{% else %} - {% endif %}</td>
+                                <td>{% if expediente.oficinaZona is defined and expediente.oficinaZona is not null %}{{ expediente.oficinaZona }}{% else %} - {% endif %}</td>
+                                <td>{% if expediente.vertical is defined and expediente.vertical is not null %}{{ expediente.vertical.name }}{% else %} - {% endif %}</td>
+                                <td>{% if expediente.producto is defined and expediente.producto is not null %}{{ expediente.producto.nombre }}{% else %} - {% endif %}</td>
+                                <td>{% if expediente.canal is defined and expediente.canal is not null %}{{ expediente.canal.canalDesc }}{% else %} - {% endif %}</td>
+                                <td>{% if expediente.porcentajeProbabilidad is defined and expediente.porcentajeProbabilidad is not null %}{{ expediente.porcentajeProbabilidad }}{% else %} - {% endif %}</td>
+                                <td>{% if expediente.esLinea == true %}<i class="fas fa-check text-success"></i>{% else %}<i class="fas fa-times text-danger"></i>{% endif %}</td>
+                                <td>{% if expediente.status is defined and expediente.status is not null %}{{ expediente.status.status }}{% else %} - {% endif %}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-12">
+                        <h2 class="text-center">{{ "Commercial_information"|trans }}</h2>
+                        <table class="table table-sm table-hover fs-12">
+                            <tbody>
+                            <tr>
+                                <td class="bt-0">{{ "Commercial_responsable"|trans }}:
+                                    <strong>
+                                        {% if expediente.responsable is defined and expediente.responsable is not null %}
+                                            ({{ expediente.responsable.regNumber }}) {{ expediente.responsable }}
+                                        {% else %} - {% endif %}
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ "External_manager"|trans }}:
+                                    <strong>
+                                        {% if expediente.responsableGestorExterno is defined and expediente.responsableGestorExterno is not null %}
+                                            ({{ expediente.responsableGestorExterno.regNumber }}) {{ expediente.responsableGestorExterno }}
+                                        {% else %} - {% endif %}
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ "Internal_manager"|trans }}:
+                                    <strong>
+                                        {% if expediente.responsableGestorInterno is defined and expediente.responsableGestorInterno is not null %}
+                                            ({{ expediente.responsableGestorInterno.regNumber }}) {{ expediente.responsableGestorInterno }}
+                                        {% else %} - {% endif %}
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ "Risk_resposnable"|trans }}
+                                    <strong>
+                                        {% if expediente.responsableRiesgos is defined and expediente.responsableRiesgos is not null %}
+                                            ({{ expediente.responsableRiesgos.regNumber }}) {{ expediente.responsableRiesgos }}
+                                        {% else %} - {% endif %}
+                                    </strong>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <h2 class="text-center">Información cliente</h2>
+                        <table class="table table-sm table-hover fs-12">
+                            <tbody>
+                            <tr>
+                                <td class="bt-0">{{ "Client"|trans }}:
+                                    <strong>
+                                        {% if expediente.clienteNif is defined and expediente.clienteNif is not null %}
+                                            {{ expediente.clienteNif }}
+                                        {% else %} - {% endif %}
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ "Provider"|trans }}:
+                                    <strong>
+                                        {% if expediente.prescriptorCif is defined and expediente.prescriptorCif is not null %}
+                                            {{ expediente.prescriptorCif }}
+                                        {% else %} - {% endif %}
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{{ "Office"|trans }}:
+                                    <strong>
+                                        {% if expediente.oficina is defined and expediente.oficina is not null %}
+                                            {{ expediente.oficina }}
+                                        {% else %} - {% endif %}
+                                    </strong>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div><!-- .Datos (fila2) -->
+                {% if expediente.observaciones is not null %}
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2 class="text-center">{{ "Observations"|trans }}</h2>
+                            <p class="fs-12 p-10 text-center">{{ expediente.observaciones }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col-lg-12">
+
+                        <h2 class="text-center">{{ "Cotizaciones"|trans }}</h2>
+                        {% include 'area-comercial/expedientes/cotizacion_box.html.twig' %}
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> {{ "Close"|trans }} </button>
+            </div>
+
+        </div>
+    </div>
+</div>

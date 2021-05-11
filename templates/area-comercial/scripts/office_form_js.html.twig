@@ -1,0 +1,85 @@
+<script>
+$(".show_office_info_button").click(function () {
+    var data = 'id='+$(this).val();
+    $.ajax({
+        type: 'POST',
+        url: '/officeFullInfo',
+        data: data,
+        success: function(recived){
+            $("#office_full_info" ).empty().append(recived);
+            $('#office_info').modal('show');
+        }
+    });
+});
+$(".create_visit_office").click(function() {
+    var data = 'id_office='+$(this).val();
+    swal({
+        title: '{{ "Create_visit_to_office"|trans }}?',
+        text: '{{ "Visit_redirect_to_office"|trans }}',
+        icon: "info",
+        buttons: true,
+        dangerMode: true,
+    })
+        .then((redirect) => {
+            if (redirect) {
+                var url = '{{ path('visitForm') }}'+'?'+data;
+                var form = document.createElement("form");
+                form.setAttribute("method", "post");
+                form.setAttribute("action", url);
+
+                form.setAttribute("target", "_self");
+
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", "method");
+                hiddenField.setAttribute("value", "val");
+                form.appendChild(hiddenField);
+                document.body.appendChild(form);
+
+                form.submit();
+            }
+        });
+});
+
+$('#save_query_btn').click(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    var formData = 'query_name='+$('#query_name').val()+'&'+urlParams;
+    $.ajax({
+        type: 'POST',
+        url: '/createQueryOficina',
+        data: formData,
+        success: function(){
+            swal( "Nice" ,  "Query created!" ,  "success" );
+            $('#queryFilter').load(document.URL +  ' #queryFilter');
+        }
+    });
+});
+
+$('#queryFilter').on('click', '.delete_query_button', function() {
+    var formData = 'id='+$(this).val();
+    swal({
+        title: "{{ 'are_you_sure'|trans }}",
+        text: "{{ 'sure_description_alert'|trans }}",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true
+    }).then((willDelete)=> {
+        if (willDelete) {
+            $(this).parent('span').remove();
+            $.ajax({
+                type: 'GET',
+                url: '/deleteQueryOficina',
+                data: formData,
+                success: function(){
+                    swal("{{ 'custom_filter_deleted'|trans }}", {
+                        icon: "success"
+                    });
+                }
+            });
+
+        } else {
+            swal("{{ 'custom_filter_safe'|trans }}");
+        }
+    })
+});
+</script>

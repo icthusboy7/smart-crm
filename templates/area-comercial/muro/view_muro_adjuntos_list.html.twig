@@ -1,0 +1,32 @@
+<div data-tab="adjuntos-todos" class="tab-pane bg-white blockMensajes" id="adjuntos-todos" role="tabpanel">
+    <table class="table table-sm table-hover fs-12">
+        <thead class="thead-light">
+        <th>{{ 'muro.message'|trans }}</th>
+        <th>{{ 'muro.attached'|trans }}</th>
+        <th>{{ "muro.actions"|trans }}</th>
+        </thead>
+        <tbody>
+        {% for mM in mensajesAdjuntos %}
+            {% if mM.adjuntos|length > 0 %}
+            <tr class="rowMessage" data-id="{{ mM.idMuro }}">
+                <td>{{ mM.message|raw|nl2br }}</td>
+                <td>
+                {% for adjunto in mM.adjuntos %}
+                    <div class="fileAttached" data-id="{{ adjunto.id }}" data-ext="{{ adjunto.ext }}" data-value="{{ adjunto.filename }}">
+                        <i class="fas fa-fw fa-file-image"></i><span>{{ adjunto.filename }}</span>
+                    </div>
+                {% endfor %}
+                </td>
+                <td>
+                    <div class="msgAcciones">
+                        <div class="btn btn-sm btn-info btnVerMensaje btn-circle" data-toggle="tooltip" title="{{ "muro.goto-message"|trans }}">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

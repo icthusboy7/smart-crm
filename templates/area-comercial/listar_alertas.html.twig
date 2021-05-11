@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/alertas.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/alert_modal.css') }}">
+{% endblock %}
+{% block body %}
+    <div id="wrapper">
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+        )) }}
+        <div id="page-wrapper">
+            <div class="container-fluid mt-10">
+                {{ render(controller('App\\Controller\\HomeController::getBreadcrumb', { 'route': app.request.get('_route') })) }}
+                <section class="services mt-10 bg-container" id="services">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-primary">
+                                    <h1>{{ "Alerts"|trans }}</h1>
+                                    <div class="row">
+                                        <div class="col-lg-10 col-sm-10 col-xs-10">
+                                            <form id="filter_contacts"  action="{{ path('gestion_alertas') }}" method="get">
+                                                <div class="input-group add-on">
+                                                    <input id="f_name" class="form-control form-control-sm" placeholder="{{ "Find"|trans }}" name="buscar" type="text">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-default" id="find_alertas type="submit"><i class="fas fa-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="col-lg-2 col-sm-2 col-xs-2">
+                                            <p class="text-right">
+                                                <a id='add_alert' class="btn btn-red btn-sm btn-ver-filtros" role="button" href="#" data-toggle="modal" data-target="#add_new_alert">
+                                                    <i class="fas fa-plus"></i> {{ "add_alert"|trans }}
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-10">
+                                        <div id="filters-contacts" class="collapse col-lg-12">
+                                            <div class="card card-body p-10">
+                                                <form id="filter_contacts" action="{{ path('gestion_alertas') }}" method="get">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-right:0;" for="pref-search">{{ "Find"|trans }}:</label>
+                                                                <input type="text" name="buscar" class="form-control input-sm" id="pref-search">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row justify-content-md-center">
+                                                        <div class="col-lg-2">
+                                                            <input class="btn btn-blue bt-submit btn-xs" id="find_alertas" value="Buscar" type="submit">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <!-- form group [search] -->
+                                        </div>
+                                    </div>
+                                    <div class="row mt-10">
+                                        <div class="col-lg-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm table-hover fs-12" id="dev-table">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th>{{ 'alert.Id'|trans }}</th>
+                                                                <th>{{ 'alert.Description'|trans }}</th>
+                                                                <th>{{ 'alert.Type'|trans }}</th>
+                                                                <th>{{ 'alert.recipients'|trans }}</th>
+                                                                <th>{{ 'alert.Status'|trans }}</th>
+                                                                <th>{{ 'alert.dateCreate'|trans }}</th>
+                                                                <th>{{ 'alert.dateUpdate'|trans }}</th>
+                                                                <th>{{ "alert.Actions"|trans }}</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% for alert in alertas %}
+                                                                <tr>
+                                                                    <td>{{ alert.id }}</td>
+                                                                    <td class="preformated">{{ alert.missatge }}</td>
+                                                                    <td>
+                                                                        {% if alert.isAlert == 1 %}
+                                                                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                                                                        {% else %}
+                                                                            <i class="fas fa-info-circle fa-2x"></i>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        <ul class="small list-group">
+                                                                            {% if alert.personaNif != '' %}
+                                                                            <li class="list-group-item list-item-alerta">
+                                                                                <i class="fas fa-user fa-fw"></i> {{ alert.personaNif }}
+                                                                            </li>
+                                                                            {% endif %}
+                                                                            {% if alert.expediente != '' %}
+                                                                            <li class="list-group-item list-item-alerta">
+                                                                                <i class="fas fa-file fa-fw"></i> {{ alert.expediente.titulo }}
+                                                                            </li>
+                                                                            {% endif %}
+                                                                            {% if alert.cotizacion != '' %}
+                                                                            <li class="list-group-item list-item-alerta">
+                                                                                <i class="fas fa-chart-line fa-fw"></i> {{ alert.cotizacion }}
+                                                                            </li>
+                                                                            {% endif %}
+                                                                            {% if alert.oficina != '' %}
+                                                                                <li class="list-group-item list-item-alerta">
+                                                                                    <i class="fas fa-building fa-fw"></i> {{ alert.oficina }}
+                                                                                </li>
+                                                                            {% endif %}
+                                                                            {% if alert.horizontal != '' %}
+                                                                                <li class="list-group-item list-item-alerta">
+                                                                                    <i class="fas fa-grip-lines fa-fw"></i> {{ alert.horizontal.name }}
+                                                                                </li>
+                                                                            {% endif %}
+                                                                            {% if alert.vertical != '' %}
+                                                                                <li class="list-group-item list-item-alerta">
+                                                                                    <i class="fas fa-grip-lines-vertical fa-fw"></i> {{ alert.vertical.name }}
+                                                                                </li>
+                                                                            {% endif %}
+                                                                        </ul>
+                                                                    </td>
+                                                                    <td>
+                                                                        {% if alert.active %}
+                                                                        <span class="badge badge-pill badge-success">
+                                                                            <i class="fa fa-check fa-fw"></i>
+                                                                        </span>
+                                                                        {% else %}
+                                                                        <span class="badge badge-pill badge-danger">
+                                                                            <i class="fa fa-times fa-fw"></i>
+                                                                        </span>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>{{ alert.createdAt|date('d/m/Y') }}</td>
+                                                                    <td>{{ alert.updatedAt|date('d/m/Y') }}</td>
+                                                                    <td>
+                                                                        <button type="button" class="btn btn-sm btn-info show_edit_alerta_button" value="{{ alert.id }}"><i class="fas fa-edit"></i></button>
+                                                                        <button type="button" class="btn btn-sm btn-danger delete_alerta_button" name="contact_to_delete" value="{{ alert.id}}"><i class="fas fa-trash"></i></button>
+                                                                    </td>
+                                                                </tr>
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <nav class="mt-10">
+                                                <div id="pagination-alerts" class="navigation pagination pagination-sm">
+                                                    {{ knp_pagination_render(alertas) }}
+                                                </div>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    {% include 'area-comercial/modals/add_alerta_modal.html.twig' %}
+    {% include 'area-comercial/modals/alert_info_modal.html.twig' %}
+    {% include 'area-comercial/scripts/alertas_buttons_form_js.html.twig' %}
+{% endblock %}

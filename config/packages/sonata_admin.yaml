@@ -1,0 +1,25 @@
+sonata_admin:
+    security:
+        handler: sonata.admin.security.handler.role
+    title: 'Sonata Admin'
+    dashboard:
+        blocks:
+            - { type: sonata.admin.block.admin_list, position: left }
+    assets:
+        # stylesheet paths to add to the page in addition to the list above
+        extra_stylesheets: []
+        # stylesheet paths to remove from the page
+        remove_stylesheets: []
+
+        # javascript paths to add to the page in addition to the list above
+        extra_javascripts:
+            - 'assets/js/sweetalert.min.js'
+            - 'assets/js/form/admin_task_type.js'
+        # javascript paths to remove from the page
+        remove_javascripts: []
+
+
+sonata_block:
+    blocks:
+        sonata.admin.block.admin_list:
+            contexts: [admin]

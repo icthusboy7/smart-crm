@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div id="wrapper">
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+        )) }}
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                {{ render(controller('App\\Controller\\HomeController::getBreadcrumb', { 'route': app.request.get('_route') })) }}
+                <section class="services mt-20 bg-container" id="services">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-primary">
+                                    <h1>{{ "Offices"|trans }}</h1>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <p class="text-center">
+                                                <a class="btn btn-info btn-sm btn-ver-filtros" data-toggle="collapse" href="#filters-contacts" role="button" aria-expanded="false" aria-controls="filters-contacts">
+                                                    <i class="fas fa-filter"></i> {{ "show_filters"|trans }}
+                                                </a>
+                                                <a class="btn btn-warning btn-sm btn-ver-filtros" data-toggle="collapse" href="#save_this_query" role="button" aria-expanded="false" aria-controls="save_this_query">
+                                                    <i class="fas fa-users-cog"></i> {{ "saved_querys"|trans }}
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-10">
+                                        <div id="save_this_query" class="collapse col-lg-12 col-md-12 col-sm-12">
+                                            <div class="card card-body p-10">
+                                                <form id="save_query">
+                                                    <div class="row">
+                                                        <div class="col-lg-3 col-md-12">
+                                                            <strong>{{ "save_the_query"|trans }}</strong><hr>
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-right:0;" for="query_name">{{ "Query_name"|trans }}:</label>
+                                                                <input type="text" id="query_name" name="query_name" class="form-control input-sm">
+                                                            </div>
+                                                            <div class="row justify-content-md-center">
+                                                                <div class="col-lg-6">
+                                                                    <input class="btn btn-blue bt-submit btn-xs" id="save_query_btn" value="Save">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-12">
+                                                            <strong>{{ "query_list"|trans }}</strong><hr>
+                                                            <div id="queryFilter" class="text-left">
+                                                                {% for filter in filters %}
+                                                                    <span><a role="button" class="btn btn-sm btn-light" href="{{ path('gestion_oficinas') }}{{ filter.query }}">{{ filter.name }}</a><button type="button" class="btn btn-sm btn-danger delete_query_button" name="query_to_delete" value="{{ filter.id }}"><i class="fa fa-trash"></i></button></span>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-10">
+                                        <div id="filters-contacts" class="collapse col-lg-12">
+                                            <div class="card card-body p-10">
+                                                <form id="filter_contacts" action="{{ path('gestion_oficinas') }}" method="get">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-right:0;" for="pref-search">{{ "Find"|trans }}:</label>
+                                                                <input type="text" name="office_find" class="form-control input-sm" id="pref-search">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row justify-content-md-center">
+                                                        <div class="col-lg-2">
+                                                            <input class="btn btn-blue bt-submit btn-xs" id="find_contactos" value="Buscar" type="submit">
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <!-- form group [search] -->
+                                        </div>
+                                    </div>
+                                    <div class="row mt-10">
+                                        <div class="col-lg-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm table-hover fs-12" id="dev-table">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th>{{ 'Office'|trans }}</th>
+                                                                <th>{{ 'DG'|trans }}</th>
+                                                                <th>{{ "DT"|trans }}</th>
+                                                                <th>{{ "DAN"|trans }}</th>
+                                                                <th style="width: 10%">{{ "Actions"|trans }}</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            {% for office in offices %}
+                                                                <tr>
+                                                                    <td>{{ office.nombre }}</td>
+                                                                    <td>{{ office.dg }}</td>
+                                                                    <td>{{ office.dt }}</td>
+                                                                    <td>{{ office.dan }}</td>
+                                                                    <td>
+                                                                        <button type="button" class="btn btn-sm btn-info show_office_info_button" value="{{ office.codigo }}"><i class="fas fa-plus"></i></button>
+                                                                        <button type="button" class="btn btn-sm btn-info create_visit_office" value="{{ office.codigo }}"><i class="fas fa-calendar-plus"></i></button>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <nav class="mt-10">
+                                                <div class="navigation pagination pagination-sm">
+                                                    {{ knp_pagination_render(offices) }}
+                                                </div>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    {% include 'area-comercial/modals/office_info_modal.html.twig' %}
+    {% include 'area-comercial/scripts/office_form_js.html.twig' %}
+{% endblock %}

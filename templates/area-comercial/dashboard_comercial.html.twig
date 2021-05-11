@@ -1,0 +1,89 @@
+{%  set popupCSS = true %}
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('assets/css/dashboards/area-comercial.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/tasks.css') }}" />
+{% endblock %}
+
+{% block body %}
+	{# ######### #}
+	{# JS CONFIG #}
+	{# ########## #}
+	<div id="conf" class="hidden">
+		<span id="locale">{{ app.request.getLocale() }}</span>
+	</div>
+
+	<div id="wrapper">
+		<!-- Navigation -->
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+        )) }}
+			<div id="page-wrapper">
+				<div class="container">
+					<section class="services mt-20 bg-container" id="services">
+						<div class="container">
+							<div class="d-none d-md-block">
+								<div id="widgets_container">
+									{% for widget in widgets %}
+										{% set href = (widget.rutaInterna != "" ? path(widget.rutaInterna) : widget.href) %}
+										{% if loop.index == 1 or loop.index == 2 %}
+											{% if loop.index == 1 %} <div class="row"> {% endif %}
+											<div class="col-lg-6 col-xs-4">
+											{% set class = "bg-blue" %}
+										{% elseif loop.index == 3 or loop.index == 4 %}
+											<div class="row">
+											{% if loop.index == 3 %}
+												<div class="col-lg-12 mt-10">
+												{% set class = "bg-blue" %}
+											{% endif %}
+											{% if loop.index == 4 %}
+												<div class="col-lg-4 mt-10">
+												{% set class = "text-black" %}
+											{% endif %}
+										{% else %}
+											<div class="col-lg-4 mt-10">
+											{% set class = "text-black" %}
+										{% endif %}
+										<div class="card">
+											<div class="card-header {{ class }}"><i class="{{ widget.faIcon }}"></i> {{ widget.titulo|trans }}</div>
+											<div class="card-body">
+												{% if widget.isPlantilla == true %}
+                                                    {% include(widget.plantilla) with {'visitas': visitas, 'contactos': contactos, 'oficinas' : oficinas, 'expedientes' : expedientes, 'loop_widget' : loop.index} %}
+												{% else %}
+													{{ widget.plantilla | raw }}
+												{% endif %}
+											</div>
+											<div class="card-footer fs-12 text-right"><a href="{{ href }}">{{ "more_info"|trans }}<i class="fa fa-plus fa-fw"></i></a></div>
+										</div>
+										{% if loop.index == 3 or loop.index == 2 or loop.last%}
+											</div>
+										{% endif %}
+										</div>
+									{% endfor %}
+									</div>
+								</div>
+							</div>
+							<div class="d-sm-block d-md-none">
+								<div class="row">
+                                    {% for key, widget in widgets %}
+                                        {% set href = (widget.rutaInterna != "" ? path(widget.rutaInterna) : widget.href) %}
+										<div class="col-4">
+											<div class="single-service">
+												<a href="{{ href }}">
+													<i class="{{ widget.faIcon }}"></i>
+													<h2>{{ widget.titulo|trans }}</h2>
+												</a>
+											</div>
+										</div>
+                                    {% endfor %}
+								</div>
+							</div>
+						</div>
+					</section>
+				</div>
+			</div>
+		<!-- /#page-wrapper -->
+	</div>
+{% endblock %}

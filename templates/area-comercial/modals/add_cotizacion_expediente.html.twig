@@ -1,0 +1,29 @@
+<!-- Modal unir cotización a expediente -->
+<div class="modal fade" id="add_cotizacion" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="form_validate_cotizacion">
+                <input type="hidden" name="idExp" id="idExpInput" value="">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ 'add_quote'|trans }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input name="quote_id" id="quote_id" type="number" class="form-control"/>
+                    <div id="error-message" class="invalid-feedback">{{ "quote.error.not_found"|trans }}</div>
+                    <div class="input-group date dateTimePickerContainer" data-target-input="nearest">
+                        <input id="fecha_tarea_coti" type="text" name="fecha_tarea_peti_coti" class="float-left form-control dateTimePickerContainer datetimepicker-input" placeholder="{{ "muro.date-task-peti-coti"|trans }}" data-target="#dtpdispo_1" data-toggle="datetimepicker" />
+                        <div class="input-group-append" data-target="#fecha_tarea_coti" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer text-center">
+                    <button id="confirm_coti" class="btn btn-blue bt-submit"><i class="fas fa-paper-plane fa-fw"></i> {{'send'|trans}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+{% filter spaceless %}
+<div class="col-lg-3 form-group mt-10 cotizaciones_group">
+    <div class="input-group group-cotizacion-input">
+        <input type="text" {% if cotizacion.cotizacion is defined %}value="{{ cotizacion.cotizacion }}"{% endif %} name="numCoti_{% if index is defined %}{{ index }}{% else %}1{% endif %}[]" placeholder="Núm. cotización">
+        <button type="button" class="btn btn-sm btn-danger fa-pull-left delete_single_quote"><i class="fas fa-ban"></i></button>
+        <span class="error_coti"></span>
+    </div>
+</div>
+{% endfilter %}

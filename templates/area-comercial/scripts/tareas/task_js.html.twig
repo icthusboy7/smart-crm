@@ -1,0 +1,14 @@
+<script>
+    $(function() {
+        var filterForm = $('#filters-form');
+
+        const authorPicker = new AccountablePicker(filterForm);
+        const statusPicker = new taskStatusPicker(filterForm);
+        const typePicker = new taskTypePicker(filterForm);
+
+    });
+
+    $('#find_task').on('click', function(){
+        $('#filters-form').submit();
+    });
+</script>

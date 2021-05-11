@@ -1,0 +1,81 @@
+{% set mensaje_propio = (mensaje.autor == app.getUser()) %}
+<div class="rowMessage alert right notificacion {{ mensaje_propio ? 'propia' }}" data-id="{{ mensaje.id }}" data-tipo="{{ mensaje.tipoID }}">
+    <div class="content-{{ mensaje.tipo }}">
+        <div class="row">
+            <div class="icon-noti">
+                <i class="fas fa-check-circle fa-fw text-white"></i>
+            </div>
+            <div class="text">
+                {% if mensaje.cerrado_por is not null %}
+                    <div class="col-sm-10 cerrado_por" onclick="irAlMensaje({{ mensaje.cerrado_por.id }});">
+                        {% if mensaje.cerrado_por.motivo_canc is not null %}
+                            <span class="msgTime small font-italic float-right">{{ mensaje.cerrado_por.updatedAt|date('d/m/Y H:i') }}</span>
+                            <div class="small font-italic">
+                                Tarea cancelada/Rechazada; motivo:
+                            </div>
+                            <div class="msgBox">
+                                <span class="msgContent">{{ mensaje.cerrado_por.motivo_canc|raw|nl2br }}</span>
+                                <div class="clearfix"></div>
+                            </div>
+
+                        {% else %}
+                            <span class="msgTime small font-italic float-right">{{ mensaje.cerrado_por.createdAt|date('d/m/Y H:i') }}</span>
+                            <div class="small font-italic">
+                                {{ mensaje.cerrado_por.name }} {{ mensaje.cerrado_por.surname }} ({{ mensaje.cerrado_por.autor }})
+                            </div>
+                            <div class="msgBox">
+                                {% if mensaje.cerrado_por.message|length %}
+                                    <span class="msgContent{{ (mensaje.cerrado_por.adjuntos is defined and mensaje.cerrado_por.adjuntos|length) ? " withAttachment" : "" }}">{{ mensaje.cerrado_por.message|raw|nl2br }}</span>
+                                {% endif %}
+                                {% for adjunto in mensaje.cerrado_por.adjuntos %}
+                                    <div class="fileAttached" data-id="{{ adjunto.id }}" data-ext="{{ adjunto.ext }}" data-value="{{ adjunto.filename }}">
+                                        <i class="fas fa-fw fa-file-image"></i><span>{{ adjunto.filename }}</span>
+                                    </div>
+                                {% endfor %}
+                                {% if mensaje.cerrado_por.message|length %}
+                                    <span class="msgContent{{ (mensaje.cerrado_por.adjuntos is defined and mensaje.cerrado_por.adjuntos|length) ? " withAttachment" : "" }}">{{ mensaje.cerrado_por.message|raw|nl2br }}</span>
+                                {% endif %}
+                                <div class="row">
+                                    {% for adjunto in mensaje.cerrado_por.adjuntos %}
+                                        <div class="fileAttached" data-id="{{ adjunto.id }}" data-ext="{{ adjunto.ext }}" data-value="{{ adjunto.filename }}">
+                                            <i class="fas fa-fw fa-file-image"></i><span>{{ adjunto.filename }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                    <span class="usuario">{{ mensaje.autor.name }} {{ mensaje.autor.surname }} ({{ mensaje.autor }})</span>
+                    <span class="hora_fecha pull-right text-white" >{{ created_hour }}</span>
+                    <div class="msgBox">
+                        {% if mensaje.message|length %}
+                            <span class="msgContent{{ classAttachment }}">{{ mensaje.message|raw|nl2br }}</span>
+                        {% endif %}
+                        <div class="row mt-10">
+                            {% for adjunto in mensaje.adjuntos %}
+                                <div class="{{ mensaje_propio ? 'propia' }} fileAttached" data-id="{{ adjunto.id }}" data-value="{{ adjunto.filename }}" data-ext="{{ adjunto.ext }}">
+                                    <i class="fas fa-fw fa-file-image"></i><span>{{ adjunto.filename }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    {% if tipo_tab != 'todos' %}
+                        <div class="msgButtons">
+                            <div class="btn btn-primary btnVerMensaje btn-circle" data-toggle="tooltip" title="{{ "ir-al-mensaje"|trans }}">
+                                <i class="fas fa-search"></i></div>
+                            <div class="btn btn-success btnResponder btn-circle" data-toggle="tooltip" title="{{ "responder-mensaje"|trans }}">
+                                <i class="fas fa-comment-dots"></i></div>
+                            {#{% if mensaje.autor.id == app.user.id %}#}
+                            <div class="btn btn-danger btnCancelar btn-circle" data-toggle="tooltip" title="{{ "cancelar-mensaje"|trans }}">
+                                <i class="fas fa-ban"></i></div>
+                            {#{% endif %}#}
+                        </div>
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

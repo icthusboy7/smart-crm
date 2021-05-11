@@ -1,0 +1,113 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+
+imports:
+  - { resource: custom/sonata/sonata_admin_menu.yaml }
+
+parameters:
+    app.locales: en|es|ca|pt
+    locale: 'en'
+    data_import: '%kernel.project_dir%/%env(FILES_DIRECTORY)%/'
+    master_import: '%kernel.project_dir%/%env(FILES_DIRECTORY)%/'
+    translates_directory: '%kernel.project_dir%/%env(TRANSLATIONS_DIRECTORY)%/'
+    maestros_directory: '%kernel.project_dir%/%env(FILES_DIRECTORY)%/'
+    files_uploads: '%kernel.project_dir%/%env(FILES_UPLOAD)%/'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+        bind:
+            $uploadDir_translate: '%translates_directory%'
+            $uploadDir_maestros: '%maestros_directory%'
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    App\MessageHandler\NotificationHandler:
+            tags: [messenger.message_handler]
+
+    # Updates entity concern attributes automatically
+    App\EventListener\EntityListener:
+            tags:
+                - name: 'doctrine.event_listener'
+                  event: 'prePersist'
+                  priority: 500
+
+                - name: 'doctrine.event_listener'
+                  event: 'preUpdate'
+                  priority: 400
+
+    App\EventListener\RedirectAfterRegistrationSubscriber:
+            tags:
+                - { name: kernel.event_subscriber }
+
+    App\EventListener\RedirectAfterLogin:
+                tags:
+                - { name: kernel.event_subscriber }
+
+    App\EventListener\SendEmailEnabledUser:
+                tags:
+                - { name: kernel.event_subscriber }
+
+    #ldap authentication
+    Symfony\Component\Ldap\Ldap:
+        arguments: ['@Symfony\Component\Ldap\Adapter\ExtLdap\Adapter']
+    Symfony\Component\Ldap\Adapter\ExtLdap\Adapter:
+        arguments:
+            -   host: '%env(LDAP_HOST)%'
+                port: '%env(LDAP_PORT)%'
+                encryption: '%env(LDAP_ENCRYPTION)%'
+                options:
+                    protocol_version: 3
+                    referrals: false
+
+    #NotificationsRabbit
+    notification_service:
+        class: App\Rabbit\NotificationService
+
+    #UploadsRabbit
+    uploads_service:
+        class: App\Rabbit\UploadsService
+
+    #TaskRabbit
+    task_service:
+        class: App\Rabbit\TaskService
+
+    App\Utils\DataReader:
+        arguments:
+            $logger: '@monolog.logger.import'
+
+    # Calendar Listener
+    App\EventListener\CalendarListener:
+            tags:
+                - { name: 'kernel.event_listener', event: 'calendar.set_data', method: load }
+
+    App\Utils\UploadListener:
+            arguments: ["@doctrine.orm.entity_manager"]
+            tags:
+                - { name: kernel.event_listener, event: oneup_uploader.post_persist, method: onUpload }
+
+    App\Service\AlertasService:
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    App\Service\MuroService:
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    App\Twig\AppExtension:
+        tags:
+            - { name: twig.extension }

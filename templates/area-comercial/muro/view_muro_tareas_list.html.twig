@@ -1,0 +1,60 @@
+{% set array_tabs = { 'tareas-abiertas':mensajesTareas } %}
+{% for key, a_tabs_msj in array_tabs %}
+    <div data-tab="tareas-abiertas" class="tab-pane bg-white blockMensajes" id="tareas-abiertas" role="tabpanel">
+        <div class="row mt-10">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover fs-12" id="tareas_table">
+                            <thead class="thead-light">
+                                <th>{{ "muro.date"|trans }}</th>
+                                <th>{{ "muro.solicitante"|trans }}</th>
+                                <th>{{ "muro.user-assigned-task"|trans }}</th>
+                                <th>{{ "muro.type-task"|trans }}</th>
+                                <th>{{ "muro.attached"|trans }}</th>
+                                <th>{{ "muro.task"|trans }}</th>
+                                <th>{{ "muro.actions"|trans }}</th>
+                            </thead>
+                            <tbody>
+                            {% for key, mensaje in a_tabs_msj %}
+                                {% set createdAt = key|slice(6,2) ~ "/" ~ key|slice(4,2) ~ "/" ~ key|slice(0,4)  %}
+                                {% set created_hour = key|slice(8,2) ~ ":" ~ key|slice(10,2) %}
+                                <tr class="tarea rowMessage" data-id="{{ mensaje.id }}" data-fecha="{{ createdAt ~ ' ' ~ created_hour }}">
+                                    <td>{{ createdAt }}<br/>{{ created_hour }}</td>
+                                    <td>{{ mensaje.autor.name }} {{ mensaje.autor.surname }} ({{ mensaje.autor }})</td>
+                                    <td>
+                                        {% if(mensaje.assignado is not null) %}
+                                            {{ mensaje.assignado.name }} {{ mensaje.assignado.surname }} ({{ mensaje.assignado }})
+                                        {% else %}
+                                            {{ 'muro.not-assigned'|trans }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="tipo_tarea" data-id="{{ mensaje.tipoID.type.id }}">{{ mensaje.tipoID.type.description|trans }}</td>
+                                    <td>
+                                        {% for adjunto in mensaje.adjuntos %}
+                                            <div class="fileAttached" data-id="{{ adjunto.id }}" data-ext="{{ adjunto.ext }}" data-value="{{ adjunto.filename }}">
+                                                <i class="fas fa-fw fa-file-image"></i><span>{{ adjunto.filename }}</span>
+                                            </div>
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ mensaje.message|truncate(50) }}</td>
+                                    <td>
+                                        <div class="msgAcciones">
+                                            <div class="btn btn-sm btn-info btnVerMensaje btn-circle" data-toggle="tooltip" title="{{ "muro.goto-message"|trans }}">
+                                                <i class="fas fa-search"></i></div>
+                                            <div class="btn btn-sm btn-success btnResponder btn-circle" data-toggle="tooltip" title="{{ "responder-mensaje"|trans }}">
+                                                <i class="fas fa-comment-dots"></i></div>
+                                            <div class="btn btn-sm btn-danger btnCancelar btn-circle" data-toggle="tooltip" title="{{ "cancelar-mensaje"|trans }}" onclick="cancelarMsj({{ mensaje.id }},0)">
+                                                <i class="fas fa-ban"></i></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

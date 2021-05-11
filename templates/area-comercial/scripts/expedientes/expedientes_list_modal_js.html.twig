@@ -1,0 +1,30 @@
+<script>
+    $('#expediente_list').on('click','tr', function () {
+        $('#expediente_list tr').removeAttr('style');
+        $('#expediente_list tr').removeAttr('selected');
+        $(this).css('background-color', '#007eae2b');
+        $(this).attr('selected', 'true');
+    });
+    function getAllExpedientes() {
+        $.ajax({
+            type: 'POST',
+            url: '/query/getAllExpedientesList',
+            success: function(data){
+                var body = $('#expediente_list tbody');
+                $(data.expedientes).each(function (key, expediente){
+                    let tablerow = '<tr>';
+                    tablerow += '<td>'+expediente.titulo+'</td>';
+                    tablerow += '<td>'+expediente.oficina+'</td>';
+                    tablerow += '<td>'+expediente.importe+'</td>';
+                    tablerow += '<td>'+expediente.clienteNIF+'</td>';
+                    tablerow += '<td>'+expediente.estado+'</td>';
+                    tablerow += '<td>'+expediente.createdAt.date+'</td>';
+                    tablerow += '<td>'+expediente.observaciones+'</td>';
+                    tablerow += '<input type="hidden" value="'+expediente.id+'">';
+                    tablerow += '</tr>';
+                    body.append(tablerow);
+                });
+            }
+        });
+    }
+</script>

@@ -1,0 +1,32 @@
+{#
+ # Accountable selector.
+ # See the AccountablePicker JavaScript class for usage.
+ #}
+
+<h2 class="mt-0">{{ "task.type_filters" | trans }}</h2>
+<div class="form-group">
+    <label for="find_task_type">{{ "task.label.taskType"|trans }}</label>
+    <select id="find_task_type" multiple name="find_task_type[]" class="form-control task-type-select">
+        {% for taskType in taskTypes %}
+            <option
+                    {% if taskType.id in typeFilter %}
+                        selected
+                    {% endif %}
+                    value="{{ taskType.id  }}">{{ taskType.description }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+<div class="form-group">
+    <label for="find_task_status">{{ "task.label.taskStatus"|trans }}</label>
+    <select id="find_task_status" multiple name="find_task_status[]" class="form-control task-status-select">
+        {% for status in taskStatus %}
+            <option
+                    {% if status.id in statusFilter %}
+                        selected
+                    {% endif %}
+                    value="{{ status.id  }}">{{ status.description }}
+            </option>
+        {% endfor %}
+    </select>
+</div>

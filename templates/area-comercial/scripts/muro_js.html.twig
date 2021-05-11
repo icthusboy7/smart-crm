@@ -1,0 +1,839 @@
+<script>
+    const openBtnAlert  = $('.open-alert');
+    const closeBtnAlert = $('.close-alert');
+    const modalViewFormTask = $('#muro_view_form_task');
+
+    var icons = {
+        time: 'fas fa-clock',
+        date: 'fas fa-calendar',
+        up: 'fas fa-arrow-up',
+        down: 'fas fa-arrow-down',
+        previous: 'fas fa-chevron-left',
+        next: 'fas fa-chevron-right',
+        today: 'fas fa-calendar-check-o',
+        clear: 'fas fa-trash',
+        close: 'fas fa-times'
+    };
+
+
+    {% if((objAlert and tareaNoti == null )) %}
+        openBtnAlert.css('display','none');
+        closeBtnAlert.css('display','block');
+    {% else %}
+        openBtnAlert.css('display','none');
+        closeBtnAlert.css('display','none');
+    {% endif %}
+
+    $('#fecha_tarea_p_c').datetimepicker('format', 'DD/MM/YYYY HH:mm');
+
+    $("#todos").animate({ scrollTop: $('#todos').prop("scrollHeight")}, 1000);
+
+    $(".btnVerMensaje").click(function(){
+        const id = $(this).closest(".rowMessage").attr("data-id");
+        irAlMensaje(id);
+    });
+
+    $(".msgGoTo").click(function(){
+        const id = $(this).attr("data-id");
+        irAlMensaje(id);
+    });
+
+    $(".btnVerForm").click(function(){
+        const id = $(this).closest(".rowMessage").attr("data-id");
+
+        $('#muro_view_form_task #exampleModalLabel').text('{{'muro.data-form-task-especial-sended'|trans}}');
+
+        $.ajax({
+            url: '{{ path("comercial_muro_view_form_js") }}',
+            type: 'POST',
+            data: {
+                'id': id,
+                'typeWall' : '{{ typeWall }}',
+            },
+            success: function (data) {
+                let wrapForm = $('#build-wrap-form');
+                wrapForm.empty();
+                const container = wrapForm;
+                const formData = JSON.parse(data);
+                const formRenderOpts = {
+                    i18n: {
+                        locale: 'es-ES',
+                        location: '/assets/js/formbuilder/'
+                    },
+                    container,
+                    formData,
+                    dataType: 'json'
+                };
+                $(container).formRender(formRenderOpts);
+                modalViewFormTask.modal('show');
+                modalViewFormTask.find('input').attr('disabled', 'true');
+                modalViewFormTask.find('select').attr('disabled', 'true');
+                modalViewFormTask.find('textarea').attr('disabled', 'true');
+                modalViewFormTask.find('textarea').val(modalViewFormTask.find('textarea').attr('user-data'));
+            }
+        });
+    });
+
+    $(".actionFormView").click(function(){
+        const id = $(this).attr("data-id");
+
+        $('#muro_view_form_task #exampleModalLabel').text('{{'muro.data-form-task-especial-sended'|trans}}');
+
+        $.ajax({
+            url: '{{ path("comercial_muro_view_form_js") }}',
+            type: 'POST',
+            data: {
+                'id': id,
+                'typeWall' : '{{ typeWall }}',
+            },
+            success: function (data) {
+                let wrapForm = $('#build-wrap-form');
+                wrapForm.empty();
+                const container = wrapForm;
+                const formData = JSON.parse(data);
+                const formRenderOpts = {
+                    i18n: {
+                        locale: 'es-ES',
+                        location: '/assets/js/formbuilder/'
+                    },
+                    container,
+                    formData,
+                    dataType: 'json'
+                };
+                $(container).formRender(formRenderOpts);
+                modalViewFormTask.modal('show');
+                modalViewFormTask.find('input').attr('disabled', 'true');
+                modalViewFormTask.find('select').attr('disabled', 'true');
+                modalViewFormTask.find('textarea').attr('disabled', 'true');
+                modalViewFormTask.find('textarea').val(modalViewFormTask.find('textarea').attr('user-data'));
+            }
+        });
+    });
+
+    $(".btnResponder").click(function(){
+        const selectedNav   = $('.principal.nav-link.active').attr('href');
+        const selectedId    = $(this).closest('tr').attr('data-id');
+        if (selectedNav === '#peticiones-cotizacion') {
+            $('#tareas_table_esp tr').each(function (selected, row) {
+                if(selected > 0) {
+                    let isWarning = row.classList.contains('bg-warning');
+                    let actualId = row.attributes['data-id'].value;
+                    if (actualId === selectedId && isWarning) {
+                        $(this).toggleClass("bg-warning");
+                    } else if (actualId === selectedId && isWarning) {
+                        $(this).removeClass("bg-warning");
+                    } else if (actualId === selectedId && !isWarning) {
+                        $(this).toggleClass("bg-warning");
+                    } else {
+                        $(this).removeClass("bg-warning");
+                    }
+                }
+            });
+
+        } else {
+            $(this).closest('tr').toggleClass("bg-warning");
+        }
+
+    });
+
+    $(document).ready(function() {
+
+        const collapse = $('.collapse');
+        collapse.on('show.bs.collapse', function() {
+            const id = $(this).attr('id');
+            $('a[href="#' + id + '"]').closest('.panel-heading').addClass('active-faq');
+            $('a[href="#' + id + '"] .panel-title span').html('<i class="fas fa-minus"></i>');
+        });
+        collapse.on('hide.bs.collapse', function() {
+            const id = $(this).attr('id');
+            $('a[href="#' + id + '"]').closest('.panel-heading').removeClass('active-faq');
+            $('a[href="#' + id + '"] .panel-title span').html('<i class="fas fa-plus"></i>');
+        });
+
+        $('#type_message').on('change', function () {
+            const type_task = $('#type_task');
+            $.ajax({
+                type: "POST",
+                url: "/getTypeTask",
+                data: {id : $('#type_message').val()}, // serializes the form's elements.
+                success: function(data) {
+                    type_task.find('option').remove();
+                    data.forEach(function(item) {
+                        $('#type_task').append('<option value="'+item.id+'">'+item.description+'</option>');
+                        }
+                    );
+                    type_task.show();
+                },
+                error: function () {
+                    type_task.find('option').remove();
+                    type_task.hide();
+                }
+
+            });
+        });
+
+        $('.users-select2').select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/findWallUsers',
+                data: function (params) {
+                    return {
+                        q: params.term,
+                        type: 'user'
+                    };
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            minimumInputLength: 3,
+            placeholder: '{{ 'search_for_an_users'|trans }}'
+        });
+
+        {# ######################### #}
+        {# Envios de los formularios #}
+        {# ######################### #}
+        $("#form_env_msj_esp").on('submit', function(e){
+            e.preventDefault();
+            $('#muro_send_response_special #error-message').text('');
+            $('#formEsp').val(JSON.stringify($('build-wrap').formRender("userData")));
+            $('#muro_send_response_special').modal('hide');
+            $('#muro_send_mensaje').modal('show');
+        });
+
+        $("#form_response_msj").on('submit', function(e){
+            e.preventDefault();
+            const form = $(this);
+            let env_valida = 0;
+            let cotiDatePicker = $('#fecha_tarea_p_c');
+            cotiDatePicker.datetimepicker('format', 'DD/MM/YYYY HH:mm');
+            cotiDatePicker.datetimepicker('icons', icons );
+            $("#se-pre-con").show();
+
+            $('tr.bg-warning').each(function(){
+                if ($(this).find('.tipo_tarea').attr('data-id') === 2 && $(this).find('.tipo_tarea').attr('data-action') === 2) {
+                    if ($('input[name="numPetiCoti"]').val() === '') {
+                        cotiDatePicker.datetimepicker('date', $(this).attr('data-fecha'));
+                        $('#id_tarea_p_c').val($(this).attr('data-id'));
+                        $('#num_de_coti').modal();
+                        env_valida = 1;
+                        $("#se-pre-con").hide();
+                    }
+                }
+            });
+            if (env_valida === 0 ){
+                $.ajax({
+                    type: "POST",
+                    url: "/dashboard-comerciales/muro/enviar-mensaje",
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function() {
+                        $('.loader').hide();
+                        swal( "S.M.A.R.T" ,  "{{ "New message send into wall"|trans }}" ,  "success");
+                        location.reload();
+                    }
+                });
+            }
+        });
+
+        {# ############################### #}
+        {# Selector de expediente cambiado #}
+        {# ############################### #}
+        $("select[name='expSelector']").change(function(){
+            const value = $(this).val();
+            let url = "{{ path("comercial_ver_muro") }}";
+            if ('{{ expediente }}' === '') {
+                url += 'tarea-'+'{{ tareaNoti }}';
+            } else {
+                url += "exp-" + value;
+            }
+            $("#se-pre-con").show();
+
+            location.href = url;
+        });
+
+        {# ############################### #}
+        {# Selector de cotización cambiado #}
+        {# ############################### #}
+        $("select[name='cotiSelector']").change(function(){
+            const value = $(this).val();
+            let url = "{{ path("comercial_ver_muro") }}";
+            if ('{{ expediente }}' === '') {
+                url += 'tarea-'+'{{ tareaNoti }}';
+            } else {
+                url += "exp-"+ '{{ expediente }}';
+            }
+            $("#se-pre-con").show();
+            if (value !== "") {
+                url += "/coti-" + value;
+            }
+            location.href = url;
+        });
+
+        $('#returnExpediente').on('click', function() {
+            location.href = "{{ path("comercial_expedientes") }}";
+        });
+        {# ################################# #}
+        {# Selecccion de los modal a mostrar #}
+        {# ################################# #}
+        $('#selectModal').on('click', function(){
+            const selectedNav = $('.principal.nav-link.active').attr('href');
+            const tarea_message_warning = $('.tarea.rowMessage.bg-warning');
+            const peticiones_message_warning = $('.peticiones.rowMessage.bg-warning');
+            let selectedTareas = [];
+            let i = 0;
+
+            if (selectedNav === '#todos'){
+                $('#muro_type_message').modal('show');
+            } else if (selectedNav === '#tareas-abiertas') {
+                if (tarea_message_warning.length > 0) {
+                    $('#muro_type_message').modal('show');
+                    tarea_message_warning.each(function (index ,element) {
+                        selectedTareas[i] = element.dataset.id;
+                        i++;
+                    });
+                    peticiones_message_warning.each(function (index ,element) {
+                        selectedTareas[i] = element.dataset.id;
+                        $('#tipoMensaje').val($('#tipo-'+element.dataset.id).val());
+                        i++;
+                    });
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'cierraID[]',
+                        id: 'tareaCierraId',
+                    }).appendTo('#formDocument');
+                    $('#tareaCierraId').val([selectedTareas]);
+                } else {
+                    $('#muro_type_message').modal('show');
+                }
+            } else if (selectedNav === '#peticiones-cotizacion') {
+                if (peticiones_message_warning.length > 0) {
+                    $('#muro_type_message').modal('show');
+                    tarea_message_warning.each(function (index ,element) {
+                        selectedTareas[i] = element.dataset.id;
+                        i++;
+                    });
+                    peticiones_message_warning.each(function (index ,element) {
+                        selectedTareas[i] = element.dataset.id;
+                        $('#tipoMensaje').val($('#tipo-'+element.dataset.id).val());
+                        i++;
+                    });
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'cierraID[]',
+                        id: 'peticionesCierraId',
+                    }).appendTo('#formDocument');
+
+                    $('#peticionesCierraId').val([selectedTareas]);
+                } else {
+                    $('#muro_type_message').modal('show');
+                }
+            }
+        });
+
+        $(".valoresOcultos").hide();
+
+        $(".msgVerCambio").click(function(){
+            if($(this).next().is(":hidden")) {
+                $(this).next().toggle(1000).show(0, function () {
+                    this.style.display = 'block'
+                });
+                $(this).next().next().toggle(1000).show(0, function () {
+                    this.style.display = 'block'
+                });
+            } else {
+                $(this).next().toggle(1000).hide();
+                $(this).next().next().toggle(1000).hide();
+
+            }
+        });
+
+        $(".select-type-message li").click(function (value) {
+            const key = value.target.accessKey;
+            const name = value.target.innerText;
+            const isform = value.target.dataset.action;
+            if(key === 'notificacion') {
+                $('#muro_type_message').modal('hide');
+                $('#muro_send_mensaje').modal('show');
+                $('#tipoMensaje').val(key);
+                $('#idTaskType').val('');
+                $('#muro_send_mensaje #exampleModalLabel').text('{{ 'muro.message'|trans }}');
+            } else if(key === 'accion') {
+                $(".select-type-task").css('display','block');
+            } else {
+                responseMsjEsp(key);
+                $('#muro_type_message').modal('hide');
+                if(key > 1) {
+                    if(isform === '1') {
+                        $('#muro_send_response_special #error-message').text('');
+                        $('#muro_send_response_special').modal('show');
+                    } else {
+                        $('#muro_send_mensaje').modal('show');
+                    }
+                } else {
+                    $('#muro_send_mensaje').modal('show');
+                }
+                if(key === 2) {
+                    $('#muro_send_response_special #error-message').text('');
+                    $('#muro_send_response_special #exampleModalLabel').text('{{'muro.data-form-peticion-cotizacion'|trans}}');
+                } else {
+                    $('#muro_send_response_special #error-message').text('');
+                    $('#muro_send_response_special #exampleModalLabel').text('{{'muro.data-form-task-especial'|trans}}');
+                }
+                $('#tipoMensaje').val(2);
+                $('#idTaskType').val(key);
+                $('#muro_send_mensaje #exampleModalLabel').text(name);
+            }
+        });
+
+        $('#confirm_coti').on('click', function(e){
+            e.preventDefault();
+            {# verificamos que la coti existe #}
+            $('#se-pre-con').show();
+            const errorMessage = $('#muro_validate_cotizacion #error-message');
+            const tarea_message_warning = $('.peticiones.rowMessage.bg-warning');
+            const msgQuoteSearch = $('#muro_validate_cotizacion #quotes-search');
+            const btnConfirmCoti = $('#confirm_coti');
+            let selectedTarea = '';
+            btnConfirmCoti.attr('disabled','disabled');
+            errorMessage.text('');
+            msgQuoteSearch.text('{{ 'muro.search_sap_quote'|trans }}');
+            tarea_message_warning.each(function (index ,element) {
+                selectedTarea = element.dataset.id;
+            });
+
+            let data = $('#form_env_msj_esp').serializeArray();
+
+            $.ajax({
+                url: '{{ path("SAPValidarCotizacionMuro") }}',
+                type: 'POST',
+                data: {
+                    'id_expediente': $('#expedienteEsp').val(),
+                    'coti': $('#input_num_de_coti').val(),
+                    'fecha_tarea': $('#fecha_tarea_p_c').val(),
+                    'autor': '{{ app.user.regNumber }}',
+                    'id_tarea': selectedTarea,
+                    'form': data,
+                },
+                success: function(data){
+                    if(data === 'OK'){
+                        $('input[name="numPetiCoti"]').val($('#input_num_de_coti').val());
+                        msgQuoteSearch.text('');
+                        $('#es_coti').val(1);
+                        $('#status').val(data);
+                        saveBtnMsg.click();
+                    }else{
+
+                        if($('#numCoti').val() === '') {
+                            errorMessage.text('{{ 'muro.error-send-task-especial'|trans }}');
+                        } else {
+                            errorMessage.text('{{ 'muro.error-send-task-especial'|trans }}');
+                        }
+                        msgQuoteSearch.text('');
+                        $('#muro_validate_cotizacion #error-message .invalid-feedback').show();
+
+                        $('.invalid-feedback').show();
+                        $('#status').val('');
+                        btnConfirmCoti.removeAttr('disabled');
+                    }
+                    $('#se-pre-con').hide();
+                }
+            });
+            //
+        });
+
+        $('#input_num_de_coti').change(function () {
+            const errorMessage = $('#muro_validate_cotizacion #error-message');
+            const msgQuoteSearch = $('#muro_validate_cotizacion #quotes-search');
+            const btnConfirmCoti = $('#confirm_coti');
+            if($('input#input_num_de_coti').val()!=='') {
+                errorMessage.text('');
+                msgQuoteSearch.text('');
+                btnConfirmCoti.removeAttr('disabled');
+            } else {
+                errorMessage.text('{{ 'muro.error-send-task-especial'|trans }}');
+                msgQuoteSearch.text('');
+                $('.invalid-feedback').show();
+                btnConfirmCoti.removeAttr('disabled');
+            }
+        });
+
+        $('#muro_validate_cotizacion').on('hidden.bs.modal', function () {
+            const btnConfirmCoti = $('#confirm_coti');
+            saveBtnMsg.removeAttr('disabled');
+            btnConfirmCoti.removeAttr('disabled');
+        });
+    });
+
+</script>
+<script>
+    // Envio de archivos
+    let previewNode = document.querySelector("#template");
+    previewNode.id = "";
+    let previewTemplate = previewNode.parentNode.innerHTML;
+    previewNode.parentNode.removeChild(previewNode);
+    let saveBtnMsg = $("#save");
+    Dropzone.options.formDocument = {
+        autoProcessQueue: false,
+        autoDiscover: false,
+        url: '/dashboard-comerciales/muro/enviar-mensaje',
+        parallelUploads: 20,
+        uploadMultiple: true,
+        previewTemplate: previewTemplate,
+        previewsContainer: "#previews",
+        init: function () {
+
+            let myDropzone = this;
+
+            // Update selector to match your button
+            saveBtnMsg.click(function (e) {
+                $('.loader').show();
+                saveBtnMsg.attr('disabled','disabled');
+                const selectedNav = $('.principal.nav-link.active').attr('href');
+                const tipo_coti = $('.peticiones.rowMessage.bg-warning td.tipo_tarea').attr('data-id');
+                const tipo_esp = $('.peticiones.rowMessage.bg-warning td.tipo_tarea').attr('data-action');
+                const tarea_esp_message_warning = $('.peticiones.rowMessage.bg-warning');
+                const tarea_message_warning = $('.tarea.rowMessage.bg-warning');
+                const status = $('#status').val();
+                let selectedTarea = '';
+                let selectedDate = '';
+                let selectedTareaEsp = '';
+                let numcoti = $('#numPetiCoti').val();
+
+                tarea_esp_message_warning.each(function (index ,element) {
+                    selectedTareaEsp = element.dataset.id
+                    selectedDate = element.dataset.fecha
+                });
+                tarea_message_warning.each(function (index ,element) {
+                    selectedTarea = element.dataset.id;
+                });
+
+                if (selectedNav === '#peticiones-cotizacion') {
+                    if(status === '' && selectedTareaEsp.length > 0 && tipo_coti === '2' && tipo_esp === '2' && numcoti === '') {
+                        $('.loader').hide();
+                        showPeticionCoti(selectedTareaEsp, selectedDate, e);
+                    } else if(status === '' && selectedTarea.length > 0 &&  tipo_coti === '2' && tipo_esp !== '2' && numcoti === '') {
+                        $('#tipoMensaje').val(1);
+                        $('#idTaskType').val(tipo_coti);
+
+                        if (myDropzone.files.length > 0) {
+                            myDropzone.processQueue();
+                        } else {
+                            sendMessage();
+                        }
+                    } else {
+                        if (myDropzone.files.length > 0) {
+                            myDropzone.processQueue();
+                        } else {
+                            sendMessage();
+                        }
+                    }
+                } else {
+                    if(selectedTareaEsp.length > 0 && tipo_coti === 2 && numcoti === '') {
+                        showPeticionCoti(selectedTareaEsp, selectedDate, e);
+                    } else if(status === '' && selectedTarea.length > 0 && tipo_coti > 2 && numcoti === '') {
+                        $('#tipoMensaje').val(1);
+                        $('#idTaskType').val(tipo_coti);
+
+                        if (myDropzone.files.length > 0) {
+                            myDropzone.processQueue();
+                        } else {
+                            sendMessage();
+                        }
+                    } else {
+                        e.preventDefault();
+                        if (myDropzone.files.length > 0) {
+                            myDropzone.processQueue();
+                        } else {
+                            sendMessage();
+                        }
+                    }
+                }
+            });
+
+            this.on('sending', function(file, xhr, formData) {
+                // Append all form inputs to the formData Dropzone will POST
+                let data = $('#formDocument').serializeArray();
+                $.each(data, function(key, el) {
+                    formData.append(el.name, el.value);
+                });
+            });
+
+            this.on("complete", function(file, message) {
+                $('.loader').hide();
+                swal( "S.M.A.R.T" ,  "{{ "New message send into wall"|trans }}" ,  "success");
+                location.reload();
+            });
+
+            this.on("addedfile", function(file) {
+                /* Maybe display some more file information on your page */
+                let filename = file.name;
+                let shortName = "input"+filename.substr(0, filename.indexOf("."));
+                let count= myDropzone.files.length;
+                $('.filesattach').text(count + ' ' + "{{ 'muro.filesattach'|trans }}");
+                displayattach(count);
+            });
+
+            this.on("removedfile", function(file) {
+                let count= myDropzone.files.length;
+                $('.filesattach').text(count + ' ' + "{{ 'muro.filesattach'|trans }}");
+                displayattach(count);
+            });
+
+            $( "#cancel" ).click(function() {
+                myDropzone.removeAllFiles(true);
+                $(this).children("input").remove();
+            });
+
+            $("#attachfile").click(function() {
+                myDropzone.hiddenFileInput.click();
+            })
+
+        }
+    };
+
+    $(document).ready(function() {
+        let GET = {};
+        let id;
+        if (document.location.toString().indexOf('?') !== -1) {
+            let query = document.location
+                .toString()
+                // get the query string
+                .replace(/^.*?\?/, '')
+                // and remove any existing hash string (thanks, @vrijdenker)
+                .replace(/#.*$/, '')
+                .split('&');
+
+            for (let i=0, l=query.length; i<l; i++) {
+                let aux = decodeURIComponent(query[i]).split('=');
+                GET[aux[0]] = aux[1];
+            }
+        }
+
+        if (GET['id_contact'] != null) {
+            id = GET['id_contact'];
+        }
+    });
+
+    function sendMessage() {
+        let formData = new FormData();
+        let data = $('#formDocument').serializeArray();
+        $.each(data, function (key, el) {
+            formData.append(el.name, el.value);
+        });
+        $.ajax({
+            type: 'POST',
+            url: "/dashboard-comerciales/muro/enviar-mensaje",
+            data: formData,
+            contentType: false,
+            cache: false,
+            processData: false,
+            beforeSend: function () {
+            },
+            success: function () {
+                $('.loader').hide();
+                swal( "S.M.A.R.T" ,  "{{ "New message send into wall"|trans }}" ,  "success");
+                location.reload();
+            }
+        });
+    }
+
+    function showPeticionCoti(selectedTareaEsp, selectedDateTask, e) {
+        $('#muro_validate_cotizacion #error-message').text('');
+        $('#muro_validate_cotizacion #quotes-search').text('');
+        $('#muro_validate_cotizacion #idTareaEsp').val(selectedTareaEsp);
+        var cotiDatePicker = $('#fecha_tarea_p_c');
+        let datesys = new Date;
+        cotiDatePicker.datetimepicker('format', 'DD/MM/YYYY HH:mm');
+        cotiDatePicker.datetimepicker('icons', icons );
+        cotiDatePicker.datetimepicker('date', selectedDateTask );
+        e.preventDefault(); // Cancel the submit
+        $('#muro_send_mensaje').modal('hide');
+        $('#muro_validate_cotizacion').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    function displayattach(count) {
+        if(count > 0) {
+            $('.row-filesattached').css('display', 'inline-block');
+        } else {
+            $('.row-filesattached').css('display', 'none');
+        }
+    }
+
+    const mainMuro = $('#main-muro');
+    const alertasSidenav = $('#alertas_sidenav');
+    const open_alert = $('.open-alert');
+    const close_alert =$('.close-alert');
+
+    function closeAlert() {
+        mainMuro.removeClass('col-lg-8');
+        mainMuro.addClass('col-lg-12');
+        alertasSidenav.removeClass('col-lg-4');
+        alertasSidenav.removeClass('d-lg-block');
+        alertasSidenav.addClass('hidden');
+        open_alert.css('display','block');
+        close_alert.css('display','none');
+    }
+
+    function openAlert() {
+        mainMuro.addClass('col-lg-8');
+        mainMuro.removeClass('col-lg-12');
+        alertasSidenav.addClass('col-lg-4');
+        alertasSidenav.addClass('d-lg-block');
+        alertasSidenav.removeClass('hidden');
+        open_alert.css('display','none');
+        close_alert.css('display','block');
+    }
+
+    function viewForm (id) {
+
+        $.ajax({
+            url: '{{ path("comercial_muro_view_form_js") }}',
+            type: 'POST',
+            data: {
+                'id': id,
+            },
+            success: function (data) {
+                let wrapForm = $('#build-wrap-form');
+                wrapForm.empty();
+                const container = wrapForm;
+                const formRenderOpts = {
+                    i18n: {
+                        locale: 'es-ES',
+                        location: '/assets/js/formbuilder/'
+                    },
+                    container,
+                    data,
+                    dataType: 'json'
+                };
+                $(container).formRender(formRenderOpts);
+                modalViewFormTask.find('input').attr('disabled', 'true');
+                modalViewFormTask.find('select').attr('disabled', 'true');
+                modalViewFormTask.find('textarea').attr('disabled', 'true');
+                modalViewFormTask.modal('show');
+            }
+        });
+    }
+
+    // ########################
+    // Función de ir al mensaje
+    // ########################
+    function irAlMensaje(id){
+        const $blockMensajes = $(".blockMensajes[data-tab='todos']");
+        let scrollTop;
+        $(".nav-link[href='#todos']").trigger("click");
+        $blockMensajes.scrollTop(0);
+        scrollTop = $blockMensajes.find(".rowMessage[data-id='"+id+"']").offset().top - $blockMensajes.offset().top - 30; // Els 30 són de les tabs de dalt, que el tapen
+        $blockMensajes.scrollTop(scrollTop);
+
+        // Efecto de highlight
+        $blockMensajes.find(".rowMessage[data-id!='"+id+"']").css("opacity", 0.01).stop().animate({
+            "opacity": 1
+        }, 2000);
+    }
+
+    function responseMsj(id,tipo) {
+        $('#idMessageTareas').val(id);
+        $('#tipoMensaje').val(tipo);
+    }
+
+    // ######################################
+    // Función obtener formulario frombuilder
+    // ######################################
+    function responseMsjEsp(id) {
+        $.ajax({
+            url: "{{ path('comercial_muro_obtener_codigo_formulario') }}",
+            type: 'POST',
+            data: {'id': id},
+            success: function (response) {
+                $('#form_id').val(id);
+                $("#form_nombre").val(response.titulo);
+                const container = document.getElementById('build-wrap');
+                const formData = response.code;
+                const formRenderOpts = {
+                    i18n: {
+                        locale: 'es-ES',
+                        location: '/assets/js/formbuilder/'
+                    },
+                    container,
+                    formData,
+                    dataType: 'json'
+                };
+                $(container).formRender(formRenderOpts);
+                $("#se-pre-con").delay(100000).hide();
+            },
+            error: function () {
+                console.log('Error al recuperar el formulario');
+            }
+        });
+    }
+
+    // ###########################
+    // Función cancelar el mensaje
+    // ###########################
+    function cancelarMsj(id, type) {
+        const motivo = $('#motivo').val();
+        $('#motivo_feedback').hide();
+        if (type === 0) {
+            $('#confirm_msj').attr('onclick', 'cancelarMsj('+id+', 1)');
+            $('#muro_cancel_tarea_mensaje').modal();
+        } else if (type === 1) {
+            if (motivo) {
+                $('#se-pre-con').show();
+                $.ajax({
+                    url: '{{ path("comercial_muro_cancelar_mensaje") }}',
+                    type: 'POST',
+                    data: {
+                        'id_mensaje': id,
+                        'motivo': motivo,
+                        'typeWall' : '{{ typeWall }}',
+                    },
+                    success: function (data) {
+                        if (data.resultado && data.resultado === 'ACEPTADA') {
+                            $('.loader').hide();
+                            swal( "S.M.A.R.T" ,  "{{ "New message send into wall"|trans }}" ,  "success");
+                            location.reload();
+                        } else {
+                            $("#se-pre-con").hide();
+                        }
+                    }
+                });
+            } else {
+                $('#motivo_feedback').show();
+            }
+        }
+    }
+    if($('#alertas_sidenav div.tab-content')[0].children.length === 0) {
+        closeAlert();
+    }
+
+    if($('#alertas_sidenav div.tab-content')[0].children.length === 0) {
+        closeAlert();
+    }
+
+    $(".fileAttached").click(function(){
+        const id = $(this).closest(".fileAttached").attr("data-id");
+        const filename = $(this).closest(".fileAttached").attr("data-value");
+         const data = 'attached='+id+'&file='+filename;
+
+        $.ajax({
+            url: '{{ path('sales_wall_check_document') }}',
+            type: 'POST',
+            data: {
+                'attached': id,
+                'file': filename
+            },
+            success: function (data) {
+                if (data === 'ko') {
+                    swal("S.M.A.R.T", "{{ "general.filenotfound"|trans }}", 'error');
+                } else {
+                    window.open(data, '_blank');
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,107 @@
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+{% block sonata_admin_content %}
+    <div style="padding: 20px;">
+        <div class="row">
+            <h3>Listado de traducciones</h3>
+            <p>Tabla con el código identificador de cada traduccion y sus cadenas traducidas a los idiomas disponibles en la aplicacion</p>
+            <table class="table table-bordered table-striped table-hover sonata-ba-list" id="catalogs" style="background-color: white">
+                <thead>
+                <tr class="sonata-ba-list-field-header">
+                    <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch" scope="col">String ID</th>
+                    <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch" scope="col">String english</th>
+                    <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch" scope="col">String castellano</th>
+                    <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch" scope="col">String català</th>
+                    <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch" scope="col">String portuguese</th>
+                    <th>Editar</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for catalog in catalogs %}
+                    <tr class="sonata-ba-list-field-header">
+                        {% for cat in catalog %}
+                            {% if loop.index  == 1 %}
+                                <th scope="row" class="sonata-ba-list-field sonata-ba-list-field-text" value="{{ cat }}">{{ cat }}</th>
+                            {% else %}
+                                <td class="sonata-ba-list-field sonata-ba-list-field-text" value="{{ cat }}">{{ cat }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td><button type="button" class="btn btn-warning" value="{{ loop.index0 }}"><i class="fa fa-list"></i></button></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade" id="translation_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ "Select translations for this ID"|trans }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="set_translations">
+                        <div class="form-group">
+                            <label for="string_id_modal">String ID</label>
+                            <input type="text" class="form-control" id="id_string" disabled>
+                            <input type="hidden" id="string_id_modal" name="string_id_modal">
+                        </div>
+                        <div class="form-group">
+                            <label for="string_en_modal">String for english</label>
+                            <input type="text" class="form-control" id="string_en_modal" name="string_en_modal">
+                        </div>
+                        <div class="form-group">
+                            <label for="string_es_modal">String for spanish</label>
+                            <input type="text" class="form-control" id="string_es_modal" name="string_es_modal">
+                        </div>
+                        <div class="form-group">
+                            <label for="string_ca_modal">String for catalan</label>
+                            <input type="text" class="form-control" id="string_ca_modal" name="string_ca_modal">
+                        </div>
+                        <div class="form-group">
+                            <label for="string_pt_modal">String for portuguese</label>
+                            <input type="text" class="form-control" id="string_pt_modal" name="string_pt_modal">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="save_translations" type="button" class="btn btn-blue btn-sm"><i class="fa fa-save"></i> {{ "Save"|trans }}</button>
+                    <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="fa fa-minus-circle"></i> {{ "Close"|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(".btn-warning").on('click', function(event){
+            var value = $(this).val();
+            var msgid = $(this).parent('td').parent('tr').children('th').text();
+            var msgstr_en = $(this).parent('td').parent('tr').children('td').eq(0).text();
+            var msgstr_es = $(this).parent('td').parent('tr').children('td').eq(1).text();
+            var msgstr_ca = $(this).parent('td').parent('tr').children('td').eq(2).text();
+            var msgstr_pt = $(this).parent('td').parent('tr').children('td').eq(3).text();
+            $('#translation_modal').modal('show');
+            $('#id_string').val(msgid);
+            $('#string_id_modal').val(msgid);
+            $('#string_en_modal').val(msgstr_en);
+            $('#string_es_modal').val(msgstr_es);
+            $('#string_ca_modal').val(msgstr_ca);
+            $('#string_pt_modal').val(msgstr_pt);
+        });
+
+        $('#save_translations').click(function() {
+            var formData = $('#set_translations').serialize();
+            console.log(formData);
+            $.ajax({
+                type: 'POST',
+                url: '/updateTranslations',
+                data: formData,
+                success: function(){
+                    swal( "Nice" ,  "Translations updated!" ,  "success" );
+                }
+            });
+            $('#translation_modal').modal('toggle');
+        });
+    </script>
+{% endblock %}

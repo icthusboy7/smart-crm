@@ -1,0 +1,39 @@
+old_sound_rabbit_mq:
+    connections:
+        default:
+            host: '%env(RABBIT_HOST)%'
+            user: '%env(RABBIT_USER)%'
+            password: '%env(RABBIT_PASSWORD)%'
+            vhost: '%env(RABBIT_VHOST)%'
+    producers:
+        notification:
+            connection: default
+            exchange_options:
+                name: Muro
+                type: direct
+        task:
+            connection: default
+            exchange_options:
+                name: Task
+                type: direct
+        uploads:
+            connection: default
+            exchange_options:
+                name: Uploads
+                type: direct
+    consumers:
+        notification:
+            connection:       default
+            exchange_options: {name: 'Muro', type: direct}
+            queue_options:    {name: 'Muro'}
+            callback:         notification_service
+        task:
+            connection:       default
+            exchange_options: {name: 'Task', type: direct}
+            queue_options:    {name: 'Task'}
+            callback:         task_service
+        uploads:
+            connection:       default
+            exchange_options: {name: 'Uploads', type: direct}
+            queue_options:    {name: 'Uploads'}
+            callback:         uploads_service

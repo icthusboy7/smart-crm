@@ -1,0 +1,166 @@
+{%  set active = 'active' %}
+{%  set activeCustomers = '' %}
+{%  set activeProviders = '' %}
+{%  set activeOffices = '' %}
+{%  set typeView = 'destock' %}
+<div id="muro-tab" class="col-sm-12 pull-right {{ ((objAlert or objNotice) and tareaNoti == null ) ? '' : 'hidden' }}">
+    <span class="alertas_closebtn col-sm-12"><a href="javascript:void(0)" class="alertas_closebtn" onclick="closeAlert()">X</a></span>
+    <ul class="nav nav-tabs faq-cat-tabs">
+        {% if (objAlertCustomers or objAlertCustomers or objAlertOffices or objNoticeCustomers or objNoticeCustomers or objNoticeOffices) %}
+            {% if (objAlertCustomers or objNoticeCustomers) %}
+                <li class="nav-item nav-item-alerts">
+                    <a class="nav-link {{ active }}" href="#customers-destock" data-toggle="tab" role="tab">
+                        <span class="d-sm-inline">{{ 'customers'|trans }}</span> ({{ objAlertCustomers|length + objNoticeCustomers|length }})
+                    </a>
+                </li>
+                {%  set active = '' %}
+                {%  set activeCustomers = 'active' %}
+            {% endif %}
+            {% if (objAlertProviders or objNoticeProviders) %}
+                <li class="nav-item nav-item-alerts">
+                    <a class="nav-link {{ active }}" href="#providers-destock" data-toggle="tab" role="tab">
+                        <span class="d-sm-inline">{{ 'providers'|trans }}</span> ({{ objAlertProviders|length + objNoticeProviders|length }})
+                    </a>
+                </li>
+                {%  set active = '' %}
+                {% if activeCustomers == '' %}
+                     {%  set activeProviders = 'active' %}
+                {% endif %}
+            {% endif %}
+            {% if (objAlertOffices or objNoticeOffices) %}
+                <li class="nav-item nav-item-alerts">
+                    <a class="nav-link {{ active }}" href="#offices-destock" data-toggle="tab" role="tab">
+                        <span class="d-sm-inline">{{ 'offices'|trans }}</span> ({{ objAlertOffices|length + objNoticeOffices|length }})
+                    </a>
+                </li>
+                {% if activeCustomers == '' and activeProviders == '' %}
+                    {%  set activeOffices = 'active' %}
+                {% endif %}
+            {% endif %}
+        {% else %}
+            <li class="nav-item nav-item-alerts">
+                <a class="nav-link active" href="#customers-destock" data-toggle="tab" role="tab">
+                    <span class="d-sm-inline">{{ 'customers'|trans }}</span> (0)
+                </a>
+            </li>
+            <li class="nav-item nav-item-alerts">
+                <a class="nav-link" href="#providers-destock" data-toggle="tab" role="tab">
+                <span class="d-sm-inline">{{ 'providers'|trans }}</span> (0)
+                </a>
+            </li>
+            <li class="nav-item nav-item-alerts">
+                <a class="nav-link" href="#offices-destock" data-toggle="tab" role="tab">
+                    <span class="d-sm-inline">{{ 'offices'|trans }}</span> (0)
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+    <div class="tab-content">
+        {% if (objAlertCustomers  or objNoticeCustomers) %}
+            {% set dataParent = "customers" %}
+            <div data-tab="customers-destock" class="tab-pane alert-tab-pane bg-white {{ activeCustomers }} " id="customers-destock" role="tabpanel">
+                {% if (objAlertCustomers) %}
+                    <div class="alertas">
+                        <div class="panel-heading alertas">
+                            <a data-toggle="collapse" data-parent="#alertas-customers-destock" href="#alertas-customers-destock" aria-expanded="true">
+                                <h4 class="panel-title">
+                                    <i class="fas fa-exclamation-triangle"></i> {{ 'lbl-alerts'|trans }}
+                                    <span class="pull-right"><i class="fas fa-minus"></i></span>
+                                </h4>
+                            </a>
+                        </div>
+                        {{ render(controller(
+                            'App\\Controller\\MuroController::listAlert', {'dataParent': dataParent, 'objAlert': objAlertCustomers, 'typeView': typeView}
+                        )) }}
+                    </div>
+                {% endif %}
+                {% if (objNoticeCustomers) %}
+                    <div class='avisos'>
+                        <div class="panel-heading avisos">
+                            <a data-toggle="collapse" data-parent="#avisos-customers-destock" href="#avisos-customers-destock" aria-expanded="true" class="avisos">
+                                <h4 class="panel-title">
+                                    <i class="fas fa-info-circle"></i> {{ 'lbl-notices'|trans }}
+                                    <span class="pull-right"><i class="fas fa-minus"></i></span>
+                                </h4>
+                            </a>
+                        </div>
+                        {{ render(controller(
+                        'App\\Controller\\MuroController::listNotice', {'dataParent': dataParent, 'objNotice': objNoticeCustomers, 'typeView': typeView}
+                        )) }}
+                    </div>
+                {% endif %}
+            </div>
+        {%  endif %}
+        {% if (objAlertProviders  or objNoticeProviders) %}
+            {% set dataParent = "providers" %}
+            <div data-tab="providers-destock" class="tab-pane alert-tab-pane bg-white {{ activeProviders }} " id="providers-destock" role="tabpanel">
+                {% if (objAlertProviders) %}
+                    <div class="alertas">
+                        <div class="panel-heading alertas">
+                            <a data-toggle="collapse" data-parent="#alertas-customers-destock" href="#alertas-providers-destock" aria-expanded="true">
+                                <h4 class="panel-title">
+                                    <i class="fas fa-exclamation-triangle"></i> {{ 'lbl-alerts'|trans }}
+                                    <span class="pull-right"><i class="fas fa-minus"></i></span>
+                                </h4>
+                            </a>
+                        </div>
+                        {{ render(controller(
+                            'App\\Controller\\MuroController::listAlert', {'dataParent': dataParent, 'objAlert': objAlertProviders, 'typeView': typeView}
+                        )) }}
+                    </div>
+                {% endif %}
+                {% if (objNoticeProviders) %}
+                    <div class='avisos'>
+                        <div class="panel-heading avisos">
+                            <a data-toggle="collapse" data-parent="#avisos-providers-destock" href="#avisos-providers-destock" aria-expanded="true" class="avisos">
+                                <h4 class="panel-title">
+                                    <i class="fas fa-info-circle"></i> {{ 'lbl-notices'|trans }}
+                                    <span class="pull-right"><i class="fas fa-minus"></i></span>
+                                </h4>
+                            </a>
+                        </div>
+                        {{ render(controller(
+                            'App\\Controller\\MuroController::listNotice', {'dataParent': dataParent, 'objNotice': objNoticeProviders, 'typeView': typeView}
+                        )) }}
+                    </div>
+                {% endif %}
+            </div>
+        {%  endif %}
+        {% if (objAlertOffices or objNoticeOffices) %}
+            {% set dataParent = "offices" %}
+            <div data-tab="offices-destock" class="tab-pane alert-tab-pane bg-white {{ activeOffices }} " id="offices-destock" role="tabpanel">
+                {% if (objAlertOffices) %}
+                    <div class="alertas">
+                        <div class="panel-heading alertas">
+                            <a data-toggle="collapse" data-parent="#alertas-offices-destock" href="#alertas-offices-destock" aria-expanded="true">
+                                <h4 class="panel-title">
+                                    <i class="fas fa-exclamation-triangle"></i> {{ 'lbl-alerts'|trans }}
+                                    <span class="pull-right"><i class="fas fa-minus"></i></span>
+                                </h4>
+                            </a>
+                        </div>
+                        {% set varAlert = objAlertOffices %}
+                        {{ render(controller(
+                            'App\\Controller\\MuroController::listAlert', {'dataParent': dataParent, 'objAlert': objAlertOffices, 'typeView': typeView}
+                        )) }}
+                    </div>
+                {% endif %}
+                {% if (objNoticeOffices) %}
+                    <div class='avisos'>
+                        <div class="panel-heading avisos">
+                            <a data-toggle="collapse" data-parent="#avisos-offices-destock" href="#avisos-offices-destock" aria-expanded="true" class="avisos">
+                                <h4 class="panel-title">
+                                    <i class="fas fa-info-circle"></i> {{ 'lbl-notices'|trans }}
+                                    <span class="pull-right"><i class="fas fa-minus"></i></span>
+                                </h4>
+                            </a>
+                        </div>
+                        {{ render(controller(
+                            'App\\Controller\\MuroController::listNotice', {'dataParent': dataParent, 'objNotice': objNoticeOffices, 'typeView': typeView}
+                        )) }}
+                    </div>
+                {% endif %}
+            </div>
+        {%  endif %}
+    </div>
+</div>

@@ -1,0 +1,228 @@
+<script>
+    $(function() {
+
+        /** Events service path */
+        const SERVICE_PATH = '/getCalendarEvents';
+
+        /** Possible status values */
+        const VisitStatus = {
+            PENDING: 1,
+            DONE: 2,
+            CANCELED: 3
+        };
+
+        /** Event search filters */
+        const search = {
+            status_id: [
+                VisitStatus.PENDING,
+                VisitStatus.DONE
+            ]
+        };
+
+        /** Source of the calenda events */
+        const eventSource = {
+            id: 'event',
+            url: SERVICE_PATH,
+            extraParams: search
+        };
+
+        /** Calendar status filters form */
+        const statusPicker = new StatusPicker('#filters-form');
+
+        /** Calendar filters form */
+        const authorPicker = new AccountablePicker('#filters-form');
+
+        /** Search form */
+        const searchForm = new SerializableForm('#filters-form');
+
+        // Initialize the calendar
+
+        var calendarEl = document.getElementById('calendar-holder');
+
+        // var status = "NoCancel";
+        // var data = "status="+status;
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            defaultView: 'dayGridMonth',
+            editable: true,
+            selectable: true,
+            unselectAuto: false,
+            themeSystem: 'bootstrap',
+            height: 'parent',
+            firstDay: 1,
+            eventSources: [ eventSource ],
+            header: {
+                left: 'title, prev,today,next, dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+                center: null,
+                right: null
+            },
+            plugins: [
+                'bootstrap',
+                'interaction',
+                'dayGrid',
+                'timeGrid',
+                'list'
+            ],
+            bootstrapFontAwesome: {
+                today: 'fa-genderless'
+            },
+            dateClick: function(info) {
+
+            },
+            select: function(info) {
+                swal({
+                    title: "{{ 'create_visit'|trans }}",
+                    text: "{{ 'create_visit_description'|trans }}",
+                    icon: "info",
+                    buttons: true,
+                    dangerMode: false
+                }).then((willDelete)=> {
+                    if (willDelete) {
+
+                        data = "dateini="+info.start;
+                        var url = '{{ path('visitForm') }}'+'?'+data;
+                        var form = document.createElement("form");
+                        form.setAttribute("method", "post");
+                        form.setAttribute("action", url);
+
+                        form.setAttribute("target", "_self");
+
+                        var hiddenField = document.createElement("input");
+                        hiddenField.setAttribute("type", "hidden");
+                        hiddenField.setAttribute("name", "method");
+                        hiddenField.setAttribute("value", "val");
+                        form.appendChild(hiddenField);
+                        document.body.appendChild(form);
+
+                        form.submit();
+                    }
+                })
+            },
+            selectAllow: function (e) {
+
+                //PERMITE SELECCIONAR SOLO UN DIA, BLOQUEA LOS DEMAS
+                if (e.end.getTime() / 1000 - e.start.getTime() / 1000 <= 86400) {
+                    return true;
+                }
+            },
+            eventDrop: function(info) {
+                swal({
+                    title: "{{ 'move_visit'|trans }}",
+                    text: "{{ 'move_visit_description'|trans }}",
+                    icon: "info",
+                    buttons: true,
+                    dangerMode: false
+                }).then((willDelete)=> {
+                    if(willDelete){
+                        var start = moment.utc(info.event.start).format('Y-M-D HH:mm:ss');
+                        var end = moment.utc(info.event.end).format('Y-M-D HH:mm:ss');
+                        var DataForm = "idEvento="+info.event.id+'&newDateStart='+start+'&newDateEnd='+end;
+                        $.ajax({
+                            type: 'POST',
+                            url: '/updateEventCalendar',
+                            data: DataForm,
+                            statusCode: HttpStatusHandler.DEFAULT_HANDLERS
+                        });
+                    }else{
+                        info.revert();
+                    }
+                })
+            },
+            eventClick: function(info) {
+                var data = 'idVisita='+info.event.id;
+                var data2 = info.event.id;
+                $.ajax({
+                    type: 'POST',
+                    url: '/visitFullInfo',
+                    data: data,
+                    success: function(recived){
+                        var url = '{{ path('visitForm') }}'+'?'+data;
+                        $('#idvisit').val(data2);
+                        $('#gotoeditvisit').attr('href', url);
+
+                        //********************************************
+                        // If visit is cancel don´t show cancel button
+                        //********************************************
+                        if (info.event.classNames == 'canceled')
+                        {
+                            $('#gotocancelvisit').hide();
+                        }
+                        else
+                        {
+                            $('#gotocancelvisit').show();
+                        }
+
+                        $("#event_info" ).empty().append(recived);
+                        $('#event_info_visita').modal('show');
+                    }
+                });
+            },
+            eventResize: function(info) {
+                swal({
+                    title: "{{ 'change_visit'|trans }}",
+                    text: "{{ 'change_visit_description'|trans }}",
+                    icon: "info",
+                    buttons: true,
+                    dangerMode: false
+                }).then((willDelete)=> {
+                    if(willDelete){
+                        var start = moment.utc(info.event.start).format('Y-M-D HH:mm:ss');
+                        var end = moment.utc(info.event.end).format('Y-M-D HH:mm:ss');
+                        var DataForm = "idEvento="+info.event.id+'&newDateStart='+start+'&newDateEnd='+end;
+                        $.ajax({
+                            type: 'POST',
+                            url: '/updateEventCalendar',
+                            data: DataForm,
+                            statusCode: HttpStatusHandler.DEFAULT_HANDLERS
+                        });
+                    }else{
+                        info.revert();
+                    }
+                })
+            },
+            timeZone: 'UTC',
+        });
+
+        calendar.render();
+
+        $( "#gotocancelvisit" ).click(function() {
+            var data = $('#idvisit').serialize();
+            $.ajax({
+                type: 'POST',
+                url: '/cancelVisit',
+                data: data,
+                statusCode: HttpStatusHandler.DEFAULT_HANDLERS,
+                success:function(data){
+                    swal( "S.M.A.R.T" ,  "{{ "Visit cancel"|trans }}" ,  "success" );
+                    calendar.refetchEvents();
+                }
+            });
+            $('#event_info_visita').modal('toggle');
+        });
+
+        // Initialize the status picker values
+
+        statusPicker.setValues(search['status_id']);
+
+        // Attach events to the form. This fetches new results from
+        // the server each time the form changes.
+
+        searchForm.on('change', event => {
+            const $target = $(event.target);
+
+            if (!$target.hasClass('select2-search__field')) {
+                const keys = Object.keys(search);
+                const filters = searchForm.serializeObject();
+
+                keys.forEach(key => delete search[key]);
+                Object.assign(search, filters);
+
+                calendar.refetchEvents();
+            }
+        });
+
+        searchForm.on('submit', event => {
+            event.preventDefault();
+        });
+
+    });
+</script>

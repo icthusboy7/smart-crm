@@ -1,0 +1,7 @@
+<section class="{% if isWall == false %}muro{% endif %} bg-container">
+    <ol class="breadcrumb">
+        {% for bread in breadcrumb %}
+            <li><a href="{{ url(bread.url, bread.parameters) }}">{{ bread.text|trans }}</a></li>
+        {% endfor %}
+    </ol>
+</section>

@@ -1,0 +1,17 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% block fos_user_content %}
+    <div class="jumbotron text-center text-white">
+        <div class="logo-jumbotron pb-20"><img src="{{ asset('assets/img/logocbk.png') }}" class="pr-10"><span>S.M.A.R.T.</span></div>
+        <p>{{ "User register"|trans }}</p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 offset-md-3">
+                <div class="single-service">
+                    {% include "@FOSUser/Registration/register_content.html.twig" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock fos_user_content %}

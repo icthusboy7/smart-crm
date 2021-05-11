@@ -1,0 +1,51 @@
+<script>
+    $(document).ready(function () {
+
+        const formEditor = document.getElementById('formEditor');
+        const formBuilder = $(formEditor).formBuilder();
+        const inputForm = $("input[name*='[form]']");
+        const savedData = inputForm.val();
+
+        formBuilder.promise.then(function(fb) {
+            formBuilder.actions.setData(savedData);
+            const button_save = document.getElementsByClassName('save-template');
+            $(button_save).parent().attr('style', 'display:none;');
+        });
+
+        $("input[id*='_isSpecial']").change(function () {
+
+            $('#preview_button').toggle(this.checked);
+            $(formEditor).toggle(this.checked);
+            $("ul[id*='frmb-']").removeAttr('style');
+
+            const button_save = document.getElementsByClassName('save-template');
+            $(button_save).parent().attr('style', 'display:none;');
+
+        }).change();
+
+        $("form[name='form']").submit(function () {
+            $(this).find("button[type='submit']").prop('disabled', true);
+        });
+
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                let data = formBuilder.actions.getData();
+                $("input[name*='[form]']").val(JSON.stringify(data));
+            });
+        });
+        const config = {
+            childList: true,
+            subtree: true,
+            characterData: true
+        };
+        observer.observe(formEditor, config);
+
+        $('#preview_button').on('click', function() {
+            $('#preview_render').formRender({
+                formData: $(formBuilder.actions.getData())
+            });
+            $('#preview_tasktype').modal('show');
+        });
+
+    });
+</script>

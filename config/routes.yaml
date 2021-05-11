@@ -1,0 +1,645 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+
+homepage:
+    path: /
+    controller: App\Controller\HomeController::index
+
+#homepage_lang:
+#    path: /{_locale}
+#    controller: App\Controller\HomeController::index
+
+dashboards:
+    path: /{_locale}/home
+    controller: App\Controller\DashboardController::index
+    requirements:
+        _locale: '%app.locales%'
+
+ultimos_reportes:
+    path: /{_locale}/informes/ultimos
+    controller: App\Controller\InformeController::lastReports
+    requirements:
+        _locale: '%app.locales%'
+
+detalle_comite:
+    path: /{_locale}/detalle
+    controller: App\Controller\ComiteController::detalleComite
+    requirements:
+        _locale: '%app.locales%'
+
+indice_operaciones:
+    path: /{_locale}/operaciones
+    controller: App\Controller\OperacionController::index
+    requirements:
+        _locale: '%app.locales%'
+
+alertas_informa:
+    path: /{_locale}/informa
+    controller: App\Controller\ComercialAlertasController::alertasInforma
+    requirements:
+        _locale: '%app.locales%'
+
+homepage_equifax:
+    path: /{_locale}/alertas/equifax/
+    controller: App\Controller\EquifaxController::index
+    requirements:
+        _locale: '%app.locales%'
+
+homepage_equifax_ftp:
+    path: /{_locale}/alertas/equifax/
+    controller: App\Controller\EquifaxController::index
+    requirements:
+        _locale: '%app.locales%'
+
+documental_listado_peticiones:
+    path: /{_locale}/listarPeticiones
+    controller: App\Controller\DashboardController::listarPeticiones
+    requirements:
+        _locale: '%app.locales%'
+
+dashboard_comerciales:
+    path: /{_locale}/dashboard-comerciales
+    controller: App\Controller\DashboardComercialesController::dashboardcomercial
+    requirements:
+        _locale: '%app.locales%'
+
+dashboard_riesgos:
+    path: /{_locale}/dashboard_riesgos
+    controller: App\Controller\DashboardRiesgosController::index
+    requirements:
+        _locale: '%app.locales%'
+
+comercial_operaciones:
+    path: /{_locale}/operaciones
+    controller: App\Controller\DashboardComercialesController::indexOperaciones
+    requirements:
+        _locale: '%app.locales%'
+
+gestion_contactos:
+    path: /{_locale}/contactos
+    controller: App\Controller\ContactosController::index
+    requirements:
+        _locale: '%app.locales%'
+
+create_contactos:
+    path: /createContactos
+    controller: App\Controller\ContactosController::createContacto
+
+update_contactos:
+    path: /updateContactos
+    controller: App\Controller\ContactosController::updateContacto
+
+delete_contactos:
+    path: /deleteContactos
+    controller: App\Controller\ContactosController::deleteContacto
+
+create_query_contactos:
+    path: /createQueryContact
+    controller: App\Controller\ContactosController::createQuery
+
+delete_query_contactos:
+    path: /deleteQueryContactos
+    controller: App\Controller\ContactosController::deleteQueryContactos
+
+contactos_oficina_list:
+    path: /getContactosOficinas
+    controller: App\Controller\ContactosController::getContactosOficinas
+
+contactos_info:
+    path: /{_locale}/getContactosInfo
+    controller: App\Controller\ContactosController::getContactoInfo
+    requirements:
+        _locale: '%app.locales%'
+
+gestion_oficinas:
+    path: /{_locale}/oficinas
+    controller: App\Controller\OficinasController::index
+    requirements:
+        _locale: '%app.locales%'
+
+full_oficina:
+    path: /officeFullInfo
+    controller: App\Controller\OficinasController::getFullOffice
+
+select_offices:
+    path: /selectOffices
+    controller: App\Controller\OficinasController::selectOffices
+
+select_offices2:
+    path: /selectOffices2
+    controller: App\Controller\OficinasController::selectOffices2
+
+create_query_office:
+    path: /createQueryOficina
+    controller: App\Controller\OficinasController::createQuery
+
+delete_query_office:
+    path: /deleteQueryOficina
+    controller: App\Controller\OficinasController::deleteQueryOficina
+
+gestion_alertas:
+    path: /{_locale}/alertas
+    controller: App\Controller\ComercialAlertasController::index
+    requirements:
+        _locale: '%app.locales%'
+
+full_alertas:
+    path: /alertasFullInfo
+    controller: App\Controller\ComercialAlertasController::getFullInfoAlerta
+
+form_alertas:
+    path: /alertasForm
+    controller: App\Controller\ComercialAlertasController::gestionarAlertas
+
+alertas_nif:
+    path: /alertasNif
+    controller: App\Controller\ComercialAlertasController::getNifByAlertId
+
+alertas_office:
+    path: /alertasOffice
+    controller: App\Controller\ComercialAlertasController::getOfficeByAlertId
+
+delete_alertas:
+    path: /deleteAlerta
+    controller: App\Controller\ComercialAlertasController::deleteAlertas
+
+find_data_alertas:
+    path: /findDataAlert
+    controller: App\Controller\ComercialAlertasController::findDataAlert
+
+create_alerta:
+    path: /createAlerta
+    controller: App\Controller\ComercialAlertasController::createAlert
+
+create_query_alerta:
+    path: /createQueryAlerta
+    controller: App\Controller\ComercialAlertasController::createQueryAlerta
+
+delete_query_alerta:
+    path: /deleteQueryAlerta
+    controller: App\Controller\ComercialAlertasController::deleteQueryAlerta
+
+find_alert_nif:
+    path: /{_locale}/alert/findAlertNif
+    controller: App\Controller\ComercialAlertasController::findAlertNif
+    requirements:
+        _locale: '%app.locales%'
+
+get_alert_info_nif:
+    path: /{_locale}/alert/getAlertInfoNif
+    controller: App\Controller\ComercialAlertasController::getAlertInfoNif
+    requirements:
+        _locale: '%app.locales%'
+
+find_alert_office:
+    path: /{_locale}/alert/findAlertOffice
+    controller: App\Controller\ComercialAlertasController::findAlertOffice
+    requirements:
+        _locale: '%app.locales%'
+
+get_alert_info_office:
+    path: /{_locale}/alert/getAlertInfoOffice
+    controller: App\Controller\ComercialAlertasController::getAlertInfoOffice
+    requirements:
+        _locale: '%app.locales%'
+
+comercial_visitas:
+    path: /{_locale}/dashboard-comerciales/visitas
+    controller: App\Controller\DashboardComercialesController::indexVisitas
+    requirements:
+        _locale: '%app.locales%'
+
+calendario_visitas:
+    path: /getCalendarEvents
+    controller: App\Controller\VisitasController::getCalendarEvents
+
+calendario_visitMade:
+    path: /getCalendarEventsMade
+    controller: App\Controller\VisitasController::getCalendarEventsMade
+
+calendario_visitas_show_visit_info:
+    path: /visitFullInfo
+    controller: App\Controller\VisitasController::getFullVisit
+
+calendario_visitas_update:
+    path: /updateEventCalendar
+    controller: App\Controller\VisitasController::updateCalendarEvent
+
+comercial_expedientes:
+    path: /{_locale}/dashboard-comerciales/expedientes
+    controller: App\Controller\ExpedientesController::index
+    requirements:
+        _locale: '%app.locales%'
+
+comercial_expedientes_calendario:
+    path: /{_locale}/dashboard-comerciales/expedientes_calendario
+    controller: App\Controller\ExpedientesController::indexCalendario
+    requirements:
+        _locale: '%app.locales%'
+
+expedientes_form:
+    path: /{_locale}/dashboard-comerciales/expedienteForm
+    controller: App\Controller\ExpedientesController::expedienteForm
+
+peticion_cotizacion_form:
+    path: /{_locale}/dashboard-comerciales/peticionCotizacion
+    controller: App\Controller\ExpedientesController::peticionCotizacionForm
+
+create_expediente:
+    path: /createExpediente
+    controller: App\Controller\ExpedientesController:createExpediente
+
+exportExcelPipeLines:
+    path: /{_locale}/dashboard-comerciales/pipelines/exportExcel
+    controller: App\Controller\ExpedientesController:exportExcel
+
+getFilePipeline:
+    path: /{_locale}/dashboard-comerciales/pipelines/getPipelineDocument
+    controller: App\Controller\ExpedientesController:getDocument
+
+notificaciones_usuario:
+    path: /{_locale}/notificaciones_usuario
+    controller: App\Controller\NotificationsController::showUserNotifications
+
+notificaciones_grupo:
+    path: /{_locale}/notificaciones_group
+    controller: App\Controller\NotificationsController::showGroupNotifications
+
+access_denied:
+    path: /access_denied
+    controller: App\Controller\HomeController::access_denied
+
+updateOrden:
+    path: /updateOrden
+    controller: App\Controller\DashboardController::UpdateOrden
+
+sendNotificacion:
+    path: /sendNotification
+    controller: App\Controller\NotificationsController::sendNotification
+
+sendAlerta:
+    path: /sendAlerta
+    controller: App\Controller\ComercialAlertasController::sendAlerta
+
+updateFlagNotify:
+    path: /updateFlagNotify
+    controller: App\Controller\NotificationsController::setUserNotificationsFlagSeen
+
+updateSeenNotificationsUser:
+    path: /seenNotificationsUser
+    controller: App\Controller\NotificationsController::setUserNotificationsSeen
+
+updateSeenNotificationsGroup:
+    path: /seenNotificationsGroup
+    controller: App\Controller\NotificationsController::setGroupNotificationsSeen
+
+doUpload:
+    path: /doUpload
+    controller: App\Controller\UploadController::index
+
+updateTranslations:
+    path: /updateTranslations
+    controller: App\Controller\TranslationsUpdatesController::UpdateTranslations
+
+runCommand:
+    path: /runCommand
+    controller: App\Controller\UploadController::executeCommand
+
+readCommand:
+    path: /readCommand
+    controller: App\Controller\UploadController::executeCommand
+
+pushCommand:
+    path: /pushCommand
+    controller: App\Controller\UploadController::pushCommand
+
+NotificationTestSend:
+    path: /sendNotificationTestSend
+    controller: App\Controller\DefaultController::sendToRabbit
+
+NotificationTestSendAnother:
+    path: /sendNotificationTestSendAnother
+    controller: App\Controller\DefaultController::sendAnother
+
+NotificationTestRecieve:
+    path: /sendNotificationTestRecieve
+    controller: App\Controller\DefaultController::recieve
+
+NotificationTestRecieveAnother:
+    path: /sendNotificationTestRecieveAnother
+    controller: App\Controller\DefaultController::recieveAnother
+
+visitForm:
+    path: /{_locale}/dashboard-comerciales/visitForm
+    controller: App\Controller\VisitasController::visitForm
+
+saveVisit:
+    path: /saveVisit
+    controller: App\Controller\VisitasController::saveVisit
+
+updateVisit:
+    path: /updateVisit
+    controller: App\Controller\VisitasController::updateVisit
+
+findCustomer:
+    path: /findCustomer
+    controller: App\Controller\VisitasController::findCustomer
+
+findProvider:
+    path: /findProvider
+    controller: App\Controller\VisitasController::findProvider
+
+findCustomerOnly:
+    path: /findCustomerOnly
+    controller: App\Controller\VisitasController::findCustomerOnly
+
+findProviderOnly:
+    path: /findProviderOnly
+    controller: App\Controller\VisitasController::findProviderOnly
+
+findContact:
+    path: /findContact
+    controller: App\Controller\ContactosController::findContact
+
+findUsers:
+    path: /findUsers
+    controller: App\Controller\ContactosController::findUsers
+
+document:
+    path: /{_locale}/document
+    controller: App\Controller\DocumentController::document
+
+uploadDocument:
+    path: /uploadDocument
+    controller: App\Controller\DocumentController::uploadDocument
+
+downloadDocument:
+    path: /downloadDocument
+    controller: App\Controller\DocumentController::downloadDocument
+
+findDocumentType:
+    path: /findDocumentType
+    controller: App\Controller\DocumentController::findDocumentType
+
+findOffice:
+    path: /findOffice
+    controller: App\Controller\OficinasController::findOffice
+
+findPerson:
+    path: /findPerson
+    controller: App\Controller\VisitasController::findPerson
+
+cancelVisit:
+    path: /cancelVisit
+    controller: App\Controller\VisitasController::cancelVisit
+
+tasks:
+    path: /{_locale}/tasks
+    controller: App\Controller\TaskController:index
+
+tasksCreate:
+    path: /tasks/create
+    controller: App\Controller\TaskController:create
+
+tasksSelectResponsible:
+    path: /tasks/selectResponsible
+    controller: App\Controller\TaskController:selectResponsible
+
+tasksetResponsible:
+    path: /tasks/setResponsible
+    controller: App\Controller\TaskController:setResponsible
+
+taskFindPipeline:
+    path: /tasks/findPipeline
+    controller: App\Controller\TaskController:findPipeline
+
+taskFindQuote:
+    path: /tasks/findQuote
+    controller: App\Controller\TaskController:findQuote
+
+taskNotificaction:
+    path: /tasks/sendNotification
+    controller: App\Controller\TaskController:sendNotification
+
+task_types:
+    path: /{_locale}/tasktypes
+    controller: App\Controller\TaskTypeController:index
+
+add_type:
+    path: /{_locale}/tasktype/create
+    controller: App\Controller\TaskTypeController:create
+
+comercial_ver_muro:
+    path: /{_locale}/dashboard-comerciales/muro/
+    controller: App\Controller\MuroController::viewMuro
+
+comercial_ver_muro_expediente:
+    path: /{_locale}/dashboard-comerciales/muro/exp-{idExpediente}
+    controller: App\Controller\MuroController::viewMuro
+
+comercial_ver_muro_coti:
+    path: /{_locale}/dashboard-comerciales/muro/exp-{idExpediente}/coti-{numCoti}
+    controller: App\Controller\MuroController::viewMuro
+
+comercial_ver_muro_tab:
+    path: /{_locale}/dashboard-comerciales/muro/exp-{idExpediente}/{tab}
+    controller: App\Controller\MuroController::viewMuro
+
+comercial_ver_muro_coti_tab:
+    path: /{_locale}/dashboard-comerciales/muro/exp-{idExpediente}/coti-{numCoti}/{tab}
+    controller: App\Controller\MuroController::viewMuro
+
+comercial_ver_muro_coti_alone_tab:
+    path: /{_locale}/dashboard-comerciales/muro/coti-{numCoti}/{tab}
+    controller: App\Controller\MuroController::viewMuro
+
+comercial_ver_muro_tarea_js:
+    path: /{_locale}/dashboard-comerciales/muro/tarea-
+    controller: App\Controller\MuroController::viewMuro
+
+comercial_ver_muro_tarea:
+    path: /{_locale}/dashboard-comerciales/muro/tarea-{idTarea}
+    controller: App\Controller\MuroController::viewMuro
+
+sales_wall_check_document:
+    path: /checkDocument
+    controller: App\Controller\MuroController::checkDocument
+
+comercial_muro_ver_documento:
+    path: /previewDocument
+    controller: App\Controller\MuroController::previewDocument
+
+comercial_wall_find_users:
+    path: /findWallUsers
+    controller: App\Controller\MuroController::findUsers
+
+comercial_wall_enviar_mensage:
+    path: /dashboard-comerciales/muro/enviar-mensaje
+    controller: App\Controller\MuroController::enviarMessage
+
+comercial_muro_cancelar_mensaje:
+    path: /dashboard-comerciales/muro/cancelar-mensaje
+    controller: App\Controller\MuroController::cancelMessage
+
+comercial_muro_get_type_task:
+    path: /getTypeTask
+    controller: App\Controller\MuroController::getTypeTask
+
+comercial_muro_obtener_codigo_formulario:
+    path: /obtenerCodigoForm
+    controller: App\Controller\MuroController::obtenerCodigoForm
+
+comercial_muro_upload_files_js:
+    path: /uploadFiles
+    controller: App\Controller\MuroController::uploadFiles
+
+comercial_muro_view_form_js:
+    path: comercial_muro_view_message
+    controller: App\Controller\MuroController::viewFormTask
+
+findPersons:
+    path: /{_locale}/findPersons
+    controller: App\Controller\SelectController::findPersons
+    requirements:
+        _locale: '%app.locales%'
+
+edit_type:
+    path: /{_locale}/tasktype/edit/{id}
+    controller: App\Controller\TaskTypeController:edit
+
+delete_type:
+    path: /tasktype/delete
+    controller: App\Controller\TaskTypeController:delete
+
+existContact:
+    path: /existContact
+    controller: App\Controller\ContactosController::existContact
+
+submitContact:
+    path: /submitContact
+    controller: App\Controller\ContactosController::submitContact
+
+#########################################################################
+##########################     QUERIES     ##############################
+#########################################################################
+
+getAllExpedientesList:
+    path: /query/getAllExpedientesList
+    controller: App\Controller\ExpedientesController:getAllExpedientesList
+
+getExpedienteForm:
+    path: /query/getExpedienteForm
+    controller: App\Controller\ExpedientesController:getExpedienteForm
+
+deleteExpediente:
+    path: /query/deleteExpediente
+    controller: App\Controller\ExpedientesController:deleteExpediente
+
+addFavExpediente:
+    path: /query/favExpediente
+    controller: App\Controller\ExpedientesController:addExpedienteFavoritos
+
+importExpediente:
+    path: /query/importExpediente
+    controller: App\Controller\ExpedientesController:importExpediente
+
+findResponsableComercial:
+    path: /query/findResponsableComercial
+    controller: App\Controller\ExpedientesController:findResponsableComercial
+
+addFavQuote:
+    path: /query/favQuote
+    controller: App\Controller\ExpedientesController:addCotiFavoritos
+
+unjoinQuote:
+    path: /query/unjoinCoti
+    controller: App\Controller\ExpedientesController:desvincularCoti
+
+updateQuote:
+    path: /query/updateQuote
+    controller: App\Controller\ExpedientesController:updateCotiInfo
+
+updatePipelineQuotes:
+    path: /query/updatePipelineQuotes
+    controller: App\Controller\ExpedientesController:updateExpedienteCotisInfo
+
+findOfficeResponsable:
+    path: /query/findResponsableOffice
+    controller: App\Controller\OficinasController:findOfficeResponsable
+
+#########################################################################
+#########################     SAP_ROUTES     ############################
+#########################################################################
+
+SAPValidarCotizacion:
+    path: /validarCotizacion
+    controller: App\Controller\ExpedientesController::validateCoti
+
+SAPValidarLinia:
+    path: /SAP/validarLinia
+    controller: App\Controller\ExpedientesController::validateLine
+
+SAPValidarCotizacionMuro:
+    path: /validarCotizacionMuro
+    controller: App\Controller\MuroController::validateCotiMuro
+
+deleteFile:
+    path: /deleteFile
+    controller: App\Controller\UploadController::deleteFile
+
+reservas_eci:
+    path: /{_locale}/home
+    controller: App\Controller\DashboardController::index
+    requirements:
+        _locale: '%app.locales%'
+
+seguimiento_main:
+    path: /{_locale}/home
+    controller: App\Controller\DashboardController::index
+    requirements:
+        _locale: '%app.locales%'
+
+comercial_tareas_y_notis:
+    path: /{_locale}/home
+    controller: App\Controller\DashboardController::index
+    requirements:
+        _locale: '%app.locales%'
+
+ssales_mantenimiento:
+    path: /{_locale}/home
+    controller: App\Controller\DashboardController::index
+    requirements:
+        _locale: '%app.locales%'
+
+agenda_tareas:
+    path: /{_locale}/home
+    controller: App\Controller\DashboardController::index
+    requirements:
+        _locale: '%app.locales%'
+
+comercial_gestionar_memos:
+    path: /{_locale}/home
+    controller: App\Controller\DashboardController::index
+    requirements:
+        _locale: '%app.locales%'
+
+#########################################################################
+#########################     SMARTQLIK      ############################
+#########################################################################
+
+qlikDumpPipelines:
+    path: /qlik/services/v1/dump/pipelines
+    controller: App\Controller\SmartQlikController::pipelinesDump
+
+qlikDumpVisits:
+    path: /qlik/services/v1/dump/visitas
+    controller: App\Controller\SmartQlikController::visitsDump
+
+qlikDumpQuotes:
+    path: /qlik/services/v1/dump/cotis
+    controller: App\Controller\SmartQlikController::quotesDump
+
+qlikDumpTasks:
+    path: /qlik/services/v1/dump/tareas
+    controller: App\Controller\SmartQlikController::tasksDump

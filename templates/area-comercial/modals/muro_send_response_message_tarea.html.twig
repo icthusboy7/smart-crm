@@ -1,0 +1,40 @@
+<style>
+    .select2-container{
+        width:100%!important;
+    }
+
+    .select2-selection__placeholder,
+    .select2-selection__rendered{
+        font-size: 12px;
+    }
+</style>
+<!-- Modal enviar mensaje (Muro) -->
+<div class="modal fade" id="muro_response_send_mensaje" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog muro_modal_respuesta_tarea" role="document">
+        <div class="modal-content">
+            <form method="post" id="form_response_msj" action="enviar-mensaje-muro">
+                <input type="hidden" name="expediente" value="{{ expediente }}">
+                <input type="hidden" name="numCoti" value="{{ numcotizacion }}">
+                <input type="hidden" name="tipoMensaje" value="1">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ 'new-message'|trans }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                        <div class="row mt-20 mb-20">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="5" id="comment" name="wall_message" placeholder="Mensaje"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer text-center">
+                    <button type="submit" class="btn btn-blue bt-submit"><i class="fas fa-paper-plane fa-fw"></i>{{'send'|trans}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

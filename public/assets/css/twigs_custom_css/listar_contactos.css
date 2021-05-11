@@ -1,0 +1,90 @@
+/* tables */
+.table_contactos{
+    font-size: 14px;
+}
+.table_contactos a:link{
+    color: white;
+}
+
+/* visited link */
+.table_contactos a:visited {
+    color: white;
+}
+
+/* mouse over link */
+.table_contactos a:hover {
+    color: white;
+}
+
+/* selected link */
+.table_contactos a:active {
+    color: white;
+}
+
+/* unvisited link */
+.table_contactos a:link {
+    color: white;
+}
+
+/* visited link */
+.btn-ver-filtros:visited {
+    color: white;
+}
+
+/* mouse over link */
+.btn-ver-filtros:hover {
+    color: white;
+}
+
+/* selected link */
+.btn-ver-filtros:active {
+    color: white;
+}
+
+#id_contact_modal .form-group input[type="checkbox"] {
+    display: none;
+}
+
+#id_contact_modal .form-group input[type="checkbox"] + .btn-group > label span {
+    width: 20px;
+}
+
+#id_contact_modal .form-group input[type="checkbox"] + .btn-group > label span:first-child {
+    display: none;
+}
+#id_contact_modal .form-group input[type="checkbox"] + .btn-group > label span:last-child {
+    display: inline-block;
+}
+
+#id_contact_modal .form-group input[type="checkbox"]:checked + .btn-group > label span:first-child {
+    display: inline-block;
+}
+#id_contact_modal .form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
+    display: none;
+}
+#id_contact_modal .select2-container{
+    display: block !important;
+    padding: .375rem .75rem !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    color: #495057 !important;
+    background-color: #fff !important;
+    background-clip: padding-box !important;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+#id_contact_modal .select2-selection--multiple{
+    border: none !important;
+}
+#id_contact_modal .select2-selection--single{
+    border: none !important;
+}
+#id_contact_modal .chosen-container:focus {
+    border-color: #bbb;
+}
+#id_contact_modal .select2-choices{
+    border: none !important;
+    box-shadow: none !important;
+    background-image: none !important;
+}

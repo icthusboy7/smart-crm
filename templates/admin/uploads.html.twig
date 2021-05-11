@@ -1,0 +1,160 @@
+{% extends '@SonataAdmin/standard_layout.html.twig' %}
+
+{% block sonata_admin_content %}
+    <style>
+        #myProgress {
+            width: 100%;
+            background-color: #ddd;
+        }
+
+        #myBar {
+            width: 0%;
+            height: 30px;
+            background-color: #4CAF50;
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+    </style>
+    <div style="padding: 0 20px 20px 20px;">
+        <div class="row">
+            <form id="upload_translations" action="/doUpload" method="post" enctype="multipart/form-data">
+                <div class="col-md-6">
+                    <div class="form-header">
+                        <h3>Subida archivos de traducciones</h3>
+                        <p><strong>Requisitos:</strong></p>
+                        <p>Importar un archivo de traducciones para sustituir el archivo actual del directorio /translations, para que las traducciones surjan efecto deberà cumplir los siguientes requisitios:</p>
+                        <p>Debe ser archivo en formato/extensión .po</p>
+                        <p>El limite de subida de archivo es de {{ max_size }}</p>
+                    </div>
+                        <input type="hidden" name="token" value="{{ csrf_token('upload') }}" />
+                        <input type="hidden" name="form_name" value="translation">
+                        <div class="form-group">
+                            <label>Selecciona el idioma del archivo de traducciones</label>
+                            <select class="custom-select" name="language" >
+                                <option value="en">Inglés</option>
+                                <option value="es">Castellano</option>
+                                <option value="ca">Catalán</option>
+                                <option value="pt">Portugués</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="custom-file-label">Adjunta el archivo de traducciones</label>
+                            <input class="form-control-file" type="file" accept=".po" name="myfile">
+                        </div>
+                        <button id="button_translations" class="btn-primary btn" type="submit">Upload file</button>
+                </div>
+            </form>
+        </div>
+        <hr style="color: black;">
+        <div class="row">
+            <form id="upload_maestros" action="/doUpload" method="post" enctype="multipart/form-data">
+                <div class="col-md-6">
+                    <div class="form-header">
+                        <h3>Subida archivos de maestros</h3>
+                        <p><strong>Requisitos:</strong></p>
+                        <p>La extensión del archivo debe ser .xlsx o .csv</p>
+                        <p>El limite de subida de archivo es de {{ max_size }}</p>
+                        <hr>
+                        <p><strong>La estructura para el archivo de maestros debe ser el siguiente: </strong></p>
+                        <p> - Columnas de la 1 a la 4: Código oficina, Código Comercial BBEE, Código Responsable comercial, Horizontal </p>
+
+                        <hr>
+                    </div>
+                    <input type="hidden" name="token" value="{{ csrf_token('upload') }}" />
+                    <input type="hidden" name="form_name" value="maestros">
+                    <div class="form-group">
+                        <label class="custom-file-label">Adjunta el archivo de maestros</label>
+                        <input type="file" name="myfile" accept=".xlsx, .csv" class="custom-file-input">
+                    </div>
+                    <button id="button_maestros" class="btn-primary btn" type="submit">Upload file</button>
+                </div>
+            </form>
+            <form id="command_form" action="/readCommand" method="post">
+                <div class="col-md-6" >
+                    <h3>Ejecución de comando:</h3>
+                    <p>Selecciona el archivo de importación de datos y el tipo de archivo que has seleccionado:</p>
+                    <hr>
+
+                    <div class="form-group">
+                        <label>Selecciona el archivo que quieres importar: </label>
+                        <select class="custom-select" id="files_command" name="files_command" required>
+                            {% for file in directory_files %}
+                                {%  if file != '.' and file != '..' %}
+                                    <option value="{{ file }}">{{ file }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Selecciona el tipo de archivo: </label>
+                        <select required class="custom-select" id="type_command" name="type_command" placeholder="{{ "please select a type"|trans }}">
+                            <option value=""></option>
+                            <option value="oficinas" >Oficinas</option>
+                            <option value="empleados">Empleados</option>
+                            <option value="proveedores">Proveedores</option>
+                            <option value="clientes">Clientes</option>
+                            <option value="familia">Familia</option>
+                            <option value="familiaSub">Subfamilia</option>
+                            <option value="familiaRel">Familia Rel</option>
+                            <option value="solicitudes">Solicitudes</option>
+                            <option value="cotizaciones">Cotizaciones</option>
+                            <option value="comerciales">Comerciales</option>
+                            <option value="gestores">Gestores</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="areaDelimitador" name="areaDelimitador">
+                        <label>Selecciona el delimitador: </label>
+                        <input type="text" id="delimiter" name="delimiter" size="1" maxlength="1" style="text-align:center;" value="|" required>
+                    </div>
+
+                    <div class="form-group">
+                        <button id="button_command" class="btn-primary btn" type="submit">Ejecutar comando</button>
+                        <button id="button_delete_file" class="btn-primary btn btn-danger" type="button">{{ "Delete"|trans }}</button>
+                    </div>
+                    <input type="hidden" id="type" name="type" value="R">
+
+                </div>
+            </form>
+            <div class="col-md-6" >
+                <div class="progress">
+                    <div id="progressbar" class="progress-bar progress-bar-striped active" role="progressbar"
+                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                        {{ "Loading"|trans }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="output_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">{{ "Reporte de subida de maestro"|trans }}</h4>
+
+                </div>
+                <div class="modal-body reorder">
+                    <form id="import">
+                        <div class="js-sortable sortable list flex flex-column list-reset">
+                            <div class="output"></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <p>{{ "Pulsa Importar si deseas procesar la migración o pulsa Cancelar si no deseas realizar la migración."|trans }}</p>
+                    <br>
+                    <button id="save_import" type="button" class="btn btn-success">{{ "Importar"|trans }}</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"> {{ "Cancelar"|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'admin/scripts/uploads_js.html.twig' %}
+{% endblock %}

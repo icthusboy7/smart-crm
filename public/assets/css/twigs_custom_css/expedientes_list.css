@@ -1,0 +1,21 @@
+.tab-dispo {
+    display: block;
+    width: 100%;
+    padding: 5px 15px;
+}
+.tab-dispo.active {
+   border-bottom: 1px solid black;
+}
+.list-dispo {
+    padding: 0 !important;
+}
+.select_options_exp {
+    padding: 0 2px !important;
+}
+.temporal_disable {
+    cursor: not-allowed !important;
+}
+.not_found_calendar_div {
+    padding: 5%;
+    background-color: whitesmoke;
+}

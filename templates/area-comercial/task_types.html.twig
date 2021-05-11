@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/tasks.css') }}" />
+{% endblock %}
+{% block body %}
+    <div id="wrapper">
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+        )) }}
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                {{ render(controller('App\\Controller\\HomeController::getBreadcrumb', { 'route': app.request.get('_route') })) }}
+            </div>
+            <div class="container">
+                <section class="services bg-container" id="services">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-primary">
+                                    <h1>TaskTypes</h1>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <p class="text-right">
+                                                <a class="btn btn-success btn-sm" role="button" href="{{ path('add_type') }}">
+                                                    <i class="fas fa-plus"></i> {{ 'add_type' | trans }}
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-10">
+                                        <div class="col-lg-12">
+                                            <div class="card">
+                                                <div class="card-header text-black">
+                                                    {{ "tasktype.table.title" | trans }}
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm table-hover fs-12" id="dev-table">
+                                                            <thead class="thead-light">
+                                                            <tr>
+                                                                <th>{{ 'tasktype.table.field.description'|trans }}</th>
+                                                                <th>{{ 'tasktype.table.field.isSpecial'|trans }}</th>
+                                                                <th style="width: 10%">{{ 'tasktype.table.field.accions'|trans }}</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            {% if task_types|length > 0 %}
+                                                            {% for type in task_types %}
+                                                                <tr>
+                                                                    <td>{{ type.description }}</td>
+                                                                    <td>
+                                                                        {% if type.isSpecial %}
+                                                                            <span class="badge badge-pill badge-success">
+                                                                            <i class="fa fa-check fa-fw"></i>
+                                                                            </span>
+                                                                        {% else %}
+                                                                            <span class="badge badge-pill badge-danger">
+                                                                            <i class="fa fa-times fa-fw"></i>
+                                                                            </span>
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td class="text-right">
+                                                                        <a class="btn btn-sm btn-info" href="{{ path('edit_type', {id: type.id}) }}" role="button"><i class="fas fa-pen"></i></a>
+                                                                        <button type="button" class="btn btn-sm btn-danger delete_task_type" value="{{ type.id }}"><i class="fas fa-trash"></i></button>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                            {% else %}
+                                                                <tr>
+                                                                    <td colspan="11" align="center">{{ 'No task types'| trans }}</td>
+                                                                </tr>
+                                                            {% endif %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <nav class="mt-10">
+                                                <div id="pagination" class="navigation pagination pagination-sm">
+                                                    {{ knp_pagination_render(task_types) }}
+                                                </div>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% include 'area-comercial/scripts/tasktype_list_js.html.twig' %}
+{% endblock %}

@@ -1,0 +1,40 @@
+.select2-selection--single{
+    height: 38px !important;
+    padding-top: 1%;
+    border: 1px solid #ced4da !important;
+}
+.select2-selection__arrow{
+    margin-top: 5px !important;
+}
+.disposicionGroup{
+    min-height: 250px;
+}
+.disposicionForm .input-group{
+    float: left;
+    width: calc((100% - 50px) / 5);
+    margin-right: 10px;
+    margin-top: 10px;
+}
+.blockCotizacionesDispo {
+    float: left;
+    width: 100%;
+    margin-top: 10px;
+}
+.inputs_BlockCotizaciones{
+    padding: 15px;
+}
+.inputs_BlockCotizaciones button{
+    padding: 6px !important;
+    margin-right: 5px;
+}
+.error_coti{
+    font-size: 12px;
+    padding: 0 5px;
+    color: red;
+}
+.group-cotizacion-input input{
+    width: 80%;
+}
+.group-cotizacion-input button{
+    height: 33px;
+}

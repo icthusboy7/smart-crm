@@ -1,0 +1,403 @@
+<script>
+    const selectPipelines     = $('#selectPipelines');
+    const selectQuotes        = $('#selectQuotes');
+    const customControlInput  = $('.custom-control-input');
+    const responsibleSelect   = $('.responsible_select');
+    const pipelineSelect      = $('.pipeline_select');
+    const quoteSelect         = $('.quote_select');
+    const addModalTask        = $('#add_modal_task');
+    const addNewTask          = $('#add_new_task');
+    const taskType            = $("#taskType");
+    const responseSpecialTask = $('#responseSpecialTask');
+    const formSpecial         = $('#formSpecial');
+    const rowFilesAttached    = $('.row-filesattached');
+    const formSpecialTask     = $("#formSpecialTask");
+    const editResponsible     = $(".edit_responsible");
+    const taskId              = $('#task_id');
+    const attachFile          = $("#attachfile");
+    const cancel              = $("#cancel");
+    const filesAttach         = $('.filesattach');
+    const devTable            = $('#dev-table');
+    const pagination          = $('#pagination');
+
+    let formTask = $('#newTask');
+    let wrapForm = $('#specialTaskForm');
+
+    $(document).ready(function() {
+        selectPipelines.hide();
+        selectQuotes.hide();
+
+        responsibleSelect.select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/tasks/selectResponsible',
+                data: function (params) {
+                    return {q: params.term};
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            allowClear: true,
+            minimumInputLength: 3,
+            width: '100%',
+            placeholder: '{{ "task.modal.input.responsible.default"|trans }}'
+        });
+
+        pipelineSelect.select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '{{ path("taskFindPipeline") }}',
+                data: function (params) {
+                    return {q: params.term};
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            allowClear: true,
+            minimumInputLength: 3,
+            width: '100%',
+            placeholder: '{{ "task.modal.input.pipeline.default"|trans }}'
+        });
+
+        quoteSelect.select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '{{ path("taskFindQuote") }}',
+                data: function (params) {
+                    return {q: params.term};
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            allowClear: true,
+            minimumInputLength: 3,
+            width: '100%',
+            placeholder: '{{ "task.modal.input.quote.default"|trans }}'
+        });
+
+        addModalTask.click(function(){
+            formTask.find('#responsible option:selected').remove();
+            formTask.find('#pipeline option:selected').remove();
+            formTask.find('#quote option:selected').remove();
+            $('select').each( function() {
+                $(this).val( $(this).find("option[selected]").val() );
+            });
+            formTask.find('#pipeline1').prop('checked', true);
+            formTask.find('textarea').val('');
+            $("#create_contact").removeAttr('disabled');
+        });
+    });
+
+    customControlInput.click(function () {
+        if($(this).val() === 'pipeline') {
+            selectPipelines.show();
+            selectQuotes.hide();
+        } else if($(this).val() === 'quote') {
+            selectPipelines.hide();
+            selectQuotes.show();
+        } else {
+            selectPipelines.hide();
+            selectQuotes.hide();
+        }
+    });
+
+    taskType.on('change', function () {
+        let id = $(this).val();
+        $.ajax({
+            url: '{{ path("comercial_muro_obtener_codigo_formulario") }}',
+            type: 'POST',
+            data: {
+                'id': id,
+            },
+            success: function (data) {
+                wrapForm.empty();
+                const container = wrapForm;
+                const formData = JSON.parse(data.code);
+                const formRenderOpts = {
+                    i18n: {
+                        locale: 'es-ES',
+                        location: '/assets/js/formbuilder/'
+                    },
+                    container,
+                    formData,
+                    dataType: 'json'
+                };
+                if (formData.length > 0) {
+                    $(container).formRender(formRenderOpts);
+                    addNewTask.modal('toggle');
+                    responseSpecialTask.modal('show');
+                } else {
+                    formSpecial.val('');
+                }
+            }
+        });
+    });
+
+    formSpecialTask.on('submit', function(e){
+        e.preventDefault();
+        formSpecial.val(JSON.stringify($('specialTaskForm').formRender("userData")));
+        addNewTask.modal('show');
+        responseSpecialTask.modal('toggle');
+    });
+
+    devTable.on('click', '.edit_responsible', function() {
+        taskId.val($(this).val());
+        const responsible = {q: $(this).data('responsible')};
+        $('#responsible_modal').empty();
+        if (responsible.q !== '') {
+            $.ajax({
+                datatype: 'json',
+                url: '/tasks/selectResponsible',
+                data: responsible,
+                delay: 1,
+                success: function(data){
+                    $.each(data, function () {
+                        const default_option = new Option(this.text, this.id, true, true);
+                        $(default_option).html(this.text);
+                        $('#responsible_modal').append(default_option);
+                    });
+                    $('#edit_responsible').modal('show');
+                }
+            });
+        } else {
+            $('#edit_responsible').modal('show');
+        }
+    });
+
+    devTable.on('click', '.send_reminder', function() {
+        swal({
+            text: '{{'task.Do_you_want_to_notify_responsible'|trans}}',
+            icon: 'info',
+            buttons: true,
+            dangerMode: true,
+        }).then((result) => {
+            if (result) {
+                const reminder = {q: $(this).data('reminder')};
+                if (reminder.q !== '') {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/tasks/sendNotification',
+                        data: reminder,
+                        delay: 1,
+                        success: function (data) {
+                            if (data === '200') {
+                                swal("{{ "Nice"|trans }}", "{{ "Notification Sended!"|trans }}", "success");
+                            } else {
+                                swal("Oops...", "{{ "Notification can't Sended!"|trans }}", "error");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    editResponsible.on('click', function() {
+        taskId.val($(this).val());
+        const responsible = {q: $(this).data('responsible')};
+        $('#responsible_modal').empty();
+        if (responsible.q !== '') {
+            $.ajax({
+                datatype: 'json',
+                url: '/tasks/selectResponsible',
+                data: responsible,
+                delay: 1,
+                success: function(data){
+                    $.each(data, function () {
+                        const default_option = new Option(this.text, this.id, true, true);
+                        $(default_option).html(this.text);
+                        $('#responsible_modal').append(default_option);
+                    });
+                    $('#edit_responsible').modal('show');
+                }
+            });
+        } else {
+            $('#edit_responsible').modal('show');
+        }
+    });
+
+
+    $(".send_reminder").on('click', function() {
+        swal({
+            text: '{{'task.Do_you_want_to_notify_responsible'|trans}}',
+            icon: 'info',
+            buttons: true,
+            dangerMode: true,
+        }).then((result) => {
+            if (result) {
+                const reminder = {q: $(this).data('reminder')};
+                if (reminder.q !== '') {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/tasks/sendNotification',
+                        data: reminder,
+                        delay: 1,
+                        success: function (data) {
+                            if (data === '200') {
+                                swal("{{ "Nice"|trans }}", "{{ "Notification Sended!"|trans }}", "success");
+                            } else {
+                                swal("Oops...", "{{ "Notification can't Sended!"|trans }}", "error");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+
+    $('#save_responsible').click(function() {
+        const edit_responsible = '#edit_responsible_form';
+        $(edit_responsible).validate({
+            rules: {
+                responsible_modal: {
+                    required: true
+                }
+            },
+            submitHandler: function(event) {
+                const formData = $(edit_responsible).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: '/tasks/setResponsible',
+                    data: formData,
+                    success: function(response){
+                        response = JSON.parse(response);
+                        if (response.error) {
+                            swal( "Oops...", response.message, "error" );
+                        } else {
+                            swal( "{{ "Nice"|trans }}" ,  "{{ "Responsible assigned!"|trans }}" ,  "success" );
+                            devTable.load(document.URL +  ' #dev-table');
+                        }
+                    },
+                    error: function(error){
+                        swal("Oops...", error.statusText, "error");
+                    }
+                });
+                $('#edit_responsible').modal('toggle');
+                return false;
+            }
+        });
+    });
+</script>
+<script>
+    // Envio de archivos
+    let previewNode = document.querySelector("#template");
+    previewNode.id = "";
+    let previewTemplate = previewNode.parentNode.innerHTML;
+    previewNode.parentNode.removeChild(previewNode);
+    let saveBtnMsg = $("#create_contact");
+    let newTask = $('#newTask');
+    Dropzone.options.newTask = {
+        url: '/tasks/create',
+        autoProcessQueue: false,
+        autoDiscover: false,
+        parallelUploads: 20,
+        uploadMultiple: true,
+        previewTemplate: previewTemplate,
+        previewsContainer: "#previews",
+        init: function () {
+            let myDropzone = this;
+
+            saveBtnMsg.click(function() {
+                formTask.submit(function(e) {
+                    e.preventDefault();
+                }).validate({
+                    rules: {
+                        taskType: {
+                            required: true,
+                            nullInput: false
+                        },
+                        description: "required"
+                    },
+                    submitHandler: function() {
+                        saveBtnMsg.attr('disabled', 'true');
+                        if (myDropzone.files.length > 0) {
+                            myDropzone.processQueue();
+                        } else {
+                            const formData = formTask.serialize();
+                            $.ajax({
+                                type: 'POST',
+                                url: '/tasks/create',
+                                data: formData
+                            }).done(function (response) {
+                                response = JSON.parse(response);
+                                if (response.error) {
+                                    swal("Oops...", response.message, "error");
+                                } else {
+                                    swal("{{ "Nice"|trans }}", "{{ "Task created!"|trans }}", "success");
+                                    devTable.load(document.URL + ' #dev-table');
+                                    pagination.load(document.URL + ' #pagination');
+                                }
+                            }).fail(function (error) {
+                                swal("Oops...", error, "error");
+                            }).always(function () {
+                                saveBtnMsg.removeAttr('disabled');
+                            });
+                            addNewTask.modal('toggle');
+                            return false;
+                        }
+                    }
+                });
+            });
+            this.on('sending', function(file, xhr, formData) {
+                // Append all form inputs to the formData Dropzone will POST
+                let data = formTask.serializeArray();
+                $.each(data, function(key, el) {
+                    formData.append(el.name, el.value);
+                });
+            });
+
+            this.on("complete", function(file, message) {
+                swal( "{{ "Nice"|trans }}" ,  "{{ "Task created!"|trans }}" ,  "success" );
+                myDropzone.removeFile(file);
+                addNewTask.modal('toggle');
+            });
+
+            this.on("addedfile", function(file) {
+                /* Maybe display some more file information on your page */
+                let filename = file.name;
+                let shortName = "input"+filename.substr(0, filename.indexOf("."));
+                let count= myDropzone.files.length;
+                filesAttach.text(count + ' ' + "{{ 'muro.filesattach'|trans }}");
+                displayattach(count);
+            });
+
+            this.on("removedfile", function(file) {
+                let count= myDropzone.files.length;
+                filesAttach.text(count + ' ' + "{{ 'muro.filesattach'|trans }}");
+                displayattach(count);
+            });
+
+            this.on("queuecomplete", function (file) {
+                devTable.load(document.URL + ' #dev-table');
+                pagination.load(document.URL + ' #pagination');
+            });
+
+            cancel.click(function() {
+                myDropzone.removeAllFiles(true);
+                $(this).children("input").remove();
+            });
+
+            attachFile.click(function() {
+                myDropzone.hiddenFileInput.click();
+            });
+        }
+    };
+
+    function displayattach(count) {
+        if(count > 0) {
+            rowFilesAttached.css('display', 'inline-block');
+        } else {
+            rowFilesAttached.css('display', 'none');
+        }
+    }
+</script>

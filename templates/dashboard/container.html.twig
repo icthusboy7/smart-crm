@@ -1,0 +1,79 @@
+<div class="container">
+    <section class="services mt-20 bg-container" id="services">
+        <div class="container">
+            <!-- Desktop -->
+            <div class="d-none d-md-block">
+                <div class="row">
+                    <div class="col-md-6 mb-20">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Buscar información completa sobre un NIF">
+                            <div class="input-group-append">
+                                <button class="btn btn-red" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-20">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Sugerencias">
+                            <div class="input-group-append">
+                                <button class="btn btn-yellow" type="button">
+                                    <i class="fas fa-comments"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    {% for key, widget in widgets %}
+                        {% if key matches '/^\\d+$/' %}
+                            {% set href = (widget.rutaInterna != "" ? path(widget.rutaInterna) : widget.href) %}
+                            <div class="col-lg-3 col-md-4">
+                                <div class="single-service" {{ widget.attributes | raw }}>
+                                    <a href="{{ href }}">
+                                        <i class="{{ widget.faIcon }}"></i>
+                                        <h2>{{ widget.titulo|trans }}</h2>
+                                        <p>{{ widget.descripcion|trans }}</p>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {%  endfor %}
+                </div>
+            </div>
+            <!-- .Desktop -->
+            <!-- Tablet / Mobile -->
+            <div class="d-sm-block d-md-none">
+                <div class="row">
+                    <div class="col-md-12 mb-20">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Buscar información completa sobre un NIF">
+                            <div class="input-group-append">
+                                <button class="btn btn-red" type="button">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    {% for key, widget in widgets %}
+                        {% if key matches '/^\\d+$/' %}
+                            {% set href = (widget.rutaInterna != "" ? path(widget.rutaInterna) : widget.href) %}
+                            <div class="col-4">
+                                <div class="single-service">
+                                    <a href="{{ href }}">
+                                        <i class="{{ widget.faIcon }}"></i>
+                                        <h2>{{ widget.titulo|trans }}</h2>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {%  endfor %}
+                </div>
+            </div>
+            <!-- .Tablet / Mobile -->
+        </div>
+    </section>
+</div>

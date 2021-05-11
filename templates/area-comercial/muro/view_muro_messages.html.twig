@@ -1,0 +1,35 @@
+{% set array_tabs = {'todos':messagesWall} %}
+{% for key, a_tabs_msj in array_tabs %}
+<div data-tab="{{ key }}" class="tab-pane {{ (key == 'todos') ? 'active' }} blockMensajes" id="{{ key }}" role="tabpanel">
+    {% set tipo_tab = key %}
+    {% set created_origin = "" %}
+    {% for key, mensaje in a_tabs_msj %}
+        {% set created_compare = key|slice(6,2) ~ "/" ~ key|slice(4,2) ~ "/" ~ key|slice(0,4) %}
+        {% set createdAt = key|slice(6,2) ~ "/" ~ key|slice(4,2) ~ "/" ~ key|slice(0,4) ~ " - " ~ key|slice(8,2) ~ ":" ~ key|slice(10,2) %}
+        {% set created_hour = key|slice(8,2) ~ ":" ~ key|slice(10,2) %}
+        {% set rowClassDirection = (mensaje.autor is defined and mensaje.autor is not null and mensaje.autor.id == app.user.id) ? " alert-success col-sm-8 offset-sm-4 right" : " alert-secondary col-sm-8 left" %}
+        {% set rowClassAuthor = (mensaje.autor is defined) ? "" : " withoutAuthor" %}
+        {% set classAttachment = (mensaje.adjuntos is defined and mensaje.adjuntos|length) ? " withAttachment" : "" %}
+        {# Mensajes de status #}
+        {% if mensaje.tipo == 4 %}
+            {% set rowClassDirection = "" %}
+            {% set rowClassAuthor = " col-sm-12 alert-primary text-center" %}
+        {% endif %}
+        {% if created_origin != created_compare  %}
+            <div class="muro_fecha">{{ created_compare }}</div>
+            {% set created_origin = created_compare %}
+        {% endif %}
+        <div class="tab-content">
+        {% if mensaje.tipo == 4 %}
+            {% include('area-comercial/muro/messages/status.html.twig')  %}
+        {% endif %}
+        {% if mensaje.tipo == 1 %}
+            {% include('area-comercial/muro/messages/notificacion.html.twig')  %}
+        {% endif %}
+        {% if mensaje.tipo == 2 %}
+            {% include('area-comercial/muro/messages/accion.html.twig')  %}
+        {% endif %}
+        </div>
+    {% endfor %}
+    </div>
+{% endfor %}

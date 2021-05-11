@@ -1,0 +1,113 @@
+<script>
+    var previewNode = document.querySelector("#template");
+    previewNode.id = "";
+    var previewTemplate = previewNode.parentNode.innerHTML;
+    previewNode.parentNode.removeChild(previewNode);
+
+    Dropzone.options.formDocument = {
+        autoProcessQueue: false,
+        autoDiscover: false,
+        url: '/uploadDocument',
+        parallelUploads: 20,
+        previewTemplate: previewTemplate,
+        previewsContainer: "#previews",
+        init: function () {
+
+            var myDropzone = this;
+
+            // Update selector to match your button
+            $("#saveDocument").click(function (e) {
+                e.preventDefault();
+                myDropzone.processQueue();
+            });
+
+            this.on('sending', function(file, xhr, formData) {
+                // Append all form inputs to the formData Dropzone will POST
+                var data = $('#formDocument').serializeArray();
+
+                $.each(data, function(key, el) {
+                    formData.append(el.name, el.value);
+                });
+            });
+
+            this.on("complete", function(file, message) {
+                swal( "S.M.A.R.T" ,  "{{ "Upload file DOKUFLEX!"|trans }}" ,  "success" );
+            });
+
+            this.on("addedfile", function(file) {
+                /* Maybe display some more file information on your page */
+                filename = file.name;
+                shortName = "input"+filename.substr(0, filename.indexOf("."));
+                documentType = "documentType"+filename.substr(0, filename.indexOf("."));
+                relation1 = "relation1"+filename.substr(0, filename.indexOf("."));
+                relationId1 = "relationId1"+filename.substr(0, filename.indexOf("."));
+                relation2 = "relation2"+filename.substr(0, filename.indexOf("."));
+                relationId2 = "relationId2"+filename.substr(0, filename.indexOf("."));
+                obs = "obs"+filename.substr(0, filename.indexOf("."));
+
+                $("#documentType").attr('id', documentType);
+                $("#"+documentType).attr('name', documentType);
+
+                $("#relation1").attr('id', relation1);
+                $("#"+relation1).attr('name', relation1);
+
+                $("#relationId1").attr('id', relationId1);
+                $("#"+relationId1).attr('name', relationId1);
+
+                $("#relation2").attr('id', relation2);
+                $("#"+relation2).attr('name', relation2);
+
+                $("#relationId2").attr('id', relationId2);
+                $("#"+relationId2).attr('name', relationId2);
+
+                $("#obs").attr('id', obs);
+                $("#"+obs).attr('name', obs);
+
+                $(".types option").remove();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/findDocumentType',
+                    success: function(data){
+                        $.each(data, function () {
+
+                            if (this.code == 'ANOTHER') {
+                                $(".types").append('<option value="'+this.id+'" selected>'+this.description+'</option>');
+                            }
+                            else {
+                                $(".types").append('<option value="'+this.id+'">'+this.code+' '+this.description+'</option>');
+                            }
+                        });
+                    }
+                });
+            });
+
+            $( "#cancel" ).click(function() {
+                myDropzone.removeAllFiles(true);
+                $(this).children("input").remove();
+            });
+        }
+    }
+
+    $(document).ready(function() {
+        var GET = {};
+        if(document.location.toString().indexOf('?') !== -1) {
+            var query = document.location
+                .toString()
+                // get the query string
+                .replace(/^.*?\?/, '')
+                // and remove any existing hash string (thanks, @vrijdenker)
+                .replace(/#.*$/, '')
+                .split('&');
+
+            for(var i=0, l=query.length; i<l; i++) {
+                var aux = decodeURIComponent(query[i]).split('=');
+                GET[aux[0]] = aux[1];
+            }
+        }
+
+        if(GET['id_contact'] != null) {
+            id = GET['id_contact'];
+        }
+    });
+</script>

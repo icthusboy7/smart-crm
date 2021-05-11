@@ -1,0 +1,491 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/expedientes.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/listar_contactos.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/alert_modal.css') }}">
+{% endblock %}
+{% block body %}
+    <div id="wrapper">
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+            ))
+        }}
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                {{ render(controller('App\\Controller\\HomeController::getBreadcrumb', { 'route': app.request.get('_route') })) }}
+            </div>
+            <div class="container">
+                <section class="services bg-container">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-primary">
+                                    {% if expediente is defined %}
+                                        <h1>{{ "Edit_pipeline"|trans }}</h1>
+                                    {% elseif isPeticion is defined and isPeticion == true %}
+                                        <h1>{{ "Create_coti_peticion"|trans }}</h1>
+                                    {% else %}
+                                        <h1>{{ "Create_pipeline"|trans }}</h1>
+                                    {% endif %}
+                                    <div class="row mt-10">
+                                        <div class="col-lg-12">
+                                            <div class="card card-body p-10">
+                                                <form id="create_pipeline">
+                                                    {% if isPeticion is defined and isPeticion == true %}
+                                                        <div class="row">
+                                                            <div class="col-lg-4">
+                                                                <button type="button" data-toggle="modal" data-target="#expediente_list_modal" class="btn btn-blue btn_sm expedientes_list_copy_btn">{{ "Copy_expediente"|trans }}</button>
+                                                            </div>
+                                                            <div class="col-lg-4">
+                                                                <button type="button" data-toggle="modal" data-target="#expediente_list_modal" class="btn btn-blue btn_sm expedientes_list_join_btn">{{ "Join_expediente"|trans }}</button>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                    {% endif %}
+                                                    <div class="row">
+                                                        <div class="col-lg-12 text-right">
+                                                            <!-- Rounded switch -->
+                                                            <label class="inline">Sin reporte</label>
+                                                            {% if expediente is defined %}
+                                                                <input id="sin_report_chk" hidden name="sin_reporte"
+                                                                       {% if expediente.noReport %}
+                                                                           value="true"
+                                                                       {% else %}
+                                                                           value="false"
+                                                                       {% endif %}
+                                                                       type="checkbox">
+                                                            {% else %}
+                                                                <input id="sin_report_chk" hidden name="sin_reporte" value="false" type="checkbox">
+                                                            {% endif %}
+                                                            <label class="switch">
+                                                                <input id="switch_checkbox" type="checkbox">
+                                                                <span class="slider round"></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Title">{{ "Title"|trans }}:</label>
+                                                                <input type="text" name="Title" class="form-control input" id="Title" value="{% if expediente is defined %}{{ expediente.titulo }}{% endif %}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="State">{{ "State"|trans }}:</label>
+                                                                <select class="custom-select form-control" name="State" id="State">
+                                                                    {% if expediente is defined %}
+                                                                        {% for estado in estados %}
+                                                                            <option {% if expediente.estado == estado.id %} selected {% endif %} value="{{ estado.id }}">{{ estado.status }}</option>
+                                                                        {% endfor %}
+                                                                    {% else %}
+                                                                        {% for estado in estados %}
+                                                                            <option {% if loop.index == 0 %} selected {% endif %} value="{{ estado.id }}">{{ estado.status }}</option>
+                                                                        {% endfor %}
+                                                                    {% endif %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div id="customers_input_group" class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Customer">{{ "Customer"|trans }}:</label>
+                                                                <div class="input-group">
+                                                                    <select id="Customer" name="Customer"
+                                                                            class="custom-select form-control">
+                                                                        {% if cliente is defined and cliente is not null %}
+                                                                            <option value="{{ cliente.nif }}" selected="selected">[{{ cliente.nif }}] {{ cliente.nombre }}</option>
+                                                                        {% endif %}
+                                                                    </select>
+                                                                    <a class="btn btn-red btn-sm btn-ver-filtros add-contact" role="button" href="#" data-toggle="modal" data-target="#id_contact_modal">
+                                                                        <i class="fas fa-plus"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <div id="alert_area_customer"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Amount">{{ "Amount"|trans }}:</label>
+                                                                <div class="input-group">
+                                                                    <input type="text" name="Amount" class="form-control input money" id="Amount" value="{% if expediente is defined %}{{ expediente.importe }}{% endif %}">
+                                                                    <div class="input-group-append">
+                                                                        <span class="input-group-text">€</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div id="providers_input_group" class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Provider">{{ "Provider"|trans }}:</label>
+                                                                <div class="input-group">
+                                                                    <select id="Provider" name="Provider"
+                                                                        class="custom-select form-control">
+                                                                        {% if prescriptor is defined and prescriptor is not null %}
+                                                                            <option value="{{ prescriptor.nif }}" selected="selected">[{{ prescriptor.nif }}] {{ prescriptor.nombre }}</option>
+                                                                        {% endif %}
+                                                                    </select>
+                                                                    <a class="btn btn-red btn-sm btn-ver-filtros add-contact" role="button" href="#" data-toggle="modal" data-target="#id_contact_modal">
+                                                                        <i class="fas fa-plus"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <div id="alert_area_provider"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Type_result">{{ "Type_result"|trans }}:</label>
+                                                                <div class="input-group">
+                                                                    <input type="text" name="Type_result" class="form-control input percent" id="Type_result" value="
+                                                                        {% if expediente is defined %}
+                                                                            {% if expediente.tin is not null %}
+                                                                                {% if expediente.tin < 10 %}
+                                                                                    {% if expediente.tin|length < 3 %}
+                                                                                        {{ expediente.tin }}00
+                                                                                    {% elseif expediente.tin|length < 4 %}
+                                                                                        {{ expediente.tin }}0
+                                                                                    {% else %}
+                                                                                        {{ expediente.tin }}
+                                                                                    {% endif %}
+                                                                                {% else %}
+                                                                                    {% if expediente.tin|length < 3 %}
+                                                                                        {{ expediente.tin }}00
+                                                                                    {% else %}
+                                                                                        {{ expediente.tin }}0
+                                                                                    {% endif %}
+                                                                                {% endif %}
+                                                                            {% endif %}
+                                                                        {% endif %}
+                                                                    ">
+                                                                    <div class="input-group-append">
+                                                                        <span class="input-group-text">%</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div id="offices_input_group" class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Office">{{ "Office"|trans }}:</label>
+                                                                <div class="input-group">
+                                                                    <select id="Office" name="Office"
+                                                                            class="custom-select form-control">
+                                                                        {% if oficina is defined and oficina is not empty %}
+                                                                            <option value="{{ oficina[0].codigo }}" selected="selected">{{ oficina[0].nombre }}</option>
+                                                                        {% endif %}
+                                                                    </select>
+                                                                </div>
+                                                                <div id="alert_area_office"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Chance">% {{ "Chance"|trans }}:</label>
+                                                                <select class="custom-select form-control" name="Chance" id="Chance">
+                                                                    <option {% if expediente.porcentajeProbabilidad is defined and expediente.porcentajeProbabilidad == 25 %} selected {% endif %} value="25">25%</option>
+                                                                    <option {% if expediente.porcentajeProbabilidad is defined and expediente.porcentajeProbabilidad == 50 %} selected {% endif %} value="50">50%</option>
+                                                                    <option {% if expediente.porcentajeProbabilidad is defined and expediente.porcentajeProbabilidad == 75 %} selected {% endif %} value="75">75%</option>
+                                                                    <option {% if expediente.porcentajeProbabilidad is defined and expediente.porcentajeProbabilidad == 100 %} selected {% endif %} value="100">100%</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Vertical">{{ "Vertical"|trans }}:</label>
+                                                                <select name="Vertical" class="custom-select form-control" id="Vertical">
+                                                                    {% if expediente.vertical.id is defined %}
+                                                                        <option>{{ "Vertical_select_options"|trans }}</option>
+                                                                        {% for vertical in verticales %}
+                                                                            <option {% if vertical.id == expediente.vertical.id %} selected {% endif %} value="{{ vertical.id }}">{{ vertical.name }}</option>
+                                                                        {% endfor %}
+                                                                    {% else %}
+                                                                        <option selected>{{ "Vertical_select_options"|trans }}</option>
+                                                                        {% for vertical in verticales %}
+                                                                            <option value="{{ vertical.id }}">{{ vertical.name }}</option>
+                                                                        {% endfor %}
+                                                                    {% endif %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Activation_month">{{ "Activation_month"|trans }}:</label>
+                                                                {% if expediente.FechaPosibleActivacion is defined %}
+                                                                    <input type="hidden" id="ActivationMonthValue" name="ActivationMonthValue" value="{{ expediente.fechaPosibleActivacion }}">
+                                                                {% endif %}
+                                                                <div class="input-group date" data-target-input="nearest">
+                                                                    <input type="text" class="form-control input datetimepicker-input"
+                                                                           name="Activation_month" id="Activation_month" data-target="#Activation_month">
+                                                                    <div class="input-group-append" data-target="#Activation_month"
+                                                                         data-toggle="datetimepicker">
+                                                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Type_product">{{ "Type_product"|trans }}:</label>
+                                                                <select name="Type_product" class="custom-select form-control" id="Type_product">
+                                                                    {% if expediente.productoID.id is defined %}
+                                                                        <option>{{ "Product_type_select_options"|trans }}</option>
+                                                                        {% for tipo in tipos_producto %}
+                                                                            <option {% if tipo.id == expediente.productoID.id %} selected {% endif %} value="{{ tipo.id }}">{{ tipo.nombre }}</option>
+                                                                        {% endfor %}
+                                                                    {% else %}
+                                                                        <option selected>{{ "Product_type_select_options"|trans }}</option>
+                                                                        {% for tipo in tipos_producto %}
+                                                                            <option value="{{ tipo.id }}">{{ tipo.nombre }}</option>
+                                                                        {% endfor %}
+                                                                    {% endif %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Track_type">{{ "Track_type"|trans }}:</label>
+                                                                <select name="Track_type" class="custom-select form-control" id="Track_type">
+                                                                    {% if expediente.canal.id is defined %}
+                                                                        <option>{{ "Track_type_select_options"|trans }}</option>
+                                                                        {% for tipo in tipos_canal %}
+                                                                            <option {% if tipo.id == expediente.canal.id %} selected {% endif %} value="{{ tipo.id }}">{{ tipo.canalDesc }}</option>
+                                                                        {% endfor %}
+                                                                    {% else %}
+                                                                        <option selected>{{ "Track_type_select_options"|trans }}</option>
+                                                                        {% for tipo in tipos_canal %}
+                                                                            <option value="{{ tipo.id }}">{{ tipo.canalDesc }}</option>
+                                                                        {% endfor %}
+                                                                    {% endif %}
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Pipeline_responsable">{{ "Pipeline_responsable"|trans }}:</label>
+                                                                <div class="input-group">
+                                                                    <select id="Pipeline_responsable" name="Pipeline_responsable"
+                                                                            class="custom-select form-control">
+                                                                        <option value=""></option>
+                                                                        {% for user in all_users %}
+                                                                            {% if expediente.responsable is defined and expediente.responsable is not null  %}
+                                                                                {% if expediente.responsable.id == user.id %}
+                                                                                    <option selected value="{{ user.id }}">{{ user.name }} {{ user.surname }}</option>
+                                                                                {% else %}
+                                                                                    <option value="{{ user.id }}">{{ user.name }} {{ user.surname }}</option>
+                                                                                {% endif %}
+                                                                            {% else %}
+                                                                                <option {% if user.id == app.user.id %} selected {% endif %}value="{{ user.id}}">{{ user.name }} {{ user.surname }}</option>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="CBK_responsable">{{ "CBK_responsable"|trans }}:</label>
+                                                                <input type="text" name="CBK_responsable" class="form-control input" id="CBK_responsable" {% if expediente is defined %}value="{{ expediente.responsableCaixa }}"{% endif %}>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Internal_manager">{{ "Internal_manager"|trans }}:</label>
+                                                                <div class="input-group">
+                                                                    <select id="Internal_manager" name="Internal_manager"
+                                                                            class="custom-select form-control">
+                                                                        <option value=""></option>
+                                                                        {% for user in all_users %}
+                                                                            {% if expediente.responsableGestorInterno is defined and expediente.responsableGestorInterno is not null  %}
+                                                                                {% if expediente.responsableGestorInterno.id == user.id %}
+                                                                                    <option selected value="{{ user.id }}">{{ user.name }} {{ user.surname }}</option>
+                                                                                {% else %}
+                                                                                    <option value="{{ user.id }}">{{ user.name }} {{ user.surname }}</option>
+                                                                                {% endif %}
+                                                                            {% else %}
+                                                                                <option value="{{ user.id}}">{{ user.name }} {{ user.surname }}</option>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="External_manager">{{ "External_manager"|trans }}:</label>
+                                                                <div class="input-group">
+                                                                    <select id="External_manager" name="External_manager"
+                                                                            class="custom-select form-control">
+                                                                        <option value=""></option>
+                                                                        {% for user in all_users %}
+                                                                            {% if expediente.responsableGestorExterno is defined and expediente.responsableGestorExterno is not null  %}
+                                                                                {% if expediente.responsableGestorExterno.id == user.id %}
+                                                                                    <option selected value="{{ user.id }}">{{ user.name }} {{ user.surname }}</option>
+                                                                                {% else %}
+                                                                                    <option value="{{ user.id }}">{{ user.name }} {{ user.surname }}</option>
+                                                                                {% endif %}
+                                                                            {% else %}
+                                                                                <option value="{{ user.id}}">{{ user.name }} {{ user.surname }}</option>
+                                                                            {% endif %}
+                                                                        {% endfor %}
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="esLinia">{{ "Is line"|trans }}?</label>
+                                                                <select class="custom-select form-control" name="esLinia" id="esLinia">
+                                                                    <option {% if expediente is defined and expediente.eslinea == 0 %}selected{% endif %} value="0">{{ "No"|trans }}</option>
+                                                                    <option {% if expediente is defined and expediente.eslinea == 1 %}selected{% endif %} value="1">{{ "Yes"|trans }}</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group" id="line_number_inp_group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="line_number">{{ "Line_number"|trans }}</label>
+                                                                <input type="number" {% if expediente.numLinea is defined %}value="{{ expediente.numLinea }}" {% endif %}class="form-control input fa-pull-left" style="width: 50%" id="line_number" name="line_number">
+                                                                <button id="updateLineInfo_btn" type="button" class="btn btn-success fa-pull-left"><i class="fas fa-sync"></i></button>
+                                                                <span id="error_line" class="error_coti"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="Observations">{{ "Observations"|trans }}:</label>
+                                                                <textarea name="Observations" class="form-control" id="Observations" rows="3">{% if expediente is defined %}{{ expediente.observaciones }}{% endif %}</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                    <div id="line_information_div" class="row mt-10">
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="line_state">{{ "Line_state"|trans }}:</label>
+                                                                <input readonly type="text" class="form-control input" name="line_state" id="line_state" {% if expediente is defined and expediente.eslinea == 1 %}value="{{ expediente.estado }}"{% endif %}>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="line_limit_amount">{{ "Limit_amount"|trans }}:</label>
+                                                                <input readonly type="text" class="form-control input" name="line_limit_amount" id="line_limit_amount" {% if expediente is defined and expediente.eslinea == 1 %}value="{{ expediente.importeLimite }}"{% endif %}>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="line_available_amount">{{ "Available_amount"|trans }}:</label>
+                                                                <input readonly type="text" class="form-control input" name="line_available_amount" id="line_available_amount" {% if expediente is defined and expediente.eslinea == 1 %}value="{{ expediente.importeDisponible }}"{% endif %}>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-12">
+                                                            <div class="form-group">
+                                                                <label class="filter-col" style="margin-bottom:10px;" for="line_end_date">{{ "Line_end_date"|trans }}:</label>
+                                                                <input readonly type="text" class="form-control input" name="line_end_date" id="line_end_date" {% if expediente is defined and expediente.eslinea == 1 and expediente.fechaVencimiento is not null %}value="{{ expediente.fechaVencimiento|date("d/m/Y") }}"{% endif %}>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-10">
+                                                        {% if isPeticion is defined and isPeticion == true %}
+                                                        <div class="col-lg-12">
+                                                            <div class="card">
+                                                                <div class="card-header text-black pt-10">
+                                                                    <h5>{{ "Peticion de cotización"|trans }}</h5>
+                                                                </div>
+                                                                <div class="col-lg-10 mt-10">
+                                                                    <div class="form-group">
+                                                                        <textarea name="peticion_text" placeholder="{{ "Datos economicos"|trans }}" class="form-control" id="peticion_text" rows="3"></textarea>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% else %}
+                                                        <div class="col-lg-12">
+                                                            <div id="quotes_div" class="card">
+                                                                <div class="card-header text-black pt-10">
+                                                                    <h5>{{ "Quotes"|trans }}</h5>
+                                                                </div>
+                                                                <div class="card-body p-10">
+                                                                    <div class="inputs_BlockCotizaciones">
+                                                                        <button type="button" class="btn btn-blue btn-sm" id="add_quote">{{ "Add_quote"|trans }}</button>
+                                                                        <button type="button" class="btn btn-red btn-sm" id="delete_quote">{{ "Delete_quote"|trans }}</button>
+                                                                        <button type="button" class="btn btn-blue btn-sm float-right" id="validate_quote"><i class="fas fa-sync"></i></button>
+                                                                    </div>
+                                                                    <div class="row mt-10" id="quotes_list">
+                                                                        {% if expediente.cotizaciones is defined and expediente.cotizaciones|length > 0 %}
+                                                                            {% for cotizacion in expediente.cotizaciones %}
+                                                                                <div class="col-lg-3 form-group mt-10 cotizaciones_group group-cotizacion-input">
+                                                                                    <div class="input-group">
+                                                                                        <input value="{{ cotizacion.cotizacion }}" type="text" name="numCoti[]" placeholder="Núm. cotización">
+                                                                                        <button type="button" class="btn btn-sm btn-danger fa-pull-left delete_single_quote"><i class="fas fa-ban"></i></button>
+                                                                                        <span class="error_coti"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            {% endfor %}
+                                                                        {% else %}
+                                                                            <div class="col-lg-3 form-group mt-10 cotizaciones_group">
+                                                                                <div class="input-group group-cotizacion-input">
+                                                                                    <input type="text" name="numCoti[]" placeholder="Núm. cotización">
+                                                                                    <button type="button" class="btn btn-sm btn-danger fa-pull-left delete_single_quote"><i class="fas fa-ban"></i></button>
+                                                                                    <span class="error_coti"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div id="provisions_div" class="card">
+                                                                <div class="card-header text-black pt-10">
+                                                                    <h5>{{ "Provisions"|trans }}</h5>
+                                                                </div>
+                                                                <div class="card-body p-10" id="provisions_list">
+                                                                    {% if expediente is defined and expediente.eslinea == 1 %}
+                                                                        {% if disposiciones is not null and disposiciones|length > 0 %}
+                                                                            {% for dispo in disposiciones %}
+                                                                                {% include 'area-comercial/forms/disposicion_form.html.twig' with {'disposicion': dispo, 'index': loop.index} %}
+                                                                            {% endfor %}
+                                                                        {% else %}
+                                                                            {% include 'area-comercial/forms/disposicion_form.html.twig' %}
+                                                                        {% endif %}
+                                                                    {% else %}
+                                                                        {% include 'area-comercial/forms/disposicion_form.html.twig' %}
+                                                                    {% endif %}
+                                                                    <div>
+                                                                        <button type="button" class="btn btn-blue btn_sm" id="add_provisions">{{ "Add_provisions"|trans }}</button>
+                                                                        <button type="button" class="btn btn-red btn_sm" id="delete_provisions">{{ "Delete_provisions"|trans }}</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="row justify-content-lg-center mt-10">
+                                                        <div class="col-lg-2">
+                                                            {% if expediente is defined %}
+                                                                <input type="button" class="btn btn-blue bt-submit btn-xs" id="crear_expediente_btn" value="{{ "Edit"|trans }}">
+                                                                <input type="hidden" value="{{ expediente.id }}" id="expediente_id" name="expediente_id">
+                                                            {% else %}
+                                                                <input type="button" class="btn btn-blue bt-submit btn-xs" id="crear_expediente_btn" value="{{ "Create"|trans }}">
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="col-lg-2">
+                                                            <a class="btn btn-green bt-submit btn-xs" role="button" href="{{ path('comercial_expedientes') }}">Cancelar</a>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    <!-- /#page-wrapper -->
+    </div>
+    {% if isPeticion is defined and isPeticion == true %}
+        {% include 'area-comercial/modals/expedientes_list_modal.html.twig' %}
+    {% endif %}
+    {% include 'area-comercial/modals/contact_modal.html.twig' %}
+    {% include 'area-comercial/modals/alert_info_modal.html.twig' %}
+    {% include 'area-comercial/scripts/expedientes/crear_expediente_js.html.twig' %}
+    {% include 'area-comercial/scripts/alert_info_js.html.twig' %}
+    {% include 'area-comercial/scripts/expedientes/expedientes_list_modal_js.html.twig' %}
+    {% include 'area-comercial/scripts/contacts_form_js.html.twig' %}
+{% endblock %}

@@ -1,0 +1,178 @@
+{{ include('default/loading.html.twig') }}
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+	<div class="row">
+		<div class="col-lg-3 col-md-6 col-sm-6">
+			<div class="navbar-nav mr-auto navbar-left">
+				<button class="openbtn" onclick="openNav()">&#9776;</button>
+				<a class="navbar-brand" href="{{ url(layoutRoute) }}"><img src="{{ asset('assets/img/logocbk.png') }}"><span>S.M.A.R.T.</span></a>
+			</div>
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-6 notification-center">
+
+			<ul class="navbar-nav">
+				<li class="nav-item notification">
+					<a class="nav-link" href="#" role="button" onclick="openSidebarRight()">
+						<span><i class="fas fa-users"></i></span>
+						<span class="badge">{{ notifications_group|length }}</span>
+					</a>
+				</li>
+				<li class="nav-item notification">
+					<a class="nav-link" href="#" role="button" onclick="openSidebarRight2()">
+						<span><i class="fas fa-bell"></i></span>
+						<span class="badge yellow">{{ notifications_user|length  }}</span>
+					</a>
+				</li>
+			</ul>
+
+		</div>
+		<div class="col-md-3 d-none d-lg-block">
+			<ul class="navbar-nav float-right">
+                <li class="nav-item wall-alerts">
+                    <div onclick="openAlert()" class="nav-link open-alert">
+                        <i class="fas fa-exclamation-triangle text-danger"></i>
+                        <span class="fs-12 text-danger">{{ 'muro.open-alerts' | trans }}</span>
+                    </div>
+                    <div onclick="closeAlert()" class="nav-link close-alert">
+                        <i class="fas fa-exclamation-triangle text-danger"></i>
+                        <span class="fs-12 text-danger">{{ 'muro.close-alerts' | trans }}</span>
+                    </div>
+                </li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="language" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fas fa-globe"></i> <span class="fs-12">{{ "language"|trans }}</span>
+					</a>
+					<div class="dropdown-menu" aria-labelledby="language">
+                        {% for key, langs in lang %}
+                            <a class="dropdown-item" href="{{ langs[0] }}"> {{ langs[1] }} </a>
+                            <div class="dropdown-divider"></div>
+                        {% endfor %}
+                    </div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="fas fa-user pr-5"></i> <span class="fs-12">{{ username }}</span>
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						{% if role_name != 'ROLE_ADMIN' and widgets|length > 0%}
+							<a class="dropdown-item" href="#" role="button" data-toggle="modal" data-target="#orden_widgets_modal"><i class="fas fa-th fa-fw"></i> Reordenar </a>
+                        {% else %}
+                            <a class="dropdown-item" href="{{ path('sonata_admin_dashboard') }}"><i class="fas fa-cog fa-fw"></i> {{ "Configuration"|trans }}</a>
+						{% endif %}
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt fa-fw"></i> {{ "Quit"|trans }}</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+<!-- Mensajes, Sidebar Right -->
+<div id="sidebar_right" class="sidebar_right">
+	<h2>Notificaciones de grupo</h2>
+	<a href="javascript:void(0)" class="closebtn" onclick="closeSidebarRight()">&times;</a>
+	<div class="notify_navbar">
+    {% for notify in notifications_group if notify.seen == false %}
+		<div class="sidebar_right_item {% if loop.index == 1 %} mt-10{% endif %}">
+			{{ notify.notification.description | raw }}<span class="float-right input_flagseen"><i class="{% if notify.flagSeen == false %}far fa-eye{% else %}far fa-eye-slash{% endif %}"></i><input name="notification_id" type="hidden" value="{{ notify.id }}"></span>
+			<span>{{ notify.createdAt|date('H:i:s d-m-Y') }}</span>
+		</div>
+    {% endfor %}
+	</div>
+	<hr>
+
+	<a href="{{ url('notificaciones_grupo') }}"><input class="btn btn-sm btn-blue bt-submit" name="Mensajes" value="Ver todos los mensajes" type="button"></a>
+
+</div>
+<!-- .Mensajes, Sidebar Right -->
+
+<!-- Alertas, Sidebar Right -->
+<div id="sidebar_right2" class="sidebar_right">
+	<h2>Notificaciones individuales</h2>
+	<a href="javascript:void(0)" class="closebtn" onclick="closeSidebarRight2()">&times;</a>
+	<div class="notify_navbar">
+    {% for notify in notifications_user if notify.seen == false %}
+			<div class="sidebar_right_item {% if loop.index == 1 %} mt-10{% endif %}">
+				{{ notify.notification.description | raw }}<span class="float-right input_flagseen"><i class="{% if notify.flagSeen == false %}far fa-eye{% else %}far fa-eye-slash{% endif %}"></i><input name="notification_id" type="hidden" value="{{ notify.id }}"></span>
+				<span>{{ notify.createdAt|date('H:i:s d-m-Y') }}</span>
+			</div>
+    {% endfor %}
+	</div>
+	<hr>
+	<a href="{{ url('notificaciones_usuario') }}"><input class="btn btn-sm btn-blue bt-submit" name="Alertas" value="Ver todas las alertas" type="button"></a>
+
+</div>
+<!-- .Alertas, Sidebar Right -->
+<!-- Sidebar Menu -->
+<div id="sidebar_menu" class="sidebar sidebar_left">
+
+	<ul class="nav nav-tabs">
+		<li><a data-toggle="tab" href="#sidebar_widgets"><i class="fas fa-bars fa-fw"></i> Menú</a></li>
+		<li><a data-toggle="tab" href="#admin"><i class="fas fa-cogs fa-fw"></i> Gestión</a></li>
+	</ul>
+	<div class="tab-content">
+		<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+		<div id="sidebar_widgets" class="tab-pane fade in active show">
+   			{% for widget in widgets %}
+    	        {% set href = (widget.rutaInterna != "" ? path(widget.rutaInterna) : widget.href) %}
+				<a href="{{ href }}"><i class="{{ widget.faIcon }}"></i>{{ widget.titulo|trans }}</a>
+   			{% endfor %}
+		</div>
+		<div id="admin" class="tab-pane fade">
+            {% if role_name != 'ROLE_ADMIN' and widgets|length > 0%}
+			<a class="nav-link" href="#" role="button" data-toggle="modal" data-target="#orden_widgets_modal">
+				<i class="fas fa-th pr-5"></i> {{ "order"|trans }}
+			</a>
+			{% endif %}
+			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="collapse" data-target="#SidebarLanguage">
+				<i class="fas fa-globe pr-5"></i> {{ "language"|trans }}
+			</a>
+
+			<div id="SidebarLanguage" class="collapse pl-20">
+                {% for key, langs in lang %}
+                    <a href="{{ langs[0] }}">{{ langs[1] }}</a>
+                {% endfor %}
+			</div>
+
+			<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="collapse" data-target="#SidebarUser">
+				<i class="fas fa-user pr-5"></i> {{ username }}
+			</a>
+
+			<div id="SidebarUser" class="collapse">
+				<a href="#"><i class="fas fa-cog fa-fw"></i> {{ "Configuration"|trans }}</a>
+				<a href="/logout" class="b-0"><i class="fas fa-sign-out-alt fa-fw"></i> {{ "Quit"|trans }}</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- .Sidebar Menu -->
+<!-- Modal order -->
+{% if role_name != 'ROLE_ADMIN' %}
+	<div class="modal fade" id="orden_widgets_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">{{ "Select widgets order"|trans }}</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body reorder">
+					<form id="set_order_widgets">
+						<ul>
+							<div class="js-sortable sortable list flex flex-column list-reset">
+                                {% for widget in widgets %}
+									<li><i class="{{ widget.faIcon }} fa-fw mr-10"></i> {{ widget.titulo|trans }}<input type="hidden" name="{{ widget.id }}" value="{{ loop.index }}"></li>
+                                {% endfor %}
+							</div>
+						</ul>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button id="save_order_widgets" type="button" class="btn btn-blue btn-sm"><i class="fas fa-check"></i> {{ "Save"|trans }}</button>
+					<button type="button" class="btn btn-sm" data-dismiss="modal"><i class="fas fa-times"></i> {{ "Close"|trans }}</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endif %}
+<!-- .Modal order -->

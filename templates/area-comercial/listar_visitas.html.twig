@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block head_css %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/select2_style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/visits-calendar.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('widgets/accountable-picker.js') }}"></script>
+    <script src="{{ asset('widgets/serializable-form.js') }}"></script>
+    <script src="{{ asset('widgets/status-picker.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div id="wrapper">
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+        )) }}
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                {{ render(controller('App\\Controller\\HomeController::getBreadcrumb', { 'route': app.request.get('_route') })) }}
+                <section class="services mt-20 bg-container" id="services">
+                    <div class="container">
+                        <div id="calendar-filters" class="mb-10">
+                            {% include('area-comercial/_calendar_filters.html.twig') %}
+                        </div>
+                        <div id="visits-calendar">
+                            {% include('@Calendar/calendar.html') %}
+                        </div>
+                        <div class="nav justify-content-center p-10 m-20">
+                          <a href="{{ path('visitForm') }}"
+                             class="btn btn-primary"
+                             role="button">
+                             <i class="fas fa-plus"></i>
+                             <span>{{ 'Add visit' | trans }}</span>
+                          </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    {% include 'area-comercial/modals/edit_visita_modal.html.twig' %}
+    {% include 'area-comercial/scripts/calendar_visitas_js.html.twig' %}
+{% endblock %}

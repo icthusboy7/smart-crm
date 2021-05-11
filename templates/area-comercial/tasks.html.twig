@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/tasks.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/twigs_custom_css/select2_style.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('widgets/accountable-picker.js') }}"></script>
+    <script src="{{ asset('widgets/task-status-picker.js') }}"></script>
+    <script src="{{ asset('widgets/task-type-picker.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div id="wrapper">
+        {{ render(controller(
+            'App\\Controller\\HomeController::layoutContructor', { 'padre': 'AreaComercial', 'route': app.request.get('_route'), 'params': app.request.attributes.get('_route_params')}
+        )) }}
+        <div class="container-fluid">
+            {{ render(controller('App\\Controller\\HomeController::getBreadcrumb', { 'route': app.request.get('_route') })) }}
+            <section class="services mt-20 bg-container" id="services">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel panel-primary">
+                                <h1>Agenda de Tareas</h1>
+                                <div id="calendar-filters" class="mb-10">
+                                    {% include('area-comercial/_task_filters.html.twig') %}
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <form id="find_expedientes_name" action="{{ path('tasks') }}" method="get">
+                                            <div class="input-group add-on">
+                                                <input id="f_name" class="form-control form-control-sm" placeholder="{{ 'global.find'|trans }}" name="f_name" type="text">
+                                                <div class="input-group-btn">
+                                                    <button class="btn btn-default" type="submit"><i class="fas fa-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-lg-6 text-right">
+                                        <a id="add_modal_task" class="btn btn-blue btn-sm" role="button" href="#"
+                                           data-toggle="modal" data-target="#add_new_task">
+                                            <i class="fas fa-plus"></i> {{ "buton.add_task"|trans }}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row mt-10">
+                                    <div class="col-lg-12">
+                                        <div class="card">
+                                            <div class="card-header text-black">
+                                                {{ "task.table.title" | trans({'%total%': counts['total']}) }}
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-sm table-hover fs-12" id="dev-table">
+                                                        <thead class="thead-light">
+                                                        <tr>
+                                                            <th>{{ knp_pagination_sortable(tasks, 'task.table.field.date'|trans, 'createdAt') }}</th>
+                                                            <th>{{ knp_pagination_sortable(tasks, 'task.table.field.responsible'|trans, 'responsible') }}</th>
+                                                            <th>{{ knp_pagination_sortable(tasks, 'task.table.field.type'|trans, 'type') }}</th>
+                                                            <th>{{ 'task.table.field.description'|trans }}</th>
+                                                            <th>{{ 'task.table.field.actors'|trans }}</th>
+                                                            <th>{{ 'task.table.field.information'|trans }}</th>
+                                                            <th style="width: 10%">{{ 'task.table.field.accions'|trans }}</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% if tasks|length > 0 %}
+                                                            {% for task in tasks %}
+                                                            <tr>
+                                                                <td>{{ task.createdAt|date('d/m/Y h:m') }}</td>
+                                                                {% if task.responsible != null %}
+                                                                    <td>{{ task.responsible.name }} {{ task.responsible.surname }}</td>
+                                                                {% else %}
+                                                                    <td> - </td>
+                                                                {% endif %}
+                                                                {% if task.type != null and task.type.description != null %}
+                                                                    <td>{{ task.type.description }}</td>
+                                                                {% else %}
+                                                                    <td> - </td>
+                                                                {% endif %}
+                                                                {% if task.description != null %}
+                                                                    <td style=" white-space: pre; ">{{ task.description }}</td>
+                                                                {% else %}
+                                                                    <td> - </td>
+                                                                {% endif %}
+                                                                {% if task.comercialMuro != null and task.comercialMuro.expediente != null %}
+                                                                    <td>
+                                                                        {% if task.comercialMuro.expediente.responsable %}
+                                                                            <b>{{ "Responsable" }}:</b> {{ task.comercialMuro.expediente.responsable.name }} {{ task.comercialMuro.expediente.responsable.surname -}}<br />
+                                                                        {% endif %}
+                                                                        {% if task.comercialMuro.expediente.responsableGestorInterno %}
+                                                                            <b>{{ "Gestor Interno" }}:</b> {{ task.comercialMuro.expediente.responsableGestorInterno.name }} {{ task.comercialMuro.expediente.responsableGestorInterno.surname -}}<br />
+                                                                        {% endif %}
+                                                                        {% if task.comercialMuro.expediente.responsableGestorExterno %}
+                                                                            <b>{{ "Gestor Externo" }}:</b> {{ task.comercialMuro.expediente.responsableGestorExterno.name }} {{ task.comercialMuro.expediente.responsableGestorExterno.surname -}}<br />
+                                                                        {% endif %}
+                                                                        {% if task.comercialMuro.expediente.responsableRiesgos %}
+                                                                            <b>{{ "R. Riesgos" }}:</b> {{ task.comercialMuro.expediente.responsableRiesgos.name }} {{ task.comercialMuro.expediente.responsableRiesgos.surname -}}
+                                                                        {% else %}
+                                                                            {{ "-" }}:
+                                                                        {% endif %}
+                                                                    </td>
+                                                                    <td>
+                                                                        <b>{{ "task.pipline"|trans }}:</b> {{ task.comercialMuro.expediente.titulo ?? " - " }}<br/>
+                                                                        <b>{{ "task.track"|trans }}:</b> {{ task.comercialMuro.expediente.canal.canalDesc ?? " - " }}<br/>
+                                                                        <b>{{ "task.zone"|trans }}:</b> {{ task.comercialMuro.expediente.oficinaZona ?? " - " }}<br/>
+                                                                        <b>{{ "task.vertical"|trans }}:</b> {{ task.comercialMuro.expediente.vertical.name ?? " - " }}<br/>
+                                                                    </td>
+                                                                {% else %}
+                                                                    <td>{{ " - " }}</td>
+                                                                    <td>{{ " - " }}</td>
+                                                                {% endif %}
+                                                                <td>
+                                                                    {% if task.comercialMuro != null %}
+                                                                        {% if task.comercialMuro.expediente is not null %}
+                                                                            <a class="btn btn-sm btn-blue pl-2 pr-2" href="{{ path('comercial_ver_muro_expediente', {idExpediente: task.comercialMuro.expediente.id}) }}" role="button"><i class="fas fa-comments"></i></a>
+                                                                        {% else %}
+                                                                            <a class="btn btn-sm btn-blue pl-2 pr-2" href="{{ path('comercial_ver_muro_tarea', {idTarea: task.id}) }}" role="button"><i class="fas fa-comments"></i></a>
+                                                                        {% endif %}
+                                                                    {% else %}<a class="btn btn-sm btn-blue pl-2 pr-2" href="{{ path('comercial_ver_muro_tarea', {idTarea: task.id}) }}" role="button"><i class="fas fa-comments"></i></a>
+                                                                    {% endif %}
+                                                                    <button type="button" class="btn btn-sm btn-blue pl-2 pr-2 edit_responsible" value="{{ task.id }}" data-responsible="{{ task.responsible }}" ><i class="fas fa-user-tie"></i></button>
+                                                                    <button type="button" class="btn btn-sm btn-blue pl-2 pr-2 create_visit_office" value="{{ task.id }}"><i class="fa fa-bell"></i></button>
+                                                                </td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            <tr>
+                                                                <td colspan="11" align="center">{{ 'No tasks'| trans }}</td>
+                                                            </tr>
+                                                        {% endif %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-10">
+                                    <div class="col-lg-12">
+                                        <nav class="mt-10">
+                                            <div id ="pagination" class="navigation pagination pagination-sm">
+                                                {{ knp_pagination_render(tasks) }}
+                                            </div>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    {% include 'area-comercial/modals/add_task_modal.html.twig' %}
+    {% include 'area-comercial/modals/edit_task_responsible_modal.html.twig' %}
+    {% include 'area-comercial/modals/special_task_form_modal.html.twig' %}
+    <script src="{{ asset("assets/js/fileDrop.js") }}"></script>
+    <script src="{{ asset("assets/js/form-builder.min.js") }}"></script>
+    <script src="{{ asset('assets/js/form-render.min.js') }}"></script>
+    {% include 'area-comercial/scripts/tareas/task_js.html.twig' %}
+    {% include 'area-comercial/scripts/tasks_form_js.html.twig' %}
+{% endblock %}

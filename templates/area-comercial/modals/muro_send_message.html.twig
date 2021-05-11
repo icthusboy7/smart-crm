@@ -1,0 +1,72 @@
+<!-- Modal enviar mensaje (Muro) -->
+<div class="modal fade" id="muro_send_mensaje" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog muro_modal_enviar" role="document">
+        <div class="modal-content">
+            <form class="dropzone" id="formDocument">
+                <input type="hidden" name="expediente" value="{{ expediente }}">
+                <input type="hidden" name="numCoti" value="{{ numcotizacion }}">
+                <input type="hidden" name="tareaPadre" value="{{ tareaPadre }}">
+                <input type="hidden" id="tipoMensaje" name="tipoMensaje" value="">
+                <input type="hidden" id="idTaskType" name="idTaskType" value="">
+                <input type="hidden" name="respuestaPetiCoti" value="">
+                <input type="hidden" name="responsableTarea" value="">
+                <input id="es_coti" type="hidden" name="petiCoti" value="">
+                <input id="numPetiCoti" type="hidden" name="numPetiCoti">
+                <input id="formEsp" type="hidden" name="formEsp" value="">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ 'muro.new-message'|trans }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mt-10">
+                        <div class="col-lg-12 main-section">
+                            <div class="row mb-20">
+                                <div class="col-lg-10">
+                                    <select id="alertas_form_user_wall" name="wall_user_send" class="form-control users-select2 js-example-basic-single select2-selection--single select2-hidden-accessible" tabindex="-1" aria-hidden="true"></select>
+                                </div>
+                                <div class="col-lg-2" style="alignment: right">
+                                    <button type="button" id="attachfile" class="attachment"><i class="fas fa-paperclip"></i><span class="filesattach"> 0 {{ 'muro.filesattach'|trans }}</span></button>
+                                </div>
+                            </div>
+                            <div class="row row-filesattached" style="display: none">
+                                <div class="col-lg-12 table table-striped currentFiles row" class="files" id="previews">
+                                    <div id="template" class="col-dynamic col-md-2">
+                                        <!-- This is used as the file preview template -->
+                                        <div class="box box_modal">
+                                            <div class="icon">
+                                                <div class="info">
+                                                    <div class="col-file prioridad">
+                                                        <p class="name" data-dz-name></p>
+                                                    </div>
+                                                    <div class="col-remove prioridad">
+                                                        <button data-dz-remove class="btn cancel">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-20 mb-20">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <textarea class="form-control" rows="5" id="comment" name="wall_message" placeholder="Mensaje"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
+            <div class="modal-footer text-center">
+                <button id="save" class="btn btn-blue bt-submit"><i class="fas fa-paper-plane fa-fw"></i> {{'send'|trans}}</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>

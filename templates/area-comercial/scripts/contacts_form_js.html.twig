@@ -1,0 +1,441 @@
+<script>
+    const pathArray = window.location.pathname.split('/');
+    const lang = pathArray[1];
+
+    $.validator.addMethod("dniCheck", function(value, element) {
+        if($('#fancy-checkbox-success').is(":checked")) {
+
+            var nif;
+            var cif;
+
+            if (/^([0-9]{8})*[a-zA-Z]+$/.test(value)) {
+                var numero = value.substr(0, value.length - 1);
+                var let = value.substr(value.length - 1, 1).toUpperCase();
+                numero = numero % 23;
+                var letra = 'TRWAGMYFPDXBNJZSQVHLCKET';
+                letra = letra.substring(numero, numero + 1);
+                if (letra == let) {
+                    nif = true;
+                }
+                else {
+                    nif = false;
+                }
+            }
+
+            if (isValidCif(value.trim())) {
+                cif = true;
+            } else {
+                cif = false;
+            }
+
+            if(nif == true || cif == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return true;
+        }
+        return this.optional(element);
+    }, "{{ "Not valid DNI or CIF"|trans }}");
+
+    function isValidCif(cif) {
+        if (!cif || cif.length !== 9) {
+            return false;
+        }
+
+        var letters = ['J', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        var digits = cif.substr(1, cif.length - 2);
+        var letter = cif.substr(0, 1);
+        var control = cif.substr(cif.length - 1);
+        var sum = 0;
+        var i;
+        var digit;
+
+        if (!letter.match(/[A-Z]/)) {
+            return false;
+        }
+
+        for (i = 0; i < digits.length; ++i) {
+            digit = parseInt(digits[i]);
+
+            if (isNaN(digit)) {
+                return false;
+            }
+
+            if (i % 2 === 0) {
+                digit *= 2;
+                if (digit > 9) {
+                    digit = parseInt(digit / 10) + (digit % 10);
+                }
+
+                sum += digit;
+            } else {
+                sum += digit;
+            }
+        }
+
+        sum %= 10;
+        if (sum !== 0) {
+            digit = 10 - sum;
+        } else {
+            digit = sum;
+        }
+
+        if (letter.match(/[ABEH]/)) {
+            return String(digit) === control;
+        }
+        if (letter.match(/[NPQRSW]/)) {
+            return letters[digit] === control;
+        }
+
+        return String(digit) === control || letters[digit] === control;
+    }
+
+$(document).ready(function() {
+
+    $('#fancy-checkbox-success').click(function(){
+        if( $(this).is(':checked') ) {
+            $('#contact_nif').rules('add',  'dniCheck');
+
+        } else {
+            $('#contact_nif').rules('remove',  'dniCheck');
+        }
+    });
+});
+
+$('#dev-table').on('click', '.edit_contact_button', function() {
+    var value = $(this).val();
+    $("#contact_type").val('E');
+    var contact_nif = $(this).parent('td').parent('tr').children('td').eq(0).text();
+
+    //$("#contact_nif").prop('disabled', true);
+    $('#contact_nif').prop('readonly', true);
+
+    $('.form-group-hiddencheck').hide();
+
+    $('#contact_id').val(value);
+    $( ".modal-title" ).html('{{ "Edit contact"|trans }}');
+    $( "#save_contact" ).html('<i class="fa fa-save"></i>'+' {{ "save"|trans }}');
+    $( "#save_contact" ).html('<i class="fa fa-save"></i>'+' {{ "save"|trans }}');
+
+    $('#select_offices').empty();
+    $.ajax({
+        type: 'POST',
+        url: '/getContactosOficinas',
+        data: 'id='+contact_nif,
+        success: function(data){
+            $.each(data, function () {
+                $('#select_offices').append('<option value="'+this.id+'" selected="selected">'+this.text+'</option>');
+            });
+        }
+    });
+    $.ajax({
+        type: 'POST',
+        url: '/'+lang+'/getContactosInfo',
+        data: 'id='+value,
+        success: function(data){
+            $('#contact_nif').val(data.contact_nif);
+            $('#contact_nombre').val(data.contact_nombre);
+            $('#contact_telefono').val(data.contact_telefono);
+            $('#contact_email').val(data.contact_email);
+            $('#contact_direccion').val(data.contact_direccion);
+            $('#contact_observaciones').val(data.contact_observaciones);
+            $('#tipo_contacto option[value="'+data.type_contact+'"]').prop('selected', true);
+            $('#contact_related_nif').val(data.nif_related);
+            if(data.type_contact === 1){
+                $('.select_options_customer_nif').css('display', 'block');
+                $(".select_options_customer_nif_area").show();
+                $(".select_options_provider_nif_area").hide();
+                $(".select_options_contact_nif_area").hide();
+                $(".select_options_temp_nif_area").hide();
+                $('#customerNIF').append('<option value="'+data.nif_related+'" selected="selected">'+data.client_related+'</option>');
+                var type = 'contact';
+                var dataAlert = 'nif='+data.nif_related+'&type='+type;
+                getPersonAlertsContact(dataAlert, 'Cu')
+            }
+            else if(data.type_contact === 2){
+                $('.select_options_provider_nif').css('display', 'block');
+                $(".select_options_customer_nif_area").hide();
+                $(".select_options_provider_nif_area").show();
+                $(".select_options_contact_nif_area").hide();
+                $(".select_options_temp_nif_area").hide();
+                $('#providerNIF').append('<option value="'+data.nif_related+'" selected="selected">'+data.client_related+'</option>');
+                var type = 'contact';
+                var dataAlert = 'nif='+data.nif_related+'&type='+type;
+                getPersonAlertsContact(dataAlert, 'Pr');
+            }
+            else if(data.type_contact === 3){
+                $('.select_options_contact_nif').css('display', 'block');
+                $(".select_options_customer_nif_area").hide();
+                $(".select_options_provider_nif_area").hide();
+                $(".select_options_contact_nif_area").show();
+                $(".select_options_temp_nif_area").hide();
+                $('#contactNIF').append('<option value="'+data.nif_related+'" selected="selected">'+data.client_related+'</option>');
+                var type = 'contact';
+                var dataAlert = 'nif='+data.nif_related+'&type='+type;
+                getPersonAlertsContact(dataAlert, 'Co');
+            }else{
+                $(".select_options_customer_nif_area").hide();
+                $(".select_options_provider_nif_area").hide();
+                $(".select_options_contact_nif_area").hide();
+                $(".select_options_temp_nif_area").show();
+            }
+        }
+    })
+});
+
+    $('#save_contact').click(function(){
+        $("#form_contact").validate({
+            rules: {
+                contact_nif: {
+                    required: true,
+                    dniCheck: {
+                        depends: function() {
+                            if($('#contact_type').val() === 'A')
+                                return true;
+                            else return false;
+                        }
+                    }
+                },
+                contact_email: {
+                    email: true
+                },
+                contact_telefono: {
+                    number: true
+                }
+            },
+            messages:{
+                contact_nif: {
+                    required: "{{ "Please enter a data"|trans }}",
+                    dniCheck: "{{ "Please add a Spanish format CIF/DNI"|trans }}",
+                    remote: "{{ "Number document already in use"|trans }}"
+                },
+                contact_email: {
+                    email: "{{ "Please enter a valid email address"|trans }}"
+                },
+                contact_telefono: {
+                    number: "{{ "Please enter a valid phone"|trans }}"
+                }
+            },
+            submitHandler: function () {
+                var formData = $('#form_contact').serialize();
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ path('submitContact') }}',
+                        data: formData,
+                        success: function (data) {
+                            if($('#contact_type').val() === 'A')
+                            {
+                                swal("{{ "Nice"|trans }}", "{{ "Contact created!"|trans }}", "success");
+                            }
+                            else
+                            {
+                                swal("{{ "Nice"|trans }}", "{{ "Contact updated!"|trans }}", "success");
+                            }
+                            $('#dev-table').load(document.URL +  ' #dev-table');
+                        }
+                    });
+
+                    $('#id_contact_modal').modal('toggle');
+            }
+        });
+        $("form_contact").validate().resetForm();
+    });
+
+$(".tipo_contacto_select").change(function () {
+
+    $('#customerNIF').empty();
+    $('#providerNIF').empty();
+    $('#contactNIF').empty();
+    $('#alert_area_customer').html('');
+    $('#alert_area_provider').html('');
+    $('#alert_area_contact').html('');
+    if($(this).val() == 1){
+        $('.select_options_customer_nif_area').css('display', 'block');
+        $(".select_options_customer_nif").show();
+        $(".select_options_provider_nif").hide();
+        $(".select_options_contact_nif").hide();
+        $(".select_options_temp_nif").hide();
+    }
+    else if($(this).val() == 2){
+        $('.select_options_provider_nif_area').css('display', 'block');
+        $(".select_options_customer_nif").hide();
+        $(".select_options_provider_nif").show();
+        $(".select_options_contact_nif").hide();
+        $(".select_options_temp_nif").hide();
+    }
+    else if($(this).val() == 3){
+        $('.select_options_contact_nif_area').css('display', 'block');
+        $(".select_options_customer_nif").hide();
+        $(".select_options_provider_nif").hide();
+        $(".select_options_contact_nif").show();
+        $(".select_options_temp_nif").hide();
+    } else {
+        $(".select_options_customer_nif").hide();
+        $(".select_options_provider_nif").hide();
+        $(".select_options_contact_nif").hide();
+        $(".select_options_temp_nif_area").show();
+        $(".select_options_temp_nif").show();
+    }
+});
+
+    $('#dev-table').on('click', '.delete_contact_button', function() {
+        var formData = 'id='+$(this).val();
+        swal({
+            title: "{{ 'Delete contact.'|trans }}",
+            text: "{{ 'Are you sure?'|trans }}",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true
+        }).then((willDelete)=> {
+                if (willDelete) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/deleteContactos',
+                        data: formData,
+                        success: function(){
+                            $('#dev-table').load(document.URL +  ' #dev-table');
+                            swal("{{ 'custom_filter_deleted'|trans }}", {
+                                icon: "success"
+                            });
+                        }
+                    });
+                } else {
+                    swal("{{ 'custom_filter_safe'|trans }}");
+                }
+        })
+    });
+
+    $('#queryFilter').on('click', '.delete_query_button', function() {
+    var formData = 'id='+$(this).val();
+    swal({
+        title: "{{ 'are_you_sure'|trans }}",
+        text: "{{ 'delete_alert_query'|trans }}",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true
+    }).then((willDelete)=> {
+        if (willDelete) {
+            $(this).parent('span').remove();
+            $.ajax({
+                type: 'GET',
+                url: '/deleteQueryContactos',
+                data: formData,
+                success: function(){
+                    swal("{{ "deleted_custom_filter"|trans }}", {
+                        icon: "success"
+                    });
+                }
+            });
+
+        } else {
+
+        }
+    })
+});
+
+$('#save_query_btn').click(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    var formData = 'query_name='+$('#query_name').val()+'&'+urlParams;
+    $.ajax({
+        type: 'POST',
+        url: '/createQueryContact',
+        data: formData,
+        success: function(){
+            swal( "{{ "Nice"|trans }}", "{{ "Query created!" }}" ,  "success" );
+            $('#queryFilter').load(document.URL +  ' #queryFilter');
+        }
+    });
+});
+
+    $('#dev-table').on('click', '.create_visit_contact', function() {
+        var data = 'id_contact='+$(this).val();
+        swal({
+            title: '{{ "Create_visit_to_contact"|trans }}?',
+            text: '{{ "Visit_redirect_to_contact"|trans }}',
+            icon: "info",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((redirect) => {
+                if (redirect) {
+                    var url = '{{ path('visitForm') }}'+'?'+data;
+                    var form = document.createElement("form");
+                    form.setAttribute("method", "post");
+                    form.setAttribute("action", url);
+
+                    form.setAttribute("target", "_self");
+
+                    var hiddenField = document.createElement("input");
+                    hiddenField.setAttribute("type", "hidden");
+                    hiddenField.setAttribute("name", "method");
+                    hiddenField.setAttribute("value", "val");
+                    form.appendChild(hiddenField);
+                    document.body.appendChild(form);
+
+                    form.submit();
+                }
+            });
+    });
+
+    $('#dev-table').on('click', '.exist_contact_add', function() {
+        $("#form_contact input").val('');
+        $("#form_contact textarea").val('');
+        $( ".modal-title" ).html('{{ "Add contact"|trans }}');
+        $( "#save_contact" ).html('<i class="fa fa-save"></i>'+' {{ "create"|trans }}');
+        var contact_nif = $(this).parent('td').parent('tr').children('td').eq(0).text();
+        var contact_name = $(this).parent('td').parent('tr').children('td').eq(1).text();
+        $('#contact_nif').val(contact_nif);
+        $('#contact_nombre').val(contact_name);
+        $('#select_offices').empty();
+        $("#fancy-checkbox-success").prop('checked',true);
+        $("#contact_type").val('A');
+        $("#tipo_contacto").val('4');
+        $('.select_options_customer_nif').css('display', 'none');
+        $('.select_options_provider_nif').css('display', 'none');
+        $('.select_options_contact_nif').css('display', 'none');
+        $(".select_options_provider_area").show();
+        $(".select_options_contact_area").show();
+        $(".select_options_temp_nif_area").show();
+
+        $(".select_options_customer_nif").hide();
+        $(".select_options_provider_nif").hide();
+        $(".select_options_contact_nif").hide();
+        $(".select_options_temp_nif").show();
+        $('#select_offices').empty();
+})
+
+$('.add-contact').click(function(){
+    $('#contact_nif').prop('readonly', false);
+    $('.form-group-hiddencheck').show();
+    $( ".modal-title" ).html('{{ "Add contact"|trans }}');
+    $( "#save_contact" ).html('<i class="fa fa-save"></i>'+' {{ "create"|trans }}');
+    $("#form_contact input").val('');
+    $("#form_contact textarea").val('');
+    $("#fancy-checkbox-success").prop('checked',true);
+    $("#contact_type").val('A');
+    $("#tipo_contacto").val('4');
+    $('.select_options_customer_nif').css('display', 'none');
+    $('.select_options_provider_nif').css('display', 'none');
+    $('.select_options_contact_nif').css('display', 'none');
+    $(".select_options_provider_area").show();
+    $(".select_options_contact_area").show();
+    $(".select_options_temp_nif_area").show();
+
+    $(".select_options_customer_nif").hide();
+    $(".select_options_provider_nif").hide();
+    $(".select_options_contact_nif").hide();
+    $(".select_options_temp_nif").show();
+    $('#select_offices').empty();
+    $("#person_alerts").remove();
+
+});
+
+
+</script>

@@ -1,0 +1,76 @@
+imports:
+  - { resource: security_roles.yaml }
+
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+
+    # Enable to always check user roles while navigating
+    always_authenticate_before_granting: true
+
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        chain_provider:
+                    chain:
+                        providers: [admin_db, fos_userbundle]
+        fos_userbundle:
+            entity:
+                    class: 'App\Entity\User'
+                    property: regNumber
+        my_ldap:
+            ldap:
+                service: Symfony\Component\Ldap\Ldap
+                base_dn: dc=dacfi,dc=com
+                search_dn: '%env(LDAP_SEARCH_DN)%'
+                search_password: '%env(LDAP_SEARCH_PASSWORD)%'
+                default_roles: ROLE_USER
+                uid_key: uid
+        admin_db:
+            entity:
+                class: 'App\Entity\Admin'
+                property: regNumber
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            pattern: ^/
+            form_login:
+                provider: chain_provider
+                check_path: fos_user_security_check
+                login_path: fos_user_security_login
+                csrf_token_generator: security.csrf.token_manager
+            form_login_ldap:
+                provider: fos_userbundle
+                service: Symfony\Component\Ldap\Ldap
+                check_path: fos_user_security_check
+                login_path: fos_user_security_login
+                dn_string: '{username}@dacfi.es'
+            logout:       true
+            anonymous:    true
+            access_denied_url: /access_denied
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        - { path: /login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: /register, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: /resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: /access_denied, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/, role: [ROLE_ADMIN, ROLE_ADMIN_GUEST] }
+        - { path: /home, role: [ROLE_USER, ROLE_ADMIN, ROLE_ADMIN_GUEST, ROLE_AREA_COMERCIAL] }
+        - { path: /informes/ultimos, role: [ROLE_ADMIN, ROLE_ADMIN_GUEST] }
+        - { path: /detalle, role: [ROLE_USER, ROLE_ADMIN, ROLE_ADMIN_GUEST] }
+        - { path: /operaciones, role: [ROLE_USER, ROLE_ADMIN, ROLE_ADMIN_GUEST, ROLE_AREA_COMERCIAL] }
+        - { path: /informa, role: [ROLE_USER, ROLE_ADMIN, ROLE_ADMIN_GUEST] }
+        - { path: /alertas/equifax, role: [ROLE_RIESGOS_CCF] }
+        - { path: /listarPeticiones, role: [ROLE_USER, ROLE_ADMIN, ROLE_ADMIN_GUEST] }
+        - { path: /dashboard-comerciales, role: [ROLE_AREA_COMERCIAL, ROLE_USER_VIAJES] }
+        - { path: /dashboard_riesgos, role: [ROLE_AREA_RIESGOS] }
+        - { path: /visitas, role: [ROLE_USER, ROLE_AREA_COMERCIAL] }
+        - { path: /contactos, role: [ROLE_USER, ROLE_AREA_COMERCIAL] }
+        - { path: /oficinas, role: [ROLE_USER, ROLE_AREA_COMERCIAL] }
+        - { path: /tasktypes, role: [ROLE_ADMIN_GUEST]}
+        - { path: /notificaciones_usuario, role: ROLE_USER}
+        - { path: /notificaciones_grupo, role: ROLE_USER}

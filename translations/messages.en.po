@@ -1,0 +1,1598 @@
+msgid "login_no_access"
+msgstr "Do not have access?"
+
+msgid "Create_visit_to_office"
+msgstr "Do you want to create a visit on this office"
+
+msgid "Visit_redirect_to_office"
+msgstr "This will send you to visit creation screen, are you sure?"
+
+msgid "User register"
+msgstr "User register"
+
+msgid "Usuario CCF/CEF"
+msgstr "CCF/CEF User"
+
+msgid "Usuario CXB"
+msgstr "CXB User"
+
+msgid "Nombre"
+msgstr "Name"
+
+msgid "Apellidos"
+msgstr "Surname"
+
+msgid "Si no dispones de usuario CaixaBank, introduce tu usuario CCF/CEF"
+msgstr "If you do not own CaixaBank user, use your CCF/CEF user"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "Quit"
+msgstr "Quit"
+
+msgid "Select widgets order"
+msgstr "Select widgets order"
+
+msgid "placeholder.nif.input"
+msgstr "Search for complete information about a NIF"
+
+msgid "Suggestions"
+msgstr "Suggestions"
+
+msgid "language"
+msgstr "Language"
+
+msgid "catalan"
+msgstr "Catalan"
+
+msgid "spanish"
+msgstr "Spanish"
+
+msgid "english"
+msgstr "English"
+
+msgid "portuguese"
+msgstr "Portuguese"
+
+msgid "task.head.title"
+msgstr "Task Schedule"
+
+msgid "task.table.title"
+msgstr "ComercialTask Agenda - %total% results"
+
+msgid "task.table.field.date"
+msgstr "Datetime"
+
+msgid "task.table.field.responsible"
+msgstr "Responsible"
+
+msgid "task.table.field.type"
+msgstr "Type"
+
+msgid "task.table.field.description"
+msgstr "Description"
+
+msgid "task.table.field.actors"
+msgstr "Actors"
+
+msgid "task.table.field.expedient"
+msgstr "Pipeline"
+
+msgid "task.table.field.cotnum"
+msgstr "Num. Cot."
+
+msgid "task.table.field.chanel"
+msgstr "Chanel"
+
+msgid "task.table.field.zone"
+msgstr "Zone"
+
+msgid "task.table.field.vertical"
+msgstr "Vertical"
+
+msgid "task.table.field.accions"
+msgstr "Actions"
+
+msgid "task.modal.title"
+msgstr "Create task"
+
+msgid "task.modal.input.responsible"
+msgstr "Responsible"
+
+msgid "task.modal.input.responsible.default"
+msgstr "Select a responsible ..."
+
+msgid "task.modal.input.taskType"
+msgstr "Task type"
+
+msgid "task.modal.input.taskType.option"
+msgstr "Select a type of task ..."
+
+msgid "task.modal.input.description"
+msgstr "Description"
+
+msgid "task.modal.button.create"
+msgstr "Create"
+
+msgid "task.modal.button.cancel"
+msgstr "Cancel"
+
+msgid "search_for_an_users"
+msgstr "search_for_an_users"
+
+msgid "informes"
+msgstr "Reports"
+
+msgid "area-riesgos"
+msgstr "Risc area"
+
+msgid "operaciones"
+msgstr "Operations"
+
+msgid "gestor-incidencias"
+msgstr "Incidences management"
+
+msgid "comites"
+msgstr "Comittees"
+
+msgid "area-comercial"
+msgstr "Comercial area"
+
+msgid "control-documental"
+msgstr "Documentary control"
+
+msgid "buscar-en-la-red"
+msgstr "Search on the net"
+
+msgid "alertas-asnef"
+msgstr "Asnef alerts"
+
+msgid "alertas-informa"
+msgstr "Informa alerts"
+
+msgid "visitas"
+msgstr "Visits"
+
+msgid "contactos"
+msgstr "Contacts"
+
+msgid "oficinas"
+msgstr "Office"
+
+msgid "pipelines"
+msgstr "Pipelines"
+
+msgid "Agenda de Tareas"
+msgstr "ComercialTask diary"
+
+msgid "informes.description"
+msgstr "Widget reports description"
+
+msgid "Cu"
+msgstr "Cu"
+
+msgid "Pr"
+msgstr "Pr"
+
+msgid "Co"
+msgstr "Co"
+
+msgid "select-type-msg-send"
+msgstr "Select tyoe message send"
+
+msgid "all-messages"
+msgstr "All Messages"
+
+msgid "lbl-wall-message"
+msgstr "Message"
+
+msgid "error.form.contact"
+msgstr "Contact"
+
+msgid "Number document already in use"
+msgstr "Number document already in use"
+
+msgid "Upload document error"
+msgstr "Upload document error"
+
+msgid "Something went wrong"
+msgstr "Something went wrong"
+
+msgid "Cannot access file1"
+msgstr "Cannot access file"
+
+msgid "Not access into this site"
+msgstr "Not access into this site"
+
+msgid "Can not access file"
+msgstr "Can not access file"
+
+msgid "P"
+msgstr "P"
+
+msgid "C"
+msgstr "C"
+
+msgid "expediente"
+msgstr "Pipeline"
+
+msgid "disposicion"
+msgstr "Provision"
+
+msgid " has changed"
+msgstr " has changed"
+
+msgid " has a task in"
+msgstr " has a task in"
+
+msgid " has written in"
+msgstr "has a task in"
+
+msgid "pipeline"
+msgstr "pipeline"
+
+msgid " wall pipeline #"
+msgstr " wall pipeline #"
+
+msgid " wall Quote #"
+msgstr " wall Quote #"
+
+msgid " wall Task #"
+msgstr " wall Task #"
+
+msgid "Office_general_info"
+msgstr "Office general info"
+
+msgid "Office_code"
+msgstr "Office code"
+
+msgid "Center_category"
+msgstr "Center category"
+
+msgid "Center_type"
+msgstr "Center type"
+
+msgid "Office_contact_info"
+msgstr "Office contact info"
+
+msgid "Office_email"
+msgstr "Office email"
+
+msgid "Office_phone"
+msgstr "Office phone"
+
+msgid "Office_users_list"
+msgstr "Office users list"
+
+msgid "Office_director"
+msgstr "Office director"
+
+msgid "Office_manager"
+msgstr "Office manager"
+
+msgid "Office_comercial"
+msgstr "Office comercial"
+
+msgid "Office_address_info"
+msgstr "Office address info"
+
+msgid "Office_country"
+msgstr "Office country"
+
+msgid "Office_province"
+msgstr "Office province"
+
+msgid "Office_town"
+msgstr "Office town"
+
+msgid "Office_address_general"
+msgstr "Office address general"
+
+msgid "Office_address_territory"
+msgstr "Office address territory"
+
+msgid "Office_address_zone"
+msgstr "Office address zone"
+
+msgid "Office_address"
+msgstr "Office address"
+
+msgid "Visit_info"
+msgstr "Visit info"
+
+msgid "customer"
+msgstr "Customer"
+
+msgid "charge"
+msgstr "Charge"
+
+msgid "another"
+msgstr "Another"
+
+msgid "provider"
+msgstr "Provider"
+
+msgid "Office"
+msgstr "Office"
+
+msgid "commercial assigned to the office"
+msgstr "commercial assigned to the office"
+
+msgid "initial date"
+msgstr "initial date"
+
+msgid "final date"
+msgstr "final date"
+
+msgid "vertical"
+msgstr "vertical"
+
+msgid "reason"
+msgstr "reason"
+
+msgid "contact type"
+msgstr "contact type"
+
+msgid "presencial"
+msgstr "presencial"
+
+msgid "virtual"
+msgstr "virtual"
+
+msgid "observations"
+msgstr "observations"
+
+msgid "feedback"
+msgstr "feedback"
+
+msgid "status"
+msgstr "status"
+
+msgid "uploads.file_to_many_strong"
+msgstr "File to many strong"
+
+msgid "uploads.you_can_upload_background"
+msgstr "you can upload background"
+
+msgid "uploads.start_into_background"
+msgstr "start into background"
+
+msgid "loading..."
+msgstr "Loading..."
+
+msgid "Completed!"
+msgstr "Completed!"
+
+msgid "Please, select a file."
+msgstr "Please, select a file."
+
+msgid "Deleted file!"
+msgstr "Deleted file!"
+
+msgid "Select translations for this ID"
+msgstr "Select translations for this ID"
+
+msgid "please select a type"
+msgstr "please select a type"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Loading"
+msgstr "Loading"
+
+msgid "Reporte de subida de maestro"
+msgstr "Reporte de subida de maestro"
+
+msgid "Pulsa Importar si deseas procesar la migración o pulsa Cancelar si no deseas realizar la migración."
+msgstr "Pulsa Importar si deseas procesar la migración o pulsa Cancelar si no deseas realizar la migración."
+
+msgid "Importar"
+msgstr "Import"
+
+msgid "Cancelar"
+msgstr "Cancel"
+
+msgid "Edit_pipeline"
+msgstr "Edit pipeline"
+
+msgid "Create_coti_peticion"
+msgstr "Create petition quote"
+
+msgid "Create_pipeline"
+msgstr "Create pipeline"
+
+msgid "Copy_expediente"
+msgstr "copy pipeline"
+
+msgid "Join_expediente"
+msgstr "Join pipeline"
+
+msgid "Title"
+msgstr "Title"
+
+msgid "State"
+msgstr "State"
+
+msgid "Customer"
+msgstr "Customer"
+
+msgid "Amount"
+msgstr "Amount"
+
+msgid "Provider"
+msgstr "Provider"
+
+msgid "Type_result"
+msgstr "Type Result"
+
+msgid "Chance"
+msgstr "Chance"
+
+msgid "Vertical"
+msgstr "Vertical"
+
+msgid "Vertical_select_options"
+msgstr "Vertical select options"
+
+msgid "Activation_month"
+msgstr "Activation month"
+
+msgid "Type_product"
+msgstr "Type Product"
+
+msgid "Product_type_select_options"
+msgstr "Product type select options"
+
+msgid "Track_type"
+msgstr "Track type"
+
+msgid "Track_type_select_options"
+msgstr "Track type select options"
+
+msgid "Pipeline_responsable"
+msgstr "Pipeline responsible"
+
+msgid "CBK_responsable"
+msgstr "CBK responsible"
+
+msgid "Internal_manager"
+msgstr "Internal manager"
+
+msgid "External_manager"
+msgstr "External manager"
+
+msgid "Is line"
+msgstr "Is line"
+
+msgid "No"
+msgstr "No"
+
+msgid "Yes"
+msgstr "Yes"
+
+msgid "Line_number"
+msgstr "Line number"
+
+msgid "Observations"
+msgstr "Observations"
+
+msgid "Line_state"
+msgstr "Line state"
+
+msgid "Limit_amount"
+msgstr "Limit amount"
+
+msgid "Available_amount"
+msgstr "Available amount"
+
+msgid "Line_end_date"
+msgstr "Line end date"
+
+msgid "Peticion de cotización"
+msgstr "Petition quote"
+
+msgid "Datos economicos"
+msgstr "Economic data"
+
+msgid "Quotes"
+msgstr "Quotes"
+
+msgid "Add_quote"
+msgstr "Add quote"
+
+msgid "Delete_quote"
+msgstr "Detete quote"
+
+msgid "Provisions"
+msgstr "Provisions"
+
+msgid "Add_provisions"
+msgstr "Add provisions"
+
+msgid "Delete_provisions"
+msgstr "Delete_provisions"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Create"
+msgstr "Create"
+
+msgid "more_info"
+msgstr "More info"
+
+msgid "Coti_number"
+msgstr "Number quote"
+
+msgid "Term"
+msgstr "Term"
+
+msgid "No hay cotizaciones para este expediente"
+msgstr "Don't have quotes into pipeline"
+
+msgid "quotes.actions"
+msgstr "Actions"
+
+msgid "quote.show_wall"
+msgstr "Show wall"
+
+msgid "quote.favorites"
+msgstr "Favorites"
+
+msgid "quote.unjoin"
+msgstr "Unjoin"
+
+msgid "quote.update"
+msgstr "Update"
+
+msgid "Acciones"
+msgstr "Actions"
+
+msgid "Ver muro"
+msgstr "Show Wall"
+
+msgid "Editar expediente"
+msgstr "Edit Pipeline"
+
+msgid "Importar expediente"
+msgstr "Import pipeline"
+
+msgid "Añadir cotizacion"
+msgstr "Add quote"
+
+msgid "Actualizar expediente"
+msgstr "Update pipeline"
+
+msgid "Quitar de favoritos"
+msgstr "Remove favorites"
+
+msgid "Añadir a favoritos"
+msgstr "Add favorites"
+
+msgid "Eliminar"
+msgstr "Remove"
+
+msgid "No hay cotizaciones para esta disposición"
+msgstr "there are no quotes in this provision"
+
+msgid "Provisions_quotes"
+msgstr "Provision quote"
+
+msgid "Alerts"
+msgstr "Alerts"
+
+msgid "show_filters"
+msgstr "Show filters"
+
+msgid "add_alert"
+msgstr "Add alert"
+
+msgid "Find"
+msgstr "Find"
+
+msgid "alert.Id"
+msgstr "Id"
+
+msgid "alert.Description"
+msgstr "Description"
+
+msgid "alert.Type"
+msgstr "Type"
+
+msgid "alert.recipients"
+msgstr "Recipients"
+
+msgid "alert.Status"
+msgstr "Status"
+
+msgid "alert.dateCreate"
+msgstr "Create"
+
+msgid "alert.dateUpdate"
+msgstr "Update"
+
+msgid "alert.Actions"
+msgstr "Actions"
+
+msgid "Contacts"
+msgstr "Contacts"
+
+msgid "saved_querys"
+msgstr "Saved querys"
+
+msgid "add_contact"
+msgstr "Add contact"
+
+msgid "save_the_query"
+msgstr "Save query"
+
+msgid "Query_name"
+msgstr "Query name"
+
+msgid "query_list"
+msgstr "Query list"
+
+msgid "NIF"
+msgstr "NIF"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Phone_number"
+msgstr "Phone number"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Address"
+msgstr "Address"
+
+msgid "Client"
+msgstr "Client"
+
+msgid "Área comerciales"
+msgstr "Commercial area"
+
+msgid "Expedientes"
+msgstr "Pipelines"
+
+msgid "Lista de expedientes"
+msgstr "List Pipelines"
+
+msgid "Todos"
+msgstr "All"
+
+msgid "En curso"
+msgstr "In progress"
+
+msgid "Perdida"
+msgstr "Lost"
+
+msgid "Activada"
+msgstr "Active"
+
+msgid "Proveedores"
+msgstr "Providers"
+
+msgid "Oficinas"
+msgstr "Offices"
+
+msgid "Responsable comercial"
+msgstr "Sales Manager"
+
+msgid "Zone"
+msgstr "Zone"
+
+msgid "zone.north"
+msgstr "Zone North"
+
+msgid "zone.south"
+msgstr "Zone South"
+
+msgid "zone.east"
+msgstr "Zone East"
+
+msgid "zone.CIB"
+msgstr "Zone CIB"
+
+msgid "Responsable del expediente"
+msgstr "Responsible of pipeline"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Clean_find"
+msgstr "Clean Find"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Updated"
+msgstr "Updated"
+
+msgid "Modo calendario"
+msgstr "Calendar Mode"
+
+msgid "Crear cotización"
+msgstr "Create quote"
+
+msgid "Crear expediente"
+msgstr "Create pipeline"
+
+msgid "pipelines.calendar.not_found"
+msgstr "Calendar not found"
+
+msgid "this_year"
+msgstr "This year"
+
+msgid "Modo lista"
+msgstr "List Mode"
+
+msgid "Offices"
+msgstr "Offices"
+
+msgid "DG"
+msgstr "DG"
+
+msgid "DT"
+msgstr "DT"
+
+msgid "DAN"
+msgstr "DAN"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Add visit"
+msgstr "Add visit"
+
+msgid "alert.add_alert"
+msgstr "Add alert"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "add_quote"
+msgstr "Add quote"
+
+msgid "quote.error.not_found"
+msgstr "Not found"
+
+msgid "send"
+msgstr "Send"
+
+msgid "muro.filesattach"
+msgstr "Attach Files"
+
+msgid "task.modal.select_pipeline_or_quote"
+msgstr "Select Pipeline or Quote"
+
+msgid "task.modal.none"
+msgstr "None"
+
+msgid "task.modal.pipeline"
+msgstr "Pipeline"
+
+msgid "task.modal.quote"
+msgstr "Quote"
+
+msgid "task.modal.select.pipelime"
+msgstr "Select Pipeline"
+
+msgid "task.modal.select.quote"
+msgstr "Select Quote"
+
+msgid "Add contact"
+msgstr "Add contact"
+
+msgid "Is_spanish_nif"
+msgstr "Is spanish nif"
+
+msgid "Direction"
+msgstr "Direction"
+
+msgid "cotizacion"
+msgstr "Quote"
+
+msgid "persona"
+msgstr "Persona"
+
+msgid "oficina"
+msgstr "Office"
+
+msgid "horizontal"
+msgstr "Horitzontal"
+
+msgid "missatge"
+msgstr "Message"
+
+msgid "nivell"
+msgstr "Level"
+
+msgid "isAlert"
+msgstr "is Alert"
+
+msgid "active"
+msgstr "Active"
+
+msgid "alert-info"
+msgstr "Alert info"
+
+msgid "alert.title.message"
+msgstr "Title message"
+
+msgid "general.out"
+msgstr "Out"
+
+msgid "Edit contact"
+msgstr "Edit contact"
+
+msgid "select_office"
+msgstr "Select Office"
+
+msgid "task.modal.responsible.title"
+msgstr "Change Responsible"
+
+msgid "task.modal.button.save"
+msgstr "Save"
+
+msgid "Cancel visit"
+msgstr "Cancel visit"
+
+msgid "Show_wall"
+msgstr "Show wall"
+
+msgid "Import_pipeline"
+msgstr "Import pipeline"
+
+msgid "Update_pipelines"
+msgstr "Update pipeline"
+
+msgid "Delete_from_fav"
+msgstr "Delete from favourites"
+
+msgid "Add_to_fav"
+msgstr "Add to favourites"
+
+msgid "General_data"
+msgstr "General data"
+
+msgid "Disposition"
+msgstr "Provision"
+
+msgid "Data"
+msgstr "Data"
+
+msgid "Canal"
+msgstr "Channel"
+
+msgid "of chance"
+msgstr "Of chance"
+
+msgid "Line"
+msgstr "Line"
+
+msgid "Commercial_information"
+msgstr "Commercial informaion"
+
+msgid "Commercial_responsable"
+msgstr "Commercial responsible"
+
+msgid "Risk_resposnable"
+msgstr "Risk responsible"
+
+msgid "Client data"
+msgstr "Client data"
+
+msgid "Accion 1"
+msgstr "Action 1"
+
+msgid "Accion 2"
+msgstr "Action 2"
+
+msgid "Accion 3"
+msgstr "Action 3"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "ID"
+msgstr "Id"
+
+msgid "Activation_date"
+msgstr "Activation data"
+
+msgid "Cotizaciones"
+msgstr "Quotes"
+
+msgid "Expedientes_list"
+msgstr "Pipelines list"
+
+msgid "Pipeline_name"
+msgstr "Pipeline name"
+
+msgid "CreatedAt"
+msgstr "Created at"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "button_copiar_datos_exp"
+msgstr "Copy pipeline data"
+
+msgid "personaNif"
+msgstr "NIF client"
+
+msgid "nivel_alert"
+msgstr "Alert Level"
+
+msgid "muro.cancel-task"
+msgstr "Cancel Task"
+
+msgid "muro.are-you-sure-indicate-reason"
+msgstr "Are you sure indicate reason?"
+
+msgid "muro.write-reason"
+msgstr "Write Reason"
+
+msgid "cancel"
+msgstr "Cancel"
+
+msgid "confirm"
+msgstr "Confirm"
+
+msgid "muro.new-message"
+msgstr "New Message"
+
+msgid "petitions"
+msgstr "Petitions"
+
+msgid "new-message"
+msgstr "New message"
+
+msgid "muro.select-type-msg-send"
+msgstr "Select type message send"
+
+msgid "muro.lbl-wall-message"
+msgstr "Wall message"
+
+msgid "muro.date-task-peti-coti"
+msgstr "Date task petititon quote"
+
+msgid "muro.num-coti-not-exist"
+msgstr "Quote not exist"
+
+msgid "muro.search_sap_quote"
+msgstr "Search SAP quote"
+
+msgid "muro.viewResponseForm"
+msgstr "Response Form"
+
+msgid "close"
+msgstr "Close"
+
+msgid "Office-info"
+msgstr "Office Information"
+
+msgid "Preview form"
+msgstr "Preview form"
+
+msgid "ir-al-mensaje"
+msgstr "Goto Message"
+
+msgid "responder-mensaje"
+msgstr "Response message"
+
+msgid "cancelar-mensaje"
+msgstr "Cancel message"
+
+msgid "customers"
+msgstr "Customers"
+
+msgid "providers"
+msgstr "Providers"
+
+msgid "offices"
+msgstr "Offices"
+
+msgid "lbl-alerts"
+msgstr "Alerts"
+
+msgid "lbl-notices"
+msgstr "Notices"
+
+msgid "muro.message"
+msgstr "Message"
+
+msgid "muro.attached"
+msgstr "Attached"
+
+msgid "muro.actions"
+msgstr "Actions"
+
+msgid "muro.goto-message"
+msgstr "Go to message"
+
+msgid "muro.date"
+msgstr "Date"
+
+msgid "muro.solicitante"
+msgstr "Applicant"
+
+msgid "muro.user-assigned-task"
+msgstr "User assigned task"
+
+msgid "muro.type-task"
+msgstr "Type task"
+
+msgid "muro.task"
+msgstr "Task"
+
+msgid "muro.not-assigned"
+msgstr "Not assigned"
+
+msgid "muro.view-form"
+msgstr "View form"
+
+msgid "muto.goto-mensage"
+msgstr "Goto message"
+
+msgid "muro.response-mensage"
+msgstr "Response message"
+
+msgid "muro.cancela-mensage"
+msgstr "Cancel message"
+
+msgid "expedientes"
+msgstr "Pipelines"
+
+msgid "task"
+msgstr "Task"
+
+msgid "muro.show-alerts"
+msgstr "Show Alerts"
+
+msgid "muro.general"
+msgstr "General"
+
+msgid "muro.all-messages"
+msgstr "All Messages"
+
+msgid "muro.task-simple-open"
+msgstr "Task Simple"
+
+msgid "muro.task-especial-open"
+msgstr "Task Special"
+
+msgid "are_you_sure"
+msgstr "Are you sure?"
+
+msgid "sure_description_alert"
+msgstr "Sure description alert"
+
+msgid "alert.custom_filter_deleted"
+msgstr "Custom filter deleted"
+
+msgid "alert.custom_filter_safe"
+msgstr "Custom filter safe"
+
+msgid "Delete alert."
+msgstr "Delete alert."
+
+msgid "Are you sure?"
+msgstr "Are you sure?"
+
+msgid "alert.alert_deleted"
+msgstr "Alert Deleted"
+
+msgid "alert.alert_safe"
+msgstr "Alert safe"
+
+msgid "alert.message_is_required"
+msgstr "Message is required"
+
+msgid "Nice"
+msgstr "Nice"
+
+msgid "alert.alert_added!"
+msgstr "Alert Added!"
+
+msgid "search_for_an_expedient"
+msgstr "Search for pipeline"
+
+msgid "search_for_an_cotizacion"
+msgstr "Search for quote"
+
+msgid "Search for contact"
+msgstr "Search for contact"
+
+msgid "Search for office"
+msgstr "Search for office"
+
+msgid "Search for vertical"
+msgstr "Search for office"
+
+msgid "Search for horizontal"
+msgstr "Search for horizontal"
+
+msgid "alert.edit_alert"
+msgstr "Edit alert"
+
+msgid "Update"
+msgstr "Update"
+
+msgid "create_visit"
+msgstr "Create Visit"
+
+msgid "create_visit_description"
+msgstr "Create visit description"
+
+msgid "move_visit"
+msgstr "More Visit"
+
+msgid "move_visit_description"
+msgstr "Move visit description"
+
+msgid "change_visit"
+msgstr "Change visit"
+
+msgid "change_visit_description"
+msgstr "Change visit description"
+
+msgid "Visit cancel"
+msgstr "Cancel Visit"
+
+msgid "Not valid DNI or CIF"
+msgstr "Not valid DNI or CIF"
+
+msgid "save"
+msgstr "Save"
+
+msgid "Please enter a data"
+msgstr "Please enter a data"
+
+msgid "Please add a Spanish format CIF/DNI"
+msgstr "Please add a Spanish format CIF/DNI"
+
+msgid "Please enter a valid email address"
+msgstr "Please enter a valid email address"
+
+msgid "Please enter a valid phone"
+msgstr "Please enter a valid phone"
+
+msgid "Contact created!"
+msgstr "Contact created!"
+
+msgid "Contact updated!"
+msgstr "Contact updated!"
+
+msgid "Delete contact."
+msgstr "Delete contact."
+
+msgid "custom_filter_deleted"
+msgstr "Custom filter deleted"
+
+msgid "custom_filter_safe"
+msgstr "Custom filter safe"
+
+msgid "delete_alert_query"
+msgstr "Delete alert query"
+
+msgid "deleted_custom_filter"
+msgstr "Deleted custom filter"
+
+msgid "Create_visit_to_contact"
+msgstr "Create visit to contact"
+
+msgid "Visit_redirect_to_contact"
+msgstr "Visit redirect to contact"
+
+msgid "create"
+msgstr "Create"
+
+msgid "search_for_an_office"
+msgstr "Search for an office"
+
+msgid "Search for customer"
+msgstr "Search for Customer"
+
+msgid "Search for Provider"
+msgstr "Search for Provider"
+
+msgid "Search for Customer"
+msgstr "Search for Customer"
+
+msgid "Search for an Office"
+msgstr "Search for an Office"
+
+msgid "Search for a CBK responsible"
+msgstr "Search for a CBK responsible"
+
+msgid "Search for a CBK internal manager"
+msgstr "Search for a CBK internal manager"
+
+msgid "Search for a CBK external manager"
+msgstr "Search for a CBK external manager"
+
+msgid "Pipeline created!"
+msgstr "Pipeline created!"
+
+msgid "coti_input_fail"
+msgstr "Quote fail"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Check quotes nº!"
+msgstr "Check quotes nº!"
+
+msgid "error_line"
+msgstr "Error line"
+
+msgid "select_status"
+msgstr "Select status"
+
+msgid "select_zone"
+msgstr "Select zone"
+
+msgid "select_comercials"
+msgstr "Select commercials"
+
+msgid "quote.added_to_pipeline"
+msgstr "Added to pipeline"
+
+msgid "error"
+msgstr "Error"
+
+msgid "cannot_join_pipeline_with_himself"
+msgstr "Can't join pipeline with himself"
+
+msgid "select_a_pipeline"
+msgstr "Select to pipeline"
+
+msgid "Are you sure - description"
+msgstr "Are you sure - description"
+
+msgid "Add to favorites?"
+msgstr "Add to favorites?"
+
+msgid "Add to favorites - description"
+msgstr "Add to favorites - description"
+
+msgid "pipeline_imported"
+msgstr "pipeline imported"
+
+msgid "pipeline_imported_text"
+msgstr "pipeline imported text"
+
+msgid "quote.alert.title_unjoin"
+msgstr "title unjoin"
+
+msgid "quote.alert.description_unjoin"
+msgstr "description unjoin"
+
+msgid "quote.alert.title_favorites"
+msgstr "Title favourites"
+
+msgid "quote.alert.description_favorites"
+msgstr "Description favourites"
+
+msgid "quote.alert.title_update"
+msgstr "Title update"
+
+msgid "quote.alert.description_update"
+msgstr "Description update"
+
+msgid "pipeline.alert.title_update"
+msgstr "Title update"
+
+msgid "pipeline.alert.description_update"
+msgstr "Description update"
+
+msgid "muro.data-form-task-especial-sended"
+msgstr "Task special sended"
+
+msgid "New message send into wall"
+msgstr "New message send into wall"
+
+msgid "muro.data-form-peticion-cotizacion"
+msgstr "Form petition quote"
+
+msgid "muro.data-form-task-especial"
+msgstr "Form task special"
+
+msgid "muro.error-send-task-especial"
+msgstr "Error send task special"
+
+msgid "general.filenotfound"
+msgstr "File not found"
+
+msgid "task.modal.input.pipeline.default"
+msgstr "task.modal.input.pipeline.default"
+
+msgid "task.modal.input.quote.default"
+msgstr "task.modal.input.quote.default"
+
+msgid "task.Do_you_want_to_notify_responsible"
+msgstr "task.Do_you_want_to_notify_responsible"
+
+msgid "Notification Sended!"
+msgstr "Notification Sended!"
+
+msgid "Notification can't Sended!"
+msgstr "Notification can't Sended"
+
+msgid "Responsible assigned!"
+msgstr "Responsible assigned!"
+
+msgid "Task created!"
+msgstr "Task created!"
+
+msgid "Once deleted, you will not be able to recover this type of task!"
+msgstr "Once deleted, you will not be able to recover this type of task!"
+
+msgid "task deleted!"
+msgstr "Task deleted!"
+
+msgid "Visit Cancel"
+msgstr "Visit Cancel"
+
+msgid "Please select at least one type"
+msgstr "Please select at least one type"
+
+msgid "Visit save!"
+msgstr "Visit save!"
+
+msgid "CIB (%a%/%b%)"
+msgstr "CIB (%a%/%b%)"
+
+msgid "Este (%a%/%b%)"
+msgstr "East (%a%/%b%)"
+
+msgid "Norte (%a%/%b%)"
+msgstr "North (%a%/%b%)"
+
+msgid "Sud (%a%/%b%)"
+msgstr "South (%a%/%b%)"
+
+msgid "Mis Tareas (%a%)"
+msgstr "My Tasks (%a%)"
+
+msgid "Ver Todo"
+msgstr "View All"
+
+msgid "task.add_task"
+msgstr "Add Task"
+
+msgid "No tasks"
+msgstr "No Task"
+
+msgid "add_type"
+msgstr "Add type"
+
+msgid "tasktype.table.title"
+msgstr "Task Types"
+
+msgid "tasktype.table.field.description"
+msgstr "Description"
+
+msgid "tasktype.table.field.isSpecial"
+msgstr "is Special"
+
+msgid "tasktype.table.field.accions"
+msgstr "Actions"
+
+msgid "No task types"
+msgstr "No task types"
+
+msgid "Edit visit"
+msgstr "Edit visit"
+
+msgid "visit type"
+msgstr "Visit type"
+
+msgid "office"
+msgstr "Office"
+
+msgid "select charge"
+msgstr "Select charge"
+
+msgid "other charge"
+msgstr "Other charge"
+
+msgid "select office"
+msgstr "Select office"
+
+msgid "duration"
+msgstr "Duration"
+
+msgid "select vertical"
+msgstr "Select vertical"
+
+msgid "select reason"
+msgstr "Select reason"
+
+msgid "Reason"
+msgstr "Reason"
+
+msgid "phone_number"
+msgstr "Phone number"
+
+msgid "Product_type"
+msgstr "Product type"
+
+msgid "UpdatedAt"
+msgstr "Updated"
+
+msgid "Fecha"
+msgstr "Date"
+
+msgid "Responsable"
+msgstr "Responsible"
+
+msgid "Tipo"
+msgstr "Type"
+
+msgid "Descripción"
+msgstr "Description"
+
+msgid "Intervinientes"
+msgstr "Intervening"
+
+msgid "Expediente"
+msgstr "Pipeline"
+
+msgid "Núm. Cotización"
+msgstr "Num quote"
+
+msgid "Zona"
+msgstr "Zone"
+
+msgid "Calendar filters"
+msgstr "Calendar filters"
+
+msgid "muro.open-alerts"
+msgstr "Open Alerts"
+
+msgid "muro.close-alerts"
+msgstr "Close Alerts"
+
+msgid "order"
+msgstr "Order"
+
+msgid "notificaciones-grupo"
+msgstr "group notifications"
+
+msgid "notificaciones"
+msgstr "Notifications"
+
+msgid "Add document"
+msgstr "Add Document"
+
+msgid "Table relation 1"
+msgstr "Table relation 1"
+
+msgid "Cliente"
+msgstr "Customer"
+
+msgid "Proveedor"
+msgstr "Provider"
+
+msgid "Oficina"
+msgstr "Office"
+
+msgid "ID relation 1"
+msgstr "ID relation 1"
+
+msgid "Table relation 2"
+msgstr "Table relation 2"
+
+msgid "Cotización"
+msgstr "Quote"
+
+msgid "ID relation 2"
+msgstr "ID relation 2"
+
+msgid "Upload file DOKUFLEX!"
+msgstr "Upload file DOKUFLEX!"
+
+msgid "general.acces-denied"
+msgstr "Access Denied"
+
+msgid "general.goback"
+msgstr "Go Back"
+
+msgid "Ok"
+msgstr "Ok"
+
+msgid "Authorization is required."
+msgstr "Authorization is required."
+
+msgid "notification.notifications_group"
+msgstr "Notification Group"
+
+msgid "search"
+msgstr "Search"
+
+msgid "notification.my_notifications"
+msgstr "My notifications"
+
+msgid "Accountable"
+msgstr "Accountable"
+
+msgid "Sales manager"
+msgstr "Sales manager"
+
+msgid "Choose a manager"
+msgstr "Choose a manager"
+
+msgid "Person in charge"
+msgstr "Person in charge"
+
+msgid "registration.submit"
+msgstr "Submit"
+
+msgid "layout.login"
+msgstr "Login"
+
+msgid "form.username"
+msgstr "Username"
+
+msgid "form.password"
+msgstr "Password"
+
+msgid "security.login.submit"
+msgstr "Submit"
+
+msgid "crear-peticion-cotizacion"
+msgstr "Create petition quote "
+
+msgid "agenda-tareas"
+msgstr "Task Schedule"
+
+msgid "tareas-y-notificaciones"
+msgstr "Task and notifications"
+
+msgid "alertas"
+msgstr "Alerts"
+
+msgid "comercial.alertas.manual"
+msgstr "Comercial Alerts"
+
+msgid "taskType"
+msgstr "Task type"
+
+msgid "formulario-pet-coti"
+msgstr "Form petition quote"
+
+msgid "mantenimiento-ssales"
+msgstr "Administration Smart"
+
+msgid "tarea simple"
+msgstr "Simple Task"
+
+msgid "Petición de cotización"
+msgstr "Petition of quote"
+
+msgid "Icon"
+msgstr "Icon"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Is special"
+msgstr "Is special"
+
+msgid "Create Type"
+msgstr "Create Type"
+
+msgid "Save Type"
+msgstr "Save Type"

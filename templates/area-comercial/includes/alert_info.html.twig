@@ -1,0 +1,12 @@
+<span class="badge alert_badge
+{% if type == 'visit' %}
+   alert_badge_visit
+{% elseif type == 'pipeline' %}
+   alert_badge_pipeline
+{% elseif type == 'alert' %}
+   alert_badge_alert
+{% elseif type == 'contact' %}
+   alert_badge_contact
+{% else %}
+{% endif %}
+" id="customers_alerts">{{ alert }}</span>

@@ -1,0 +1,22 @@
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+fos_user_register:
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix: /{_locale}/register
+    requirements:
+        _locale: '%app.locales%'
+
+fos_user_security_login:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+    prefix: /{_locale}
+    requirements:
+            _locale: '%app.locales%'
+
+fos_user_security_check:
+    path: /login_check
+    controller: fos_user.security.controller:checkAction
+
+fos_user_security_logout:
+    path: /logout
+    controller: fos_user.security.controller:logoutAction

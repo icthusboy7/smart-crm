@@ -1,0 +1,82 @@
+<script>
+    $(document).ready(function() {
+        $('.offices-select2').select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/selectOffices',
+                data: function (params) {
+                    var queryParameters = {
+                        q: params.term
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            minimumInputLength: 3,
+            placeholder: '{{ 'search_for_an_office'|trans }}'
+        });
+        $('.customerNIF').select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/findCustomerOnly',
+                data: function (params) {
+                    var queryParameters = {
+                        q: params.term
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            },
+            minimumInputLength: 3,
+            placeholder: '{{ "Search for customer"|trans }}',
+        });
+        $('.providerNIF').select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/findProviderOnly',
+                data: function (params) {
+                    var queryParameters = {
+                        q: params.term
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+
+                    return {results: data};
+                },
+                cache: true
+            },
+            minimumInputLength: 3,
+            placeholder: '{{ "Search for Provider"|trans }}',
+        });
+        $('.contactNIF').select2({
+            ajax: {
+                delay: 1,
+                datatype: 'json',
+                url: '/findContact',
+                data: function (params) {
+                    var queryParameters = {
+                        q: params.term
+                    }
+                    return queryParameters;
+                },
+                processResults: function (data) {
+
+                    return {results: data};
+                },
+                cache: true
+            },
+            minimumInputLength: 3,
+            placeholder: '{{ "Search for contact"|trans }}',
+        });
+    });
+</script>

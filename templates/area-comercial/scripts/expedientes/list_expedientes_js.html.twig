@@ -1,0 +1,411 @@
+<script>
+    let check_box = false;
+
+    $(document).ready(function () {
+        var icons = {
+            time: 'fas fa-clock',
+            date: 'fas fa-calendar',
+            up: 'fas fa-arrow-up',
+            down: 'fas fa-arrow-down',
+            previous: 'fas fa-chevron-left',
+            next: 'fas fa-chevron-right',
+            today: 'fas fa-calendar-check-o',
+            clear: 'fas fa-trash',
+            close: 'fas fa-times'
+        };
+
+        var cotiDatePicker = $('#fecha_tarea_coti');
+
+        cotiDatePicker.datetimepicker('format', 'DD/MM/YYYY HH:mm');
+
+        cotiDatePicker.datetimepicker('icons', icons );
+
+        $('#switch_checkbox').val(false);
+        $('#switch_checkbox').attr('checked', true);
+        $('#switch_checkbox').removeAttr('checked');
+
+        $('#estados_select').select2({
+            width: '100%',
+            placeholder: '{{ "select_status"|trans }}',
+            dropdownCssClass: "fontSelect2"
+        });
+        $('#zone_select').select2({
+            width: '100%',
+            placeholder: '{{ "select_zone"|trans }}',
+            dropdownCssClass: "fontSelect2"
+        });
+        $('#responsables_select').select2({
+            ajax: {
+            delay: 1,
+                datatype: 'json',
+                url: '/tasks/selectResponsible',
+                data: function (params) {
+                return {q: params.term};
+            },
+            processResults: function (data) {
+                return {results: data};
+            },
+            cache: true
+            },
+            allowClear: true,
+            minimumInputLength: 1,
+            width: '100%',
+            placeholder: '{{ "select_comercials"|trans }}',
+            dropdownCssClass: "fontSelect2"
+        });
+        $('#expedientesNoReport_zone').hide();
+    });
+    $('.accordion').on('click', function() {
+        /* Toggle between adding and removing the "active" class,
+to highlight the button that controls the panel */
+        $(this).toggleClass("active");
+        /* Toggle between hiding and showing the active panel */
+        let panel = this.nextElementSibling;
+        if (panel.style.display === "block") {
+            panel.style.display = "none";
+        } else {
+            panel.style.display = "block";
+        }
+    });
+    let selectOptionsActionsExp = $('.select_options_exp');
+
+    selectOptionsActionsExp.on('click', function(event) {
+        event.stopPropagation();
+    });
+
+    selectOptionsActionsExp.on('change', function() {
+        let action = $(this).find(":selected").attr('data-action');
+        let idExp  = $(this).find(":selected").attr('data-id');
+        if (action === 'delete') {
+            deleteExpediente(idExp);
+        }
+        if (action === 'add_fav') {
+            addExpedienteFavoritos(idExp);
+        }
+        if (action === 'import') {
+            var body = $('#expediente_list tbody');
+            var rows = $(body).children().length;
+            $('#isCopy').val(idExp);
+            if(rows === 0){
+                getAllExpedientes();
+            }
+            $('#expediente_list_modal').modal('show');
+        }
+        if (action === 'update') {
+            updatePipelineCotizacionInfo(idExp);
+        }
+        if (action === 'add_coti') {
+            let datesys = new Date;
+
+            $('#idExpInput').val(idExp);
+            $('#quote_id').val('');
+            $('#error-message').hide();
+            $('#add_cotizacion').modal('toggle');
+            $('#fecha_tarea_coti').datetimepicker('date', datesys);
+        }
+        $(this).find('[data-action=default]').prop('selected', true);
+    });
+
+    $('#confirm_coti').on('click', function(e){
+        e.preventDefault();
+        let data = $('#form_validate_cotizacion').serialize();
+        $.ajax({
+            type: 'POST',
+            url: '{{ path('SAPValidarCotizacion') }}',
+            data: data,
+            error: function(){
+                success = false;
+            }
+        }).done(function (data) {
+            if (data === 'OK') {
+                swal( "S.M.A.R.T" ,  "{{ "quote.added_to_pipeline"|trans }}" ,  "success");
+                $('#add_cotizacion').modal('toggle');
+            } else {
+                $('#error-message').show();
+            }
+        });
+    });
+
+    $('#find_expedientes').on('click', function(){
+        $('#find_expedientes_form').submit();
+    });
+
+    $('.add_favorites').on('click', function(event) {
+        event.stopPropagation();
+        let idExp = $(this).attr('data-id');
+        addExpedienteFavoritos(idExp);
+    });
+
+    $('#select_responsableC').on('change', function(){
+        let responsable = $(this).find(':selected').val();
+        findResponsableComercial(responsable);
+    });
+
+    $('#button_copiar_datos_exp').on('click', function () {
+        var expediente_id    = $('#expediente_list').find('[selected]').children('input').val();
+        var expediente_padre = $('#isCopy').val();
+        if (expediente_id === expediente_padre) {
+            swal({
+                icon: 'error',
+                title: '{{ 'error'|trans }}',
+                text: '{{ "cannot_join_pipeline_with_himself"|trans }}',
+            });
+        } else if (typeof expediente_id === 'undefined') {
+            swal({
+                icon: 'error',
+                title: '{{ 'error'|trans }}',
+                text: '{{ "select_a_pipeline"|trans }}',
+            });
+        } else {
+            importarExpediente(expediente_id, expediente_padre);
+            $('#expediente_list_modal').modal('hide');
+        }
+    });
+
+    $('#switch_checkbox').on('change', function() {
+        toggleNoReportCheckBox();
+    });
+
+    $('.btn-copy').on('click', function() {
+        if(check_box) {
+            value = $('#expedientesNoReport_zone'); //Upto this I am getting value
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(value.text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+            swal( '{{ 'Copy Clipboard' | trans}}' , '{{ 'Copy pipelines no Report' | trans}}' , '{{ "success" | trans }}');
+        } else {
+            value = $('#expedientes_zone'); //Upto this I am getting value
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(value.text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+            swal( '{{ 'Copy Clipboard' | trans}}' , '{{ 'Copy pipelines' | trans}}' , '{{ "success" | trans }}');
+        }
+    });
+
+    $('.btn-excel').on('click', function () {
+        let formData = new FormData();
+        let data = $('#find_expedientes_form').serializeArray();
+        $.ajax({
+            type: 'POST',
+            url: '{{ path("exportExcelPipeLines") }}',
+            data: {
+                'form':data,
+                'isReport':check_box,
+            },
+            success: function(data){
+                let url =  '{{ path('getFilePipeline') }}';
+                window.open(url, '_blank');
+            }
+        });
+
+    });
+    let selectOptionsActionsCoti = $('.select_options_coti');
+
+    selectOptionsActionsCoti.on('click', function(event) {
+        event.stopPropagation();
+    });
+
+    selectOptionsActionsCoti.on('change', function() {
+        let action  = $(this).find(":selected").attr('data-action');
+        let idExp   = $(this).find(":selected").attr('data-id-exp');
+        let numCoti = $(this).find(":selected").attr('data-id-coti');
+        if (action === 'unjoin') {
+            unjoinExpCoti(idExp,numCoti);
+        }
+        if (action === 'favorites') {
+            addCotizacionFavoritos(numCoti);
+        }
+        if (action === 'update') {
+            updateCotizacionInfo(numCoti);
+        }
+        $(this).find('[data-action=default]').prop('selected', true);
+    });
+
+    /** FUNCTIONS */
+
+    function deleteExpediente(idExp) {
+        let formData = 'idExp='+idExp;
+        swal({
+            title: "{{ "Are you sure?"|trans }}",
+            text: "{{ "Are you sure - description"|trans }}",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path("deleteExpediente") }}',
+                    data: formData,
+                    success: function(){
+                        swal( "Deleted!" ,  "Deleted description" ,  "success" );
+                    }
+                });
+            }
+        });
+    }
+
+    function addExpedienteFavoritos(idExp) {
+        let formData    = 'idExp='+idExp;
+        let spanStarFav = $('.add_favorites[data-id='+idExp+']');
+        swal({
+            title: "{{ "Add to favorites?"|trans }}",
+            text: "{{ "Add to favorites - description"|trans }}",
+            buttons: true,
+            dangerMode: false,
+        }).then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ path("addFavExpediente") }}',
+                    data: formData,
+                    success: function(){
+                        swal( "Added!" ,  "Added description" ,  "success" );
+                    }
+                }).done( function() {
+                    if ($(spanStarFav).hasClass("far")) {
+                        $(spanStarFav).removeClass("far").addClass("fas");
+                    } else {
+                        $(spanStarFav).removeClass("fas").addClass("far");
+                    }
+                });
+            }
+        });
+    }
+
+    function findResponsableComercial(responsable) {
+        let formData = 'responsable='+responsable;
+        $.ajax({
+            type: 'POST',
+            url: '{{ path("findResponsableComercial") }}',
+            data: formData,
+            success: function(data){
+                console.log(data);
+                $.each(JSON.parse(data), function (key, item) {
+                    $('#responsables_select').append('<option value="'+item.id+'" selected="selected">'+item.name+'</option>');
+                });
+            }
+        });
+    }
+
+    function importarExpediente(idHijo, idPadre) {
+        let formData = 'idPadre='+idPadre+'&idHijo='+idHijo;
+        $.ajax({
+            type: 'POST',
+            url: '{{ path("importExpediente") }}',
+            data: formData,
+            success: function(data){
+                swal({
+                    icon: 'success',
+                    title: '{{ "pipeline_imported"|trans }}',
+                    text: "{{ "pipeline_imported_text"|trans }}",
+                })
+            }
+        });
+    }
+
+    /**
+     * @param idExp
+     * @param numCoti
+     */
+    function unjoinExpCoti(idExp, numCoti) {
+        let formData = 'idExp='+idExp+'&numCoti='+numCoti;
+        $.ajax({
+            type: 'POST',
+            url: '{{ path("unjoinQuote") }}',
+            data: formData,
+            success: function(data){
+                swal({
+                    icon: 'success',
+                    title: '{{ "quote.alert.title_unjoin"|trans }}',
+                    text: "{{ "quote.alert.description_unjoin"|trans }}",
+                })
+            }
+        });
+    }
+
+    /**
+     * @param numCoti
+     */
+    function addCotizacionFavoritos(numCoti) {
+        let formData = 'numCoti='+numCoti;
+        $.ajax({
+            type: 'POST',
+            url: '{{ path("addFavQuote") }}',
+            data: formData,
+            success: function(data){
+                swal({
+                    icon: 'success',
+                    title: '{{ "quote.alert.title_favorites"|trans }}',
+                    text: "{{ "quote.alert.description_favorites"|trans }}",
+                })
+            }
+        });
+    }
+
+    /**
+     * @param numCoti
+     */
+    function updateCotizacionInfo(numCoti) {
+        let formData = 'numCoti='+numCoti;
+        $.ajax({
+            type: 'POST',
+            url: '{{ path("updateQuote") }}',
+            data: formData,
+            success: function(data){
+                swal({
+                    icon: 'success',
+                    title: '{{ "quote.alert.title_update"|trans }}',
+                    text: "{{ "quote.alert.description_update"|trans }}",
+                })
+            }
+        });
+    }
+
+    /**
+     * @param idExp
+     */
+    function updatePipelineCotizacionInfo(idExp) {
+        let formData = 'idExp='+idExp;
+        $.ajax({
+            type: 'POST',
+            url: '{{ path("updatePipelineQuotes") }}',
+            data: formData,
+            success: function(data){
+                swal({
+                    icon: 'success',
+                    title: '{{ "pipeline.alert.title_update"|trans }}',
+                    text: "{{ "pipeline.alert.description_update"|trans }}",
+                })
+            }
+        });
+    }
+
+    /**
+     * copy clipboard
+     * @param containerid
+     */
+    function CopyToClipboard(containerid) {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(containerid));
+        window.getSelection().addRange(range);
+        document.execCommand("Copy");
+        alert("text copied, copy in the text-area")
+    }
+
+    function toggleNoReportCheckBox() {
+        if (check_box === true) {
+            $('#switch_checkbox').removeAttr('checked').val(false);
+            check_box = false;
+        } else {
+            $('#switch_checkbox').attr('checked', true).val(true);
+            check_box = true;
+        }
+        $('#expedientes_zone').toggle();
+        $('#expedientesNoReport_zone').toggle();
+    }
+</script>

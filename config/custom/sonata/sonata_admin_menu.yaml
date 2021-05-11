@@ -1,0 +1,117 @@
+# add more service definitions when explicit configuration is needed
+# please note that last definitions always *replace* previous ones
+services:
+
+    admin.user:
+        class: App\Admin\UserAdmin
+        arguments: [~, App\Entity\User, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Usuarios', label: 'Usuarios' }
+
+    admin.role:
+        class: App\Admin\RoleAdmin
+        arguments: [~, App\Entity\Role, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Usuarios',label: 'Roles' }
+
+    admin.company:
+        class: App\Admin\CompanyAdmin
+        arguments: [~, App\Entity\Company, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm,  group: 'Usuarios', label: 'Empresas' }
+
+    admin.admin:
+        class: App\Admin\AdminAdmin
+        arguments: [~, App\Entity\Admin, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm,  group: 'Usuarios', label: 'Administradores' }
+
+    admin.widget:
+        class: App\Admin\DashboardWidgetAdmin
+        arguments: [~, App\Entity\DashboardWidgets, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm,  group: 'Widgets', label: 'Widgets' }
+
+    admin.uploads:
+        class: App\Admin\UploadsAdmin
+        arguments: [~, ~, App\Controller\UploadsController]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Configuration', label: 'Uploads' }
+
+    admin.translations:
+        class: App\Admin\TranslationAdmin
+        arguments: [~, ~, App\Controller\TranslationsController]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Configuration', label: 'Translations' }
+
+    admin.commercialoffice:
+        class: App\Admin\CommercialOfficeAdmin
+        arguments: [~, App\Entity\CommercialOffice, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm,  group: 'Master', label: 'Commercial / Office' }
+
+    admin.commercialresponsable:
+        class: App\Admin\CommercialResponsableAdmin
+        arguments: [~, App\Entity\CommercialResponsable, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm,  group: 'Master', label: 'Commercial / Responsable' }
+
+    admin.comercialalertas:
+        class: App\Admin\ComercialAlertasAdmin
+        arguments: [~, App\Entity\ComercialAlertas ,~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Alertas', label: 'Alertas'}
+
+    admin.gestorhorizontal:
+        class: App\Admin\GestorHorizontalAdmin
+        arguments: [~, App\Entity\GestorHorizontal, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm,  group: 'Master', label: 'Gestor / Horizontal' }
+
+    admin.gestorresponsable:
+        class: App\Admin\GestorResponsableAdmin
+        arguments: [~, App\Entity\GestorResponsable, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm,  group: 'Master', label: 'Gestor / Responsable' }
+
+    admin.comercialtasks:
+        class: App\Admin\ComercialTaskAdmin
+        arguments: [~, App\Entity\ComercialTask, ~]
+        tags:
+            - {name: sonata.admin, manager_type: orm, group: 'Tasks', label: 'Tasks'}
+
+    admin.comercialtasktypes:
+        class: App\Admin\ComercialTaskTypeAdmin
+        arguments: [~, App\Entity\ComercialTaskType,~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Tasks', label: 'Types'}
+
+    admin.comercialtaskstatus:
+        class: App\Admin\ComercialTaskStatusAdmin
+        arguments: [~, App\Entity\ComercialTaskStatus,~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Tasks', label: 'Status'}
+
+    admin.comercialmuro:
+        class: App\Admin\ComercialMuroAdmin
+        arguments: [~, App\Entity\ComercialMuro, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm,  group: 'Muro', label: 'Mensajes Muro' }
+
+    admin.comercialexpedientes:
+        class: App\Admin\ComercialExpedientesAdmin
+        arguments: [~, App\Entity\ComercialExpediente, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Expedientes', label: 'Expedientes' }
+
+    admin.comercialexpedientescotizaciones:
+        class: App\Admin\ComercialExpedienteCotizacionesAdmin
+        arguments: [~, App\Entity\ComercialExpedienteCotizaciones, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Expedientes', label: 'Expedientes - Cotizaciones' }
+
+    admin.visit:
+        class: App\Admin\VisitAdmin
+        arguments: [~, App\Entity\Visit, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: 'Visitas', label: 'Visitas' }

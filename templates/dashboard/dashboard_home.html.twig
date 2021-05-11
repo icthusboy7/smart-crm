@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#orden_widgets_modal">
+        Editar orden
+    </button>
+    <div class="modal fade" id="orden_widgets_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Seleccionar orden widgets</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="set_order_widgets">
+                        <div class="js-sortable sortable list flex flex-column list-reset">
+                            {% for widget in widgets %}
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="edit_orden_box">
+                                            <div class="row">
+                                                <div class="col-lg-1"><button type="button" class="btn btn-secondary btn-sm"><i class="fas fa-arrows-alt"></i></button></div><div class="col-lg-11"><span>{{ widget.nombre }}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="{{ widget.id }}" value="{{ loop.index }}">
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button id="save_order_widgets" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

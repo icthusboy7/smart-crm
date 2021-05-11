@@ -1,0 +1,22 @@
+{#
+ # Global filters for tasks
+ #}
+
+<h2 class="mt-0">{{ "global.filters" | trans }}</h2>
+<div class="form-group">
+    <p class="text-left">
+        {# @todo se tendria que mostrar de forma dinamica según las zonas que existan. #}
+        <div class="float-left">
+            <a class="btn btn-sm btn-{% if 'CIB' in filter %}blue{% else %}secondary{% endif %}" href="{{ path('tasks', {zonas: ['CIB']}) }}" role="button">{{ "CIB (%a%/%b%)" | trans({'%a%': counts['cib']['sin'], '%b%': counts['cib']['all']}) }}</a>
+            <a class="btn btn-sm btn-{% if 'ESTE' in filter %}blue{% else %}secondary{% endif %}" href="{{ path('tasks', {zonas: ['ESTE']}) }}" role="button">{{ "Este (%a%/%b%)" | trans({'%a%': counts['este']['sin'], '%b%': counts['este']['all']}) }}</a>
+            <a class="btn btn-sm btn-{% if 'NORTE' in filter %}blue{% else %}secondary{% endif %}" href="{{ path('tasks', {zonas: ['NORTE']}) }}" role="button">{{ "Norte (%a%/%b%)" | trans({'%a%': counts['norte']['sin'], '%b%': counts['norte']['all']}) }}</a>
+            <a class="btn btn-sm btn-{% if 'SUD' in filter %}blue{% else %}secondary{% endif %}" href="{{ path('tasks', {zonas: ['SUD']}) }}" role="button">{{ "Sud (%a%/%b%)" | trans({'%a%': counts['sud']['sin'], '%b%': counts['sud']['all']}) }}</a>
+        </div>
+        <div class="float-right">
+            <a class="btn btn-sm btn-{% if 'SELF' in filter %}blue{% else %}secondary{% endif %}" href="{{ path('tasks', {author_id: [app.user.id]}) }}" role="button">{{ "Mis Tareas (%a%)" | trans({'%a%': counts['mine']}) }}</a>
+            {# @todo Mirar de quitar este botón y hacer que los botones se activen y desactiven y se sumen entre ellos. #}
+            {% if app.request.requestUri != path('tasks')  %}<a class="btn btn-sm btn-dark" href="{{ path('tasks') }}" role="button">{{ "Ver Todo" }}</a>
+            {% endif %}
+        </div>
+    </p>
+</div>

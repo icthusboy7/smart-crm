@@ -1,0 +1,180 @@
+.card-body .table-sm td,
+.table-sm th
+{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 200px;
+}
+/* Modal Form view Task*/
+#add_new_task {
+    display : none;
+}
+
+#add_new_task div.modal-dialog {
+    width: 100%;
+    max-width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin: 0;
+}
+
+#specialForm
+{
+    display: none;
+}
+
+label[id*="-error"]
+{
+    color: red;
+}
+
+td .badge
+{
+    font-size: 100%;
+}
+
+.select2-selection--single
+{
+    height: 38px !important;
+    border: 1px solid #ced4da !important;
+    font-size: 14px;
+}
+
+.select2-selection__arrow
+{
+    margin-top: 5px !important;
+}
+
+.custom-control-label
+{
+    margin: 3px 10px 0 0;
+    padding-left: 0;
+}
+
+#preview_button
+{
+    margin: 0 5px 0 0;
+}
+
+.attachment
+{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 38px;
+    width: 95%;
+}
+
+/* Area de subida de ficheros*/
+.row.row-filesattached{
+    display: none;
+    margin-left: 0;
+    margin-top: 10px;
+}
+.row-filesattached
+{
+    width: 100%;
+    display: inline-block;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    margin-left: 0;
+}
+
+.currentFiles:not(.hidden)
+{
+    display: inline-block;
+}
+
+.currentFiles
+{
+    position: absolute;
+    width: 99%;
+    padding-top: 5px;
+    height: auto;
+}
+
+.currentFiles
+{
+    float: left;
+    width: 100%;
+}
+
+.col-dynamic
+{
+    display: inline-block;
+    width: auto;
+    margin-left: 2%;
+}
+
+.col-dynamic > .box.box_modal > .icon > .info
+{
+    font-size: 10px;
+    background: none;
+    border-color: transparent;
+    color: #000;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.prioridad > p.name {
+    margin: 0;
+}
+.col-file.prioridad,
+.col-remove.prioridad
+{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.col-file.prioridad
+{
+    width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.col-remove.prioridad
+{
+    width: 10%;
+}
+
+.col-dynamic > .box.box_modal > .icon > .info > .prioridad > .btn,
+.col-dynamic > .box.box_modal > .icon > .info > .prioridad > button.btn.cancel,
+.col-dynamic > .box.box_modal > .icon > .info > .prioridad > button.btn.cancel > i
+{
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.filesattach
+{
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.dropzone {
+    padding: 0!important;
+}
+
+.dropzone .dz-message {
+    display: none;
+}

@@ -1,0 +1,97 @@
+<div class="modal fade" id="add_new_task" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form class="dropzone" id="newTask">
+                <input id="formSpecial" type="hidden" name="formSpecial" value="" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ "task.modal.title"|trans }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-10">
+                            <label for="responsible">{{ "task.modal.input.responsible"|trans }}</label>
+                            <select id="responsible" name="responsible" class="form-control responsible_select"></select>
+                        </div>
+                        <div class="col-lg-2">
+                            <button type="button" id="attachfile" class="attachment"><i class="fas fa-paperclip"></i><span class="filesattach"> 0 {{ 'muro.filesattach'|trans }}</span></button>
+                        </div>
+                    </div>
+                    <div class="row form-group row-filesattached">
+                        <div class="col-lg-12 table table-striped currentFiles row files" id="previews">
+                            <div id="template" class="col-dynamic col-md-2">
+                                <!-- This is used as the file preview template -->
+                                <div class="box box_modal">
+                                    <div class="icon">
+                                        <div class="info">
+                                            <div class="col-file prioridad">
+                                                <p class="name" data-dz-name></p>
+                                            </div>
+                                            <div class="col-remove prioridad">
+                                                <button data-dz-remove class="btn cancel">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <label for="responsible">{{ "task.modal.select_pipeline_or_quote" |trans }}</label>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="pipeline1" name="selectTypeAssingTask" value="none" checked>
+                                <label class="custom-control-label" for="pipeline1">{{ "task.modal.none" |trans }}</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="pipeline2" name="selectTypeAssingTask" value="pipeline">
+                                <label class="custom-control-label" for="pipeline2">{{ "task.modal.pipeline" |trans }}</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input" id="pipeline3" name="selectTypeAssingTask" value="quote">
+                                <label class="custom-control-label" for="pipeline3">{{ "task.modal.quote" |trans }}</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-7" id="selectPipelines">
+                            <label for="pipeline">{{ "task.modal.select.pipelime"|trans }}</label>
+                            <select id="pipeline" name="pipeline" class="form-control pipeline_select"></select>
+                        </div>
+                        <div class="col-lg-7" id="selectQuotes">
+                            <label for="quote">{{ "task.modal.select.quote"|trans }}</label>
+                            <select id="quote" name="quote" class="form-control quote_select"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskType">{{ "task.modal.input.taskType"|trans }} *</label>
+                        <select id="taskType" name="taskType" class="form-control taskType_select">
+                            <option value="">{{ 'task.modal.input.taskType.option' | trans }}</option>
+                            {% for taskType in taskTypes %}
+                                <option value="{{ taskType.id  }}">{{ taskType.description }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">{{ "task.modal.input.description"|trans }} *</label>
+                        <textarea id="description" type="text" class="form-control" name="description"
+                                  rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="create_contact" class="btn btn-sm btn-primary">
+                        <i class="fa fa-save fa-fw"></i> {{ "task.modal.button.create"|trans }}
+                    </button>
+                    <button type="button" class="btn btn-sm" data-dismiss="modal">
+                        <i class="fa fa-minus-circle fa-fw"></i> {{ "task.modal.button.cancel"|trans }}
+                    </button>
+                </div>
+            </form>
+            <form id="specialForm">
+                <div id="specialTaskFormSave" class="hidden"></div>
+            </form>
+        </div>
+    </div>
+</div>

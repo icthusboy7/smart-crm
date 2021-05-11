@@ -1,0 +1,66 @@
+<div class="modal fade" id="add_new_contact" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ "Add contact"|trans }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="new_contact">
+            <div class="modal-body">
+                <input type="hidden" id="contact_id" name="contact_id">
+                <input type="hidden" id="contact_modal" name="contact_modal">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label for="contact_nif">{{ "NIF"|trans }}</label>
+                                <input type="text" class="form-control" id="contact_nif" name="contact_nif" maxlength="20" required>
+                            </div>
+                            <div class="form-group form-group-hiddencheck">
+                                <input type="checkbox" name="fancy-checkbox-success" id="fancy-checkbox-success" autocomplete="off" />
+                                <div class="btn-group">
+                                    <label for="fancy-checkbox-success" style="background-color: lightgrey" class="btn btn-sm active">
+                                        {{ "Is_spanish_nif"|trans }}
+                                    </label>
+                                    <label for="fancy-checkbox-success" class="btn btn-sm btn-info">
+                                        <span><i class="fas fa-check"></i></span>
+                                        <span> </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12" >
+                            <label for="contact_nombre">{{ "Name"|trans }}</label>
+                            <input type="text" class="form-control" id="contact_nombre" name="contact_nombre" maxlength="255" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12">
+                            <label for="contact_telefono">{{ "Phone_number"|trans }}</label>
+                            <input type="text" class="form-control" id="contact_telefono" name="contact_telefono" maxlength="255">
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <label for="contact_email">{{ "Email"|trans }}</label>
+                            <input type="text" class="form-control" id="contact_email" name="contact_email" maxlength="255">
+                        </div>
+                        <div class="col-lg-12">
+                            <label for="contact_direccion">{{ "Direction"|trans }}</label>
+                            <input type="text" class="form-control" name="contact_direccion" maxlength="255">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label for="contact_observaciones">{{ "Observations"|trans }}</label>
+                            <textarea type="text" class="form-control" name="contact_observaciones" rows="8"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="create_contact" class="btn btn-blue btn-sm"><i class="fa fa-save"></i> {{ "Create"|trans }}</button>
+                    <button type="button" class="btn btn-sm" data-dismiss="modal"><i class="fa fa-minus-circle"></i> {{ "Cancel"|trans }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<!-- Modal enviar mensaje (Muro) -->
+<div class="modal fade" id="muro_send_response_special" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="form_env_msj_esp" enctype="multipart/form-data">
+                <input type="hidden" name="expediente" id="expedienteEsp" value="{{ expediente }}">
+                <input type="hidden" name="respuestaPetiCoti" value="">
+                <input type="hidden" name="responsableTarea" value="">
+                <input type="hidden" name="tipoMensaje" id="tipoMensaje" value="">
+                <input type="hidden" name="idTareaEsp" id="idTareaEsp" value="">
+                <input id="es_coti" type="hidden" name="petiCoti" value="">
+                <input id="formEsp" type="hidden" name="formEsp" value="">
+                <input type="hidden" name="numPetiCoti">
+                <input type="hidden" name="status" id="status">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ 'petitions'|trans }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="error-message" class="text-danger"></div>
+                    <div id="build-wrap"></div>
+                </div>
+                <div class="modal-footer text-center">
+                    <button type="submit" id="sumbitSpecial" class="btn btn-blue bt-submit"><i class="fas fa-paper-plane fa-fw"></i> {{'send'|trans}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

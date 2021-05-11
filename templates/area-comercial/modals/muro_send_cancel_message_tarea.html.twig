@@ -1,0 +1,32 @@
+<style>
+    .select2-container{
+        width:100%!important;
+    }
+
+    .select2-selection__placeholder,
+    .select2-selection__rendered{
+        font-size: 12px;
+    }
+</style>
+<!-- Modal enviar mensaje (Muro) -->
+<div class="modal fade" id="muro_cancel_tarea_mensaje" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h4 class="modal-title">{{ 'muro.cancel-task'|trans}}</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                {{ 'muro.are-you-sure-indicate-reason'|trans}}
+                <p>
+                    <input class="form-control mt-2" type="text" id="motivo" placeholder="{{ 'muro.write-reason'|trans}}">
+                <div id="motivo_feedback" class="invalid-feedback hidden mt-2">{{ 'muro.write-reason'|trans}}</div>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel_msj" type="button" class="btn btn-default" data-dismiss="modal">{{ 'cancel'|trans}}</button>
+                <button id="confirm_msj" type="submit" class="btn btn-danger }}">{{ 'confirm'|trans}}</button>
+            </div>
+        </div>
+    </div>
+</div>

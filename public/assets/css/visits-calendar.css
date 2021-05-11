@@ -1,0 +1,81 @@
+/*
+ * Styles for the visits's calendar widget.
+ */
+
+#visits-calendar .fc-toolbar {
+    margin: 1.5em 0;
+}
+
+#visits-calendar .fc-toolbar > .fc-left {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#visits-calendar .fc-toolbar > .fc-left > * {
+    margin: 0;
+    padding: 1rem 0 0 0;
+}
+
+#visits-calendar .fc-toolbar > .fc-left > h2 {
+    width: 100%;
+    padding-bottom: 1rem;
+    text-align: center;
+}
+
+/*
+ * Calendar media queries
+ */
+
+@media (min-width: 576px) {
+    #visits-calendar .fc-toolbar > .fc-left {
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    #visits-calendar .fc-toolbar > .fc-left > h2 {
+        text-align: left;
+    }
+
+    #visits-calendar .fc-toolbar > .fc-left > .btn-group {
+        flex: 1;
+    }
+
+    #visits-calendar .fc-toolbar > .fc-left > .btn-group:last-child {
+        flex: 0;
+    }
+}
+
+/*
+ * Calendar event colors
+ */
+
+#visits-calendar .fc-event {
+  border-color: #ccc;
+}
+
+#visits-calendar .pending.fc-event,
+#visits-calendar .pending .fc-event-dot {
+  background-color: #ffbc00;
+}
+
+#visits-calendar .done.fc-event,
+#visits-calendar .done .fc-event-dot {
+  background-color: #28a745;
+}
+
+#visits-calendar .canceled.fc-event,
+#visits-calendar .canceled .fc-event-dot {
+  background-color: #dc3545;
+}
+
+
+/*
+ * Filters form controls
+ */
+
+#calendar-filters .managers-select {
+  font-size: 12px;
+}
